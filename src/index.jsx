@@ -16,15 +16,17 @@ let root = (
         <Route exact={false} path="/" component={AnimatedMessage} />
         <div className="topbar" />
         <div className="game-chat-container">
-          <Switch>
-            <Route exact={true} path="/" component={App} />
-            <Route exact={true} path="/game/:gameId" component={GameFrame} />
-            <Route
-              render={props => (
-                <Oops {...props} message={"This page doesn't exist."} />
-              )}
-            />
-          </Switch>
+          <div className="main-div">
+            <Switch>
+              <Route exact={true} path="/" component={App} />
+              <Route exact={true} path="/game/:gameId" component={GameFrame} />
+              <Route
+                render={props => (
+                  <Oops {...props} message={"This page doesn't exist."} />
+                )}
+              />
+            </Switch>
+          </div>
           <div className="friends" />
         </div>
       </div>

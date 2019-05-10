@@ -15,7 +15,7 @@ body {
 }
 
 .topbar {
-  height: 150px;
+  height: 20vh;
   border-style: solid;
   border-color: blue;
 }
@@ -28,4 +28,9 @@ body {
   width: 20%;
   border-style: solid;
   border-color: red;
+}
+
+.main-div {
+  width: 100%;
+  height: 80vh;
 }
