@@ -10,6 +10,7 @@ import AnimatedMessage from "./Components/AnimatedMessage.jsx";
 import Oops from "./Components/Oops.jsx";
 import TopBar from "./Components/TopBar.jsx";
 import SideBar from "./Components/SideBar.jsx"
+import Leaderboard from "./Components/Leaderboard.jsx";
 
 let root = (
    <Provider store={store}>
@@ -18,10 +19,12 @@ let root = (
             <Route exact={false} path="/" component={AnimatedMessage} />
             <TopBar />
             <div className="game-chat-container">
+               <SideBar />
                <div className="main-div">
                   <Switch>
                      <Route exact={true} path="/" component={App} />
                      <Route exact={true} path="/game/:gameId" component={GameFrame} />
+                     <Route exact={true} path="/leaderboard" component={Leaderboard} />
                      <Route
                         render={props => (
                            <Oops {...props} message={"This page doesn't exist... yet"} />
@@ -29,9 +32,10 @@ let root = (
                      />
                   </Switch>
                </div>
-               <SideBar />
             </div>
+            {/* Google Fonts imports */}
             <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet"></link>
+            <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"></link>
          </div>
       </BrowserRouter>
    </Provider>

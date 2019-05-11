@@ -69,7 +69,7 @@ class Login extends Component {
                   <input className="coolInput" type="text" placeholder="Password" onChange={this.handlePassword} />
                   <span></span>
                </div>
-               <div><input type="submit" /></div>
+               <div><input className="ghost-button" type="submit" value="Login!" /></div>
             </form>
          </div>
       )

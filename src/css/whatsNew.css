@@ -1,0 +1,19 @@
+li {
+   background-color: transparent;
+   border: 3px solid transparent;
+   border-bottom-color: darkgray;
+   padding: 10px;
+   list-style: none;
+   font-family: 'Rubik', sans-serif;
+}
+
+.newsContainer {
+   float: right;
+   width: 33%;
+   height: 90vh;
+   border: 3px solid transparent;
+   border-left-color: black;
+   padding: 10px;
+   overflow: scroll;
+   margin-left: 5px;
+}

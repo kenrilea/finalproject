@@ -10,14 +10,13 @@ class TopBar extends Component {
 
       return (
          <div className="topBar">
-            <div className="title">SUPER CHESS II</div>
-            <Link className="link" to={"/leaderboard"}>Leaderboards</Link>
+            <Link className="link" to={"/"}>SUPER CHESS II</Link>
+            <Link className="link" to={"/leaderboard"}>Leaderboard</Link>
             <Link className="link" to={"/rules"}>How to Play</Link>
             <Link className="link" to={"/about"}>About</Link>
          </div>
       )
    }
-
 }
 
 export default TopBar

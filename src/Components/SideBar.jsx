@@ -28,7 +28,7 @@ class SideBar extends Component {
             <div className="sideBar">
                <div className="sideBarForm">
                   <Login />
-                  <button onClick={this.showSignup}>Sign up!</button>
+                  <button className="ghost-button" onClick={this.showSignup}>Sign up!</button>
                </div>
             </div>
          )

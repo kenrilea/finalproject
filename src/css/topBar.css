@@ -4,6 +4,9 @@
    text-align: center;
    line-height: 10vh;
    font-size: 1.5em;
+   border: 3px solid transparent;
+   border-bottom-color: black;
+   border-top-color: orange;
 }
 
 .link {

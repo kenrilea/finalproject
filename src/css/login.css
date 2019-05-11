@@ -1,3 +1,4 @@
+
 .login-form {
    padding-top: 5px;
 }
@@ -40,4 +41,19 @@ div {
  .coolInput:focus ~ span {
    transform: translate(-50%, 0) scaleX(1);
    opacity: 1;
+ }
+
+ .ghost-button {
+   display: inline-block;
+   width: 100px;
+   padding: 8px;
+   background: transparent;
+   color: black;
+   border: 2px solid black;
+   border-radius: 5px;
+   text-align: center;
+   outline: none;
+   text-decoration: none;
+   margin-top: 5px;
+   margin-bottom: 5px;
  }
