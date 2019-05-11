@@ -12,22 +12,36 @@ class Leaderboard extends Component {
       return (
          <div>
             <h2 className="center-text">Leaderboard!</h2>
-            <table>
-               <tr>
-                  <th>Username</th>
-                  <th>Wins</th>
-                  <th>Country</th>
-               </tr>
-               {mockLeaderboardData.map(user => {
-                  return (
+            <div id="scrolltable">
+               <table>
+                  <thead>
                      <tr>
-                        <th>{user.username}</th>
-                        <th>{user.wins}</th>
-                        <th>{user.country}</th>
+                        <th> </th>
+                        <th>Username</th>
+                        <th>Wins</th>
+                        <th>Country</th>
                      </tr>
-                  )
-               })}
-            </table>
+                  </thead>
+                  <tbody>
+                     {mockLeaderboardData.map((user, rank) => {
+                        return (
+                           <tr>
+                              <td>{rank + 1}</td>
+                              <td>{user.username}</td>
+                              <td>{user.wins}</td>
+                              <td>{user.country}</td>
+                           </tr>
+                        )
+                     })}
+                     <tr>
+                        <td> END OF LIST</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
          </div>
       )
    }

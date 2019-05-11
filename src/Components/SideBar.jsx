@@ -6,7 +6,7 @@ import Login from "./Login.jsx"
 
 import "../css/sideBar.css"
 
-class SideBar extends Component {
+class UnconnectedSideBar extends Component {
 
    constructor(props) {
       super(props)
@@ -22,6 +22,15 @@ class SideBar extends Component {
    }
 
    render = () => {
+
+      if (this.props.loggedIn === false) {
+         return this.notLoggedInSidebar()
+      }
+
+
+   }
+
+   notLoggedInSidebar = () => {
 
       if (!this.state.signup) {
          return (
@@ -46,7 +55,16 @@ class SideBar extends Component {
          )
    }
 
-
 }
+
+
+
+const mapStateToProps = state => {
+   return {
+      loggedIn: state.loggedIn
+   }
+}
+
+let SideBar = connect(mapStateToProps)(UnconnectedSideBar)
 
 export default SideBar

@@ -1,8 +1,10 @@
 table {
    font-family: arial, sans-serif;
    border-collapse: collapse;
-   width: 100%;
+   width: 80vw;
+   
    margin-left: 5px;
+  
  }
  
  td, th {
@@ -10,11 +12,28 @@ table {
    text-align: left;
    padding: 8px;
  }
+
+ thead {
+    background-color: orange;
+ }
+
+ tbody {
+   height: 80vh;
+   overflow: auto;
+ }
  
  tr:nth-child(even) {
    background-color: #dddddd;
  }
 
+ tr:hover {
+    background-color: orange;
+ }
+
+
  .center-text {
     text-align: center;
  }
+
+#scrolltable { margin-top: 20px; height: 80vh; overflow: auto; }
+#scrolltable table { border-collapse: collapse; }
