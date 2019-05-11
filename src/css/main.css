@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Merriweather', serif;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+
+.game-chat-container {
+  display: flex;
+}
+
+.main-div {
+  width: 100%;
+  height: 90vh;
+}

@@ -1,0 +1,59 @@
+
+.login-form {
+   padding-top: 5px;
+}
+
+div {
+   position: relative;
+ }
+ 
+ .coolInput {
+   text-align: center;
+   font-size: inherit;
+   font-family: inherit;
+   background-color: transparent;
+   border: 1px solid transparent;
+   border-bottom-color: white;
+   padding-top: 10px;
+ }
+ 
+ .coolInput:focus {
+   outline: none;
+ }
+ 
+ .coolInput::placeholder {
+   color: hsla(0, 0%, 100%, 0.6);
+ }
+ 
+ span {
+   position: absolute;
+   bottom: 0;
+   left: 50%;
+   width: 100%;
+   height: 1px;
+   opacity: 0;
+   background-color: #dadd13;
+   transform-origin: center;
+   transform: translate(-50%, 0) scaleX(0);
+   transition: all 0.3s ease;
+ }
+ 
+ .coolInput:focus ~ span {
+   transform: translate(-50%, 0) scaleX(1);
+   opacity: 1;
+ }
+
+ .ghost-button {
+   display: inline-block;
+   width: 100px;
+   padding: 8px;
+   background: transparent;
+   color: black;
+   border: 2px solid black;
+   border-radius: 5px;
+   text-align: center;
+   outline: none;
+   text-decoration: none;
+   margin-top: 5px;
+   margin-bottom: 5px;
+ }
