@@ -8,30 +8,33 @@ import App from "./Components/App.jsx";
 import GameFrame from "./Components/Game/GameFrame.jsx";
 import AnimatedMessage from "./Components/AnimatedMessage.jsx";
 import Oops from "./Components/Oops.jsx";
+import TopBar from "./Components/TopBar.jsx";
+import SideBar from "./Components/SideBar.jsx"
 
 let root = (
-  <Provider store={store}>
-    <BrowserRouter>
-      <div className="container">
-        <Route exact={false} path="/" component={AnimatedMessage} />
-        <div className="topbar" />
-        <div className="game-chat-container">
-          <div className="main-div">
-            <Switch>
-              <Route exact={true} path="/" component={App} />
-              <Route exact={true} path="/game/:gameId" component={GameFrame} />
-              <Route
-                render={props => (
-                  <Oops {...props} message={"This page doesn't exist."} />
-                )}
-              />
-            </Switch>
-          </div>
-          <div className="friends" />
-        </div>
-      </div>
-    </BrowserRouter>
-  </Provider>
+   <Provider store={store}>
+      <BrowserRouter>
+         <div className="container">
+            <Route exact={false} path="/" component={AnimatedMessage} />
+            <TopBar />
+            <div className="game-chat-container">
+               <div className="main-div">
+                  <Switch>
+                     <Route exact={true} path="/" component={App} />
+                     <Route exact={true} path="/game/:gameId" component={GameFrame} />
+                     <Route
+                        render={props => (
+                           <Oops {...props} message={"This page doesn't exist... yet"} />
+                        )}
+                     />
+                  </Switch>
+               </div>
+               <SideBar />
+            </div>
+            <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet"></link>
+         </div>
+      </BrowserRouter>
+   </Provider>
 );
 
 ReactDOM.render(root, document.getElementById("root"));

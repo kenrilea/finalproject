@@ -1,0 +1,11 @@
+.sideBar {
+   width: 20vw;
+   background: linear-gradient(to right, #232526, #414345);
+   text-align: center;
+   padding-top: 50px;
+}
+
+.sideBarForm {
+   height: 50%
+}
+
