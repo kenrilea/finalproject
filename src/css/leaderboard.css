@@ -1,5 +1,4 @@
 table {
-   font-family: arial, sans-serif;
    border-collapse: collapse;
    width: 80vw;
    
@@ -22,6 +21,10 @@ table {
    overflow: auto;
  }
  
+tr {
+   transition: background-color 0.1s ease-in-out;
+}
+
  tr:nth-child(even) {
    background-color: #dddddd;
  }

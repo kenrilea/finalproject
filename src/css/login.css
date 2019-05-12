@@ -3,6 +3,11 @@
    padding-top: 5px;
 }
 
+.login-label {
+   margin: 10px 5px;;
+   font-size: 1.3em;
+}
+
 div {
    position: relative;
  }
@@ -10,11 +15,10 @@ div {
  .coolInput {
    text-align: center;
    font-size: inherit;
-   font-family: 'Rubik', sans-serif;
    background-color: transparent;
    border: 1px solid transparent;
    border-bottom-color: white;
-   padding-top: 10px;
+   /* padding-top: 10px; */
  }
  
  .coolInput:focus {

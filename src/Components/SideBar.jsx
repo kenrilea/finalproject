@@ -11,7 +11,7 @@ class UnconnectedSideBar extends Component {
    constructor(props) {
       super(props)
       this.state = {
-         signup: false
+
       }
    }
 
@@ -32,27 +32,14 @@ class UnconnectedSideBar extends Component {
 
    notLoggedInSidebar = () => {
 
-      if (!this.state.signup) {
-         return (
-            <div className="sideBar">
-               <div className="sideBarForm">
-                  <Login />
-                  <button className="ghost-button" onClick={this.showSignup}>Sign up!</button>
-               </div>
+      return (
+         <div className="sideBar">
+            <div className="sideBarForm">
+               <Login />
+               <Link className="ghost-button" to="/signup">Sign up!</Link>
             </div>
-         )
-      }
-      else if (this.state.signup)
-         return (
-            <div className="sideBar">
-               <div className="sideBarForm">
-                  <Login />
-               </div>
-               <div className="sideBarForm">
-                  <Login />
-               </div>
-            </div>
-         )
+         </div>
+      )
    }
 
 }

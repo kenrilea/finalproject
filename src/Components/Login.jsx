@@ -59,14 +59,15 @@ class Login extends Component {
 
       return (
          <div>
-            <div>Login</div>
             <form className="login-form" onSubmit={this.handleSubmit}>
                <div>
-                  <input className="coolInput" type="text" placeholder="Username" onChange={this.handleUsername} />
+                  <div className="login-label">Username</div>
+                  <input className="coolInput" type="text" onChange={this.handleUsername} />
                   <span></span>
                </div>
                <div>
-                  <input className="coolInput" type="text" placeholder="Password" onChange={this.handlePassword} />
+                  <div className="login-label">Password</div>
+                  <input className="coolInput" type="text" onChange={this.handlePassword} />
                   <span></span>
                </div>
                <div><input className="ghost-button" type="submit" value="Login!" /></div>

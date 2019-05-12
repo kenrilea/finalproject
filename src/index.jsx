@@ -11,20 +11,22 @@ import Oops from "./Components/Oops.jsx";
 import TopBar from "./Components/TopBar.jsx";
 import SideBar from "./Components/SideBar.jsx"
 import Leaderboard from "./Components/Leaderboard.jsx";
+import Signup from "./Components/Signup.jsx"
 
 let root = (
    <Provider store={store}>
       <BrowserRouter>
-         <div className="container">
+         <div className="main-container">
             <Route exact={false} path="/" component={AnimatedMessage} />
             <TopBar />
-            <div className="game-chat-container">
+            <div className="sidebar-and-game-container">
                <SideBar />
                <div className="main-div">
                   <Switch>
                      <Route exact={true} path="/" component={App} />
                      <Route exact={true} path="/game/:gameId" component={GameFrame} />
                      <Route exact={true} path="/leaderboard" component={Leaderboard} />
+                     <Route exact={true} path="/signup" component={Signup} />
                      <Route
                         render={props => (
                            <Oops {...props} message={"This page doesn't exist... yet"} />
