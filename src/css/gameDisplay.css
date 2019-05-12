@@ -1,0 +1,9 @@
+.game-display {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.hidden {
+  visibility: hidden;
+}

@@ -34,6 +34,7 @@
     "reactjs-popup": "^1.4.0",
     "redux": "^4.0.1",
     "shelljs": "^0.8.3",
+    "three": "^0.104.0",
     "webpack-inject-plugin": "^1.5.0"
   }
 }

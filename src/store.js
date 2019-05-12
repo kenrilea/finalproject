@@ -1,23 +1,22 @@
 import { createStore } from "redux";
+import reducer from "./reducer.js";
+import { getInitialSceneState } from "./ThreeApp/threeApp.js";
 
-let reducer = (state, action) => {
-  switch (action.type) {
-    case "logged-in":
-      return { ...state, loggedIn: action.toggle, username: action.username };
-    case "show-message":
-      return { ...state, message: action.message };
-    default:
-      return state;
-  }
+const initialSceneState = getInitialSceneState();
+
+const initialState = {
+  loggedIn: false,
+  username: "",
+  message: "Welcome!",
+  gameRunning: true,
+  timestamp: 0,
+  lastAction: "",
+  scene: initialSceneState
 };
 
 const store = createStore(
   reducer,
-  {
-    loggedIn: false,
-    username: "",
-    message: "Welcome!"
-  },
+  initialState,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
