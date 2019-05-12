@@ -6,6 +6,7 @@ import Login from "./Login.jsx"
 import Signup from "./Signup.jsx"
 
 import "../css/sideBar.css"
+import Profile from "./Profile.jsx";
 
 class UnconnectedSideBar extends Component {
 
@@ -16,9 +17,10 @@ class UnconnectedSideBar extends Component {
       }
    }
 
-   showSignup = () => {
-      this.setState({
-         signup: true
+   signout = () => {
+      this.props.dispatch({
+         type: "SIGN-OUT",
+         toggle: false
       })
    }
 
@@ -27,12 +29,21 @@ class UnconnectedSideBar extends Component {
       if (this.props.loggedIn === false) {
          return this.notLoggedInSidebar()
       }
+      else {
+         return this.loggedInSidebar()
+      }
+   }
 
-
+   loggedInSidebar = () => {
+      return (
+         <div className="sideBar">
+            <Profile />
+            <button className="ghost-button signout-button" onClick={this.signout}>Sign Out</button>
+         </div>
+      )
    }
 
    notLoggedInSidebar = () => {
-
       return (
          <div className="sideBar">
             <div className="sideBarForm">

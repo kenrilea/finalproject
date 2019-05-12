@@ -1,0 +1,33 @@
+.profile-label:first-of-type {
+   margin-top: 80px;
+}
+
+.profile-label {
+   margin-bottom: 10px;
+   font-size: 1.3em;
+   color: white;
+   border: 3px solid transparent;
+   border-bottom-color: white;
+}
+
+.profile-username {
+   margin-top: 10px;
+   color: white;
+   size: 1.1em;
+}
+
+.profile-table-headers {
+   width: 5vw;
+}
+
+.profile-table {
+   width: 10vw;
+   margin: 30px auto 0 auto;
+   color: white;
+}
+
+.signout-button {
+   position: absolute;
+   bottom: 0;
+   text-align: center;
+}

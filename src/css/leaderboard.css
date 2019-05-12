@@ -1,35 +1,33 @@
-table {
+.leader-table {
    border-collapse: collapse;
    width: 80vw;
-   
    margin-left: 5px;
   
  }
  
- td, th {
+ .leader-entry {
    border: 1px solid #dddddd;
    text-align: left;
    padding: 8px;
  }
 
- thead {
+ .leader-header {
     background-color: orange;
  }
 
- tbody {
-   height: 80vh;
+ .leader-body {
    overflow: auto;
  }
  
-tr {
+.leader-row {
    transition: background-color 0.1s ease-in-out;
 }
 
- tr:nth-child(even) {
+ .leader-row:nth-child(even) {
    background-color: #dddddd;
  }
 
- tr:hover {
+ .leader-row:hover {
     background-color: orange;
  }
 
@@ -38,5 +36,5 @@ tr {
     text-align: center;
  }
 
-#scrolltable { margin-top: 20px; height: 80vh; overflow: auto; }
+#scrolltable { height: 90vh; overflow: auto; }
 #scrolltable table { border-collapse: collapse; }

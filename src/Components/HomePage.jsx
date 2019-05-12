@@ -4,19 +4,7 @@ import WhatsNew from "./WhatsNew.jsx"
 import "../css/main.css"
 
 
-const particlesOptions = {
-   particles: {
-      number: {
-         value: 200,
-         denisty: {
-            enable: true,
-            value_area: 400
-         }
-      }
-   }
-};
-
-class App extends Component {
+class HomePage extends Component {
    render = () => {
       return (
          <div>
@@ -26,4 +14,4 @@ class App extends Component {
       );
    }
 }
-export default App
+export default HomePage

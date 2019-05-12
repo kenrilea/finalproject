@@ -5,19 +5,19 @@ import { getInitialSceneState } from "./ThreeApp/threeApp.js";
 const initialSceneState = getInitialSceneState();
 
 const initialState = {
-  loggedIn: false,
-  username: "",
-  message: "Welcome!",
-  gameRunning: true,
-  timestamp: 0,
-  lastAction: "",
-  scene: initialSceneState
+   loggedIn: false,
+   currentUser: "",
+   message: "Welcome!",
+   gameRunning: true,
+   timestamp: 0,
+   lastAction: "",
+   scene: initialSceneState
 };
 
 const store = createStore(
-  reducer,
-  initialState,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+   reducer,
+   initialState,
+   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 export default store;

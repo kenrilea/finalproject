@@ -4,8 +4,10 @@
 }
 
 .login-label {
-   margin: 10px 5px;;
+   margin-top: 30px;
+   margin-bottom: 10px;
    font-size: 1.3em;
+   color:white;
 }
 
 div {

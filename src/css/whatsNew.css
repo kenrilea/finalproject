@@ -1,19 +1,30 @@
-li {
+.news-element {
    background-color: transparent;
    border: 3px solid transparent;
    border-bottom-color: darkgray;
-   padding: 10px;
-   list-style: none;
+   padding-top: 10px;
+   padding-bottom: 10px;
    font-family: 'Rubik', sans-serif;
+   margin: 0 10px;
+   list-style: none;
+   text-align: justify;
 }
 
-.newsContainer {
+.news-label {
+   text-align: center;
+   font-size: 1.3em;
+   font-weight: bold;
+   padding-top: 10px;
+}
+
+.news-container {
    float: right;
-   width: 33%;
+   width: 20vw;
    height: 90vh;
    border: 3px solid transparent;
    border-left-color: black;
-   padding: 10px;
+   padding: 0;
+   list-style-type: none;
    overflow: scroll;
-   margin-left: 5px;
+   
 }

@@ -66,7 +66,7 @@ class Signup extends Component {
 
    render = () => {
       return (
-         <Popup trigger={<button className="ghost-button">Sign up!</button>} position="right center" modal>
+         <Popup trigger={<button className="ghost-button">Sign up!</button>} position="bottom center" modal>
             <a className="close" onClick={close}>
                &times;
             </a>
@@ -77,7 +77,7 @@ class Signup extends Component {
                   <input className="signup-input" type="text" onChange={this.handlePassword} />
                   <input className="signup-input" type="text" onChange={this.handleCountry} />
                   <div>
-                     <input className="ghost-button-dark" type="submit" />
+                     <input className="ghost-button-dark" type="submit" value="I'm Ready!" />
                   </div>
                </form>
             </div>

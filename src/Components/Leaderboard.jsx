@@ -11,33 +11,32 @@ class Leaderboard extends Component {
    render = () => {
       return (
          <div>
-            <h2 className="center-text">Leaderboard!</h2>
             <div id="scrolltable">
-               <table>
-                  <thead>
-                     <tr>
-                        <th> </th>
-                        <th>Username</th>
-                        <th>Wins</th>
-                        <th>Country</th>
+               <table className="leader-table">
+                  <thead className="leader-header">
+                     <tr className="leader-row">
+                        <th className="leader-entry"> </th>
+                        <th className="leader-entry">Username</th>
+                        <th className="leader-entry">Wins</th>
+                        <th className="leader-entry">Country</th>
                      </tr>
                   </thead>
-                  <tbody>
-                     {mockLeaderboardData.map((user, rank) => {
+                  <tbody className="leader-body">
+                     {mockLeaderboardData.map((user, standing) => {
                         return (
-                           <tr>
-                              <td>{rank + 1}</td>
-                              <td>{user.username}</td>
-                              <td>{user.wins}</td>
-                              <td>{user.country}</td>
+                           <tr className="leader-row">
+                              <td className="leader-entry">{standing + 1}</td>
+                              <td className="leader-entry">{user.username}</td>
+                              <td className="leader-entry">{user.wins}</td>
+                              <td className="leader-entry">{user.country}</td>
                            </tr>
                         )
                      })}
-                     <tr>
-                        <td> END OF LIST</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                     <tr className="leader-row">
+                        <td className="leader-entry"> END OF LIST</td>
+                        <td className="leader-entry"></td>
+                        <td className="leader-entry"></td>
+                        <td className="leader-entry"></td>
                      </tr>
                   </tbody>
                </table>

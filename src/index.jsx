@@ -4,7 +4,7 @@ import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import store from "./store.js";
-import App from "./Components/App.jsx";
+import HomePage from "./Components/HomePage.jsx";
 import GameFrame from "./Components/Game/GameFrame.jsx";
 import AnimatedMessage from "./Components/AnimatedMessage.jsx";
 import Oops from "./Components/Oops.jsx";
@@ -23,7 +23,7 @@ let root = (
                <SideBar />
                <div className="main-div">
                   <Switch>
-                     <Route exact={true} path="/" component={App} />
+                     <Route exact={true} path="/" component={HomePage} />
                      <Route exact={true} path="/game/:gameId" component={GameFrame} />
                      <Route exact={true} path="/leaderboard" component={Leaderboard} />
                      <Route exact={true} path="/signup" component={Signup} />
