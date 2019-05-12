@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Login from "./Login.jsx"
+import Signup from "./Signup.jsx"
 
 import "../css/sideBar.css"
 
@@ -36,7 +37,7 @@ class UnconnectedSideBar extends Component {
          <div className="sideBar">
             <div className="sideBarForm">
                <Login />
-               <Link className="ghost-button" to="/signup">Sign up!</Link>
+               <Signup />
             </div>
          </div>
       )

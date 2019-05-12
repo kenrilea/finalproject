@@ -27,3 +27,10 @@
    background-color: lightgrey;
 }
 
+@media screen and (max-width: 790px) {
+   
+   .topBar {
+      font-size: 1.2em;
+   }
+
+}
