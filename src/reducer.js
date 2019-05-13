@@ -10,8 +10,16 @@ const reducer = (state, action) => {
          return { ...state, loggedIn: action.toggle, currentUser: "" };
       case "show-message":
          return { ...state, message: action.message };
-      case "JOIN-LOBBY":
-         return { ...state, currentLobby: action.lobbyId }
+      case "set-action-menu":
+         return {
+            ...state,
+            actionMenu: {
+               visible: action.visible,
+               xPos: action.xPos,
+               yPos: action.yPos,
+               options: action.options
+            }
+         };
       default:
          return state;
    }

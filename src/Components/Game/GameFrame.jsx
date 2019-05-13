@@ -1,8 +1,10 @@
+import "./../../css/gameFrame.css";
+
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./../../css/gameFrame.css";
 import Tile from "./Actors/Tile.jsx";
 import Pawn from "./Actors/Pawn.jsx";
+import Menu from "./Menu/Menu.jsx";
 
 class GameFrame extends Component {
   constructor(props) {
@@ -39,13 +41,14 @@ class GameFrame extends Component {
     if (!this.state.loaded) return null;
 
     const tiles = this.state.tiles;
-    console.log("tiles[0]: ", tiles[0]);
+
     return (
       <div className="wrapper">
         <svg
           className="gameframe wrapper"
           id="chess-2-canvas"
           preserveAspectRatio="xMaxYMax none"
+          /*viewBox="0 0 100 100"*/
         >
           {console.log(this.width)}
           {tiles.map(tile => {
@@ -67,9 +70,16 @@ class GameFrame extends Component {
             height={tiles[0].height}
           />
         </svg>
+        <Menu options={this.props.actionMenuOptions} />
       </div>
     );
   };
 }
 
-export default GameFrame;
+const mapStateToProps = state => {
+  return {
+    actionMenuOptions: state.actionMenu.options
+  };
+};
+
+export default connect(mapStateToProps)(GameFrame);
