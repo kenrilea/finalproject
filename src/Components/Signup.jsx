@@ -39,8 +39,9 @@ class Signup extends Component {
       data.append("username", this.state.username)
       data.append("password", this.state.password)
       data.append("country", this.state.country)
+      data.append("joinedDate", new Date())
 
-      fetch("/login", {
+      fetch("/signup", {
          method: "POST",
          body: data
       })
@@ -67,21 +68,21 @@ class Signup extends Component {
    render = () => {
       return (
          <Popup trigger={<button className="ghost-button">Sign up!</button>} position="bottom center" modal>
-            <a className="close" onClick={close}>
-               &times;
-            </a>
             <div className="signup-container">
                <form className="" onSubmit={this.handleSubmit}>
                   <div className="signup-label">Create an account</div>
-                  <input className="signup-input" type="text" onChange={this.handleUsername} />
-                  <input className="signup-input" type="text" onChange={this.handlePassword} />
-                  <input className="signup-input" type="text" onChange={this.handleCountry} />
+                  <div className="signup-label">Username</div>
+                  <input className="signup-input" type="text" onChange={this.handleUsername} required={true} />
+                  <div className="signup-label">Password</div>
+                  <input className="signup-input" type="text" onChange={this.handlePassword} required={true} />
+                  <div className="signup-label">Country</div>
+                  <input className="signup-input" type="text" onChange={this.handleCountry} required={true} />
                   <div>
-                     <input className="ghost-button-dark" type="submit" value="I'm Ready!" />
+                     <input className="ghost-button-dark bottom-margin" type="submit" value="I'm Ready!" />
                   </div>
                </form>
             </div>
-         </Popup>
+         </Popup >
       )
    }
 }
