@@ -15,7 +15,7 @@ class UnconnectedHomePage extends Component {
       }
 
       return (
-         <div>
+         <div className="animated-fade-in">
             {/* Other content? */}
             <WhatsNew />
          </div>
