@@ -23,3 +23,13 @@ export const update = timestamp => {
     timestamp
   };
 };
+
+export const setActionMenu = (visible, xPos, yPos, options) => {
+  return {
+    type: "set-action-menu",
+    visible,
+    xPos,
+    yPos,
+    options
+  };
+};

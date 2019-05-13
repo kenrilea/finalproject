@@ -4,7 +4,13 @@ import reducer from "./reducer.js";
 const initialState = {
   loggedIn: false,
   currentUser: "",
-  message: "Welcome!"
+  message: "Welcome!",
+  actionMenu: {
+    visible: false,
+    xPos: 0,
+    yPos: 0,
+    options: []
+  }
 };
 
 const store = createStore(
