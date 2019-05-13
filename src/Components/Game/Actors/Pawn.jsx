@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu } from "./../../../Actions";
-import { deflate } from "zlib";
 
 class Pawn extends Component {
   componentDidMount = () => {};
