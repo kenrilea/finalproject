@@ -1,44 +1,43 @@
-let gameInstances = { DEFUALT_GAME: [] };
 let defaultTile = {
   id: "ID_NOT_GIVEN",
   pos: { x: -999, y: -999 },
   type: "default"
 };
-let army = [
+let defaultArmyA = [
   {
     charType: "pawn",
     actions: ["move"],
     static: false,
     pos: { x: 0, y: 0 },
-    actorType: "char"
+    actorType: "char",
+    moveSpeed: 1
   },
   {
     charType: "pawn",
     actions: ["move"],
     static: false,
-    pos: { x: 1, y: 0 },
-    actorType: "char"
+    pos: { x: 0, y: 1 },
+    actorType: "char",
+    moveSpeed: 1
+  }
+];
+let defaultArmyB = [
+  {
+    charType: "pawn",
+    actions: ["move"],
+    static: false,
+    pos: { x: 0, y: 0 },
+    actorType: "char",
+    moveSpeed: 1
   },
   {
     charType: "pawn",
-    actions: ["pawn"],
+    actions: ["move"],
     static: false,
-    pos: { x: 2, y: 1 },
-    actorType: "char"
+    pos: { x: 0, y: 1 },
+    actorType: "char",
+    moveSpeed: 1
   }
 ];
-
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };
-
-let getDataByPos = (gameId, pos) => {
-  gameInstances[gameId].filter(actor => {
-    return actor.myPos.x === pos.x && actor.myPos.y === pos.y;
-  });
-};
-let getDataById = (gameId, actorId) => {
-  let foundActor = gameInstances[gameId].findIndex(actor => {
-    return actor.actorId === actorId;
-  });
-  return foundActor;
-};
-module.exports = { getDataByPos, getDataById };
+module.exports = { moveinput, defaultArmyA, defaultArmyB };
