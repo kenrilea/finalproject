@@ -64,7 +64,8 @@ app.post("/signup", upload.none(), function(req, res) {
         password: req.body.password,
         country: req.body.country,
         wins: 0,
-        losses: 0
+        losses: 0,
+        joinedDate: req.body.joinedDate
       };
       usersCollection.insertOne(newUser, (err, result) => {
         //Add new user to remote database
