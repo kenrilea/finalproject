@@ -11,7 +11,7 @@ class UnconnectedHomePage extends Component {
    render = () => {
 
       if (this.props.loggedIn) {
-         return <Redirect to="/lobbies" />
+         return <Redirect to="/lobbies_list" />
       }
 
       return (
