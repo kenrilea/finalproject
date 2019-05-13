@@ -18,12 +18,6 @@ class UnconnectedLogin extends Component {
       });
    };
 
-   handleUsername = event => {
-      this.setState({
-         username: event.target.value
-      })
-   }
-
    handlePassword = event => {
       this.setState({
          password: event.target.value
@@ -58,72 +52,44 @@ class UnconnectedLogin extends Component {
             })
 
          })
-      this.props.dispatch({
-         type: "logged-in",
-         toggle: true,
-         currentUser: this.state.username
-      })
-         .then(resBody => {
-            let body = JSON.parse(resBody);
-
-            if (!body.success) {
-               console.log("Error signing in!");
-               return;
-            }
-
-            return (
-               <div>
-                  <form className="login-form" onSubmit={this.handleSubmit}>
-                     <div>
-                        <div className="login-label">Username</div>
-                        <input className="coolInput" type="text" onChange={this.handleUsername} required={true} />
-                        <span></span>
-                     </div>
-                     <div>
-                        <div className="login-label">Password</div>
-                        <input className="coolInput" type="text" onChange={this.handlePassword} required={true} />
-                        <span></span>
-                     </div>
-                     <div><input className="ghost-button top-margin" type="submit" value="Login!" /></div>
-                  </form>
-               </div>
-            )
-         }
-
-  render = () => {
-               return (
-                  <div>
-                     <form className="login-form" onSubmit={this.handleSubmit}>
-                        <div>
-                           <div className="login-label">Username</div>
-                           <input
-                              className="coolInput"
-                              type="text"
-                              onChange={this.handleUsername}
-                           />
-                           <span />
-                        </div>
-                        <div>
-                           <div className="login-label">Password</div>
-                           <input
-                              className="coolInput"
-                              type="text"
-                              onChange={this.handlePassword}
-                           />
-                           <span />
-                        </div>
-                        <div>
-                           <input
-                              className="ghost-button top-margin"
-                              type="submit"
-                              value="Login!"
-                           />
-                        </div>
-                     </form>
-                  </div>
-               );
-            };
    }
+
+   render = () => {
+      return (
+         <div>
+            <form className="login-form" onSubmit={this.handleSubmit}>
+               <div>
+                  <div className="login-label">Username</div>
+                  <input
+                     className="coolInput"
+                     type="text"
+                     onChange={this.handleUsername}
+                  />
+                  <span />
+               </div>
+               <div>
+                  <div className="login-label">Password</div>
+                  <input
+                     className="coolInput"
+                     type="text"
+                     onChange={this.handlePassword}
+                  />
+                  <span />
+               </div>
+               <div>
+                  <input
+                     className="ghost-button top-margin"
+                     type="submit"
+                     value="Login!"
+                  />
+               </div>
+            </form>
+         </div>
+      );
+   };
+
+
+}
 
 
 let Login = connect()(UnconnectedLogin)

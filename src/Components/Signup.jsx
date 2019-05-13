@@ -51,7 +51,6 @@ class Signup extends Component {
                console.log("Error creating account!");
                return;
             }
-
             this.props.dispatch({
                type: "logged-in",
                toggle: true,
@@ -60,29 +59,27 @@ class Signup extends Component {
          });
    };
 
-})
-   }
 
-render = () => {
-   return (
-      <Popup trigger={<button className="ghost-button">Sign up!</button>} position="bottom center" modal>
-         <div className="signup-container">
-            <form className="" onSubmit={this.handleSubmit}>
-               <div className="signup-label">Create an account</div>
-               <div className="signup-label">Username</div>
-               <input className="signup-input" type="text" onChange={this.handleUsername} required={true} />
-               <div className="signup-label">Password</div>
-               <input className="signup-input" type="text" onChange={this.handlePassword} required={true} />
-               <div className="signup-label">Country</div>
-               <input className="signup-input" type="text" onChange={this.handleCountry} required={true} />
-               <div>
-                  <input className="ghost-button-dark bottom-margin" type="submit" value="I'm Ready!" />
-               </div>
-            </form>
-         </div>
-      </Popup >
-   )
-}
+   render = () => {
+      return (
+         <Popup trigger={<button className="ghost-button">Sign up!</button>} position="bottom center" modal>
+            <div className="signup-container">
+               <form className="" onSubmit={this.handleSubmit}>
+                  <div className="signup-label">Create an account</div>
+                  <div className="signup-label">Username</div>
+                  <input className="signup-input" type="text" onChange={this.handleUsername} required={true} />
+                  <div className="signup-label">Password</div>
+                  <input className="signup-input" type="text" onChange={this.handlePassword} required={true} />
+                  <div className="signup-label">Country</div>
+                  <input className="signup-input" type="text" onChange={this.handleCountry} required={true} />
+                  <div>
+                     <input className="ghost-button-dark bottom-margin" type="submit" value="I'm Ready!" />
+                  </div>
+               </form>
+            </div>
+         </Popup >
+      )
+   }
 }
 
 export default Signup;
