@@ -4,7 +4,7 @@ import Popup from "reactjs-popup";
 
 import "../css/signup.css";
 
-class Signup extends Component {
+class UnconnectedSignup extends Component {
    constructor(props) {
       super(props);
       this.state = {
@@ -84,5 +84,7 @@ class Signup extends Component {
       )
    }
 }
+
+let Signup = connect()(UnconnectedSignup)
 
 export default Signup;
