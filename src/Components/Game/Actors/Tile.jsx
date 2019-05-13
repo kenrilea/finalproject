@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { setActionMenu } from "./../../../Actions";
 
 class Tile extends Component {
   componentDidMount = () => {};
@@ -12,6 +14,10 @@ class Tile extends Component {
     console.log(this.props.yFrontend);
     console.log(this.props.width);
     console.log(this.props.height);
+
+    if (this.props.visible) {
+      this.props.dispatch(setActionMenu(false, 0, 0, []));
+    }
   };
 
   render = () => {
@@ -33,4 +39,10 @@ class Tile extends Component {
   };
 }
 
-export default Tile;
+const mapStateToProps = state => {
+  return {
+    visible: state.actionMenu.visible
+  };
+};
+
+export default connect(mapStateToProps)(Tile);
