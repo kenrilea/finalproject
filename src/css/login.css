@@ -10,9 +10,6 @@
    color:white;
 }
 
-div {
-   position: relative;
- }
  
  .coolInput {
    text-align: center;
@@ -20,6 +17,7 @@ div {
    background-color: transparent;
    border: 1px solid transparent;
    border-bottom-color: white;
+   color: white;
    /* padding-top: 10px; */
  }
  

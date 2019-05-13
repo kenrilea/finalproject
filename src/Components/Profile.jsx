@@ -9,7 +9,7 @@ class UnconnectedProfile extends Component {
    render = () => {
 
       return (
-         <div className="profile">
+         <div className="profile animated-fade-in">
             <label className="profile-label">Current User</label>
             <div className="profile-username">{this.props.currentUser}</div>
             <table className="profile-table">

@@ -36,7 +36,7 @@ class UnconnectedSideBar extends Component {
 
    loggedInSidebar = () => {
       return (
-         <div className="w3-animate-left sideBar">
+         <div className="sideBar">
             <Profile />
             <button className="ghost-button signout-button" onClick={this.signout}>Sign Out</button>
          </div>
@@ -45,10 +45,10 @@ class UnconnectedSideBar extends Component {
 
    notLoggedInSidebar = () => {
       return (
-         <div className="w3-animate-left sideBar">
+         <div className="slide-from-left sideBar">
             <div className="sideBarForm">
                <Login />
-               <Signup />
+               <Signup className="animated-fade-in" />
             </div>
          </div>
       )

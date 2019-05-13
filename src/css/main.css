@@ -28,6 +28,12 @@ html,
 body {
   margin: 0;
   font-family: 'Rubik', sans-serif;
+  height: 100vh; 
+  overflow: hidden;
+}
+
+div {
+   position: relative;
 }
 
 .main-container {
@@ -88,3 +94,14 @@ body {
    margin-top: 15px;
    transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
  }
+
+ .animated-fade-in{animation:opac 0.8s}
+ 
+ @keyframes opac{from{opacity:0} to{opacity:1}}
+
+ .slide-from-left{
+   position:relative;
+   animation:animateleft 1.1s ease-in-out;
+}
+
+@keyframes animateleft{from{left:-300px;opacity:0} to{left:0;opacity:1}}

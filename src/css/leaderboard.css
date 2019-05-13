@@ -1,6 +1,6 @@
 .leader-table {
    border-collapse: collapse;
-   width: 80vw;
+   width: 82vw;
    margin-left: 5px;
   
  }
@@ -9,6 +9,10 @@
    border: 1px solid #dddddd;
    text-align: left;
    padding: 8px;
+ }
+
+ .leader-entry:first-of-type {
+    width: 7vw;
  }
 
  .leader-header {
