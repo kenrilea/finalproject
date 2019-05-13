@@ -4,25 +4,40 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #000;
 }
 
 /* styles to set containers size and aspect ratio */
 .gameframe {
   position: relative;
   margin: 0px;
-  border: 3px solid red;
+  /*border: 3px solid red;*/
   /* height is 4/5 width */
   /*width: 100vw;*/
-  height: 100%;
-  padding: 2%;
-  background: #000;
+  /*height: 100%;
+  padding: 2%;*/
   /*transform: rotate3d(0.6, -0.2, 0.2, 75deg);*/
 }
 
-@media only screen and (min-aspect-ratio: 5/4) {
+/*@media only screen and (min-aspect-ratio: 5/4)*/
+@media (orientation: landscape) {
   .gameframe {
     /* width is 5/4 height */
     /*width: 125vh;*/
-    height: 100%;
+    /*height: 100%;*/
+
+    height: 90vh;
+    width: 90vh;
+  }
+}
+
+@media (orientation: portrait) {
+  .gameframe {
+    /* width is 5/4 height */
+    /*width: 125vh;*/
+    /*height: 100%;*/
+
+    height: 80vw;
+    width: 80vw;
   }
 }
