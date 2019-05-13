@@ -33,17 +33,20 @@ class UnconnectedSignup extends Component {
    };
 
    handleSubmit = event => {
-      event.preventDefault()
-      let data = new FormData()
-      data.append("username", this.state.username)
-      data.append("password", this.state.password)
-      data.append("country", this.state.country)
-      data.append("joinedDate", new Date())
+      event.preventDefault();
+      let data = new FormData();
+      data.append("username", this.state.username);
+      data.append("password", this.state.password);
+      data.append("country", this.state.country);
+      data.append("joinedDate", new Date());
 
       fetch("/signup", {
          method: "POST",
          body: data
       })
+         .then(resHead => {
+            return resHead.text();
+         })
          .then(resHead => {
             return resHead.text()
          })
@@ -62,29 +65,63 @@ class UnconnectedSignup extends Component {
          });
    };
 
-
-   render = () => {
-      return (
-         <Popup trigger={<button className="ghost-button">Sign up!</button>} position="bottom center" modal>
-            <div className="signup-container">
-               <form className="" onSubmit={this.handleSubmit}>
-                  <div className="signup-label">Create an account</div>
-                  <div className="signup-label">Username</div>
-                  <input className="signup-input" type="text" onChange={this.handleUsername} required={true} />
-                  <div className="signup-label">Password</div>
-                  <input className="signup-input" type="text" onChange={this.handlePassword} required={true} />
-                  <div className="signup-label">Country</div>
-                  <input className="signup-input" type="text" onChange={this.handleCountry} required={true} />
-                  <div>
-                     <input className="ghost-button-dark bottom-margin" type="submit" value="I'm Ready!" />
-                  </div>
-               </form>
-            </div>
-         </Popup >
-      )
+   if(!body.success) {
+      console.log("Error creating account!");
+      return;
    }
+        this.props.dispatch({
+      type: "logged-in",
+      toggle: true,
+      username: this.props.username
+   });
+      });
+  };
+
+render = () => {
+   return (
+      <Popup
+         trigger={<button className="ghost-button">Sign up!</button>}
+         position="bottom center"
+         modal
+      >
+         <div className="signup-container">
+            <form className="" onSubmit={this.handleSubmit}>
+               <div className="signup-label">Create an account</div>
+               <div className="signup-label">Username</div>
+               <input
+                  className="signup-input"
+                  type="text"
+                  onChange={this.handleUsername}
+                  required={true}
+               />
+               <div className="signup-label">Password</div>
+               <input
+                  className="signup-input"
+                  type="text"
+                  onChange={this.handlePassword}
+                  required={true}
+               />
+               <div className="signup-label">Country</div>
+               <input
+                  className="signup-input"
+                  type="text"
+                  onChange={this.handleCountry}
+                  required={true}
+               />
+               <div>
+                  <input
+                     className="ghost-button-dark bottom-margin"
+                     type="submit"
+                     value="I'm Ready!"
+                  />
+               </div>
+            </form>
+         </div>
+      </Popup>
+   );
+};
 }
 
-let Signup = connect()(UnconnectedSignup)
+let Signup = connect()(UnconnectedSignup);
 
 export default Signup;

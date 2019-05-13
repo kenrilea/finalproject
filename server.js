@@ -62,7 +62,9 @@ app.post("/signup", upload.none(), function (req, res) {
             //userId: generateId(), use _id instead
             username: req.body.username,
             password: req.body.password,
-            country: req.body.country
+            country: req.body.country,
+            wins: 0,
+            losses: 0
          };
          usersCollection.insertOne(newUser, (err, result) => {
             //Add new user to remote database
@@ -78,58 +80,69 @@ app.post("/signup", upload.none(), function (req, res) {
                { sessionId: newSessionId, user: req.body.username },
                (err, result) => {
                   if (err) throw err;
-                  console.log("DB: Successfully added entry to Sessions collection");
-                  res.cookie("sid", newSessionId);
-                  res.send(
-                     JSON.stringify({ success: true, username: req.body.username })
+                  console.log(
+                     `DB: Successfully inserted user ${
+                     req.body.username
+                     } into Users collection`
                   );
-               }
-            );
+
+                  const newSessionId = generateId();
+                  sessionsCollection.insertOne(
+                     { sessionId: newSessionId, user: req.body.username },
+                     (err, result) => {
+                        if (err) throw err;
+                        console.log("DB: Successfully added entry to Sessions collection");
+                        res.cookie("sid", newSessionId);
+                        res.send(
+                           JSON.stringify({ success: true, username: req.body.username })
+                        );
+                     }
+                  );
+               });
          });
       });
-});
 
-//************ LOGIN ************//
-app.post("/login", upload.none(), function (req, res) {
-   const { username: enteredName, password: enteredPass } = req.body;
-   // Check remote users collection in db
-   usersCollection.find({ username: enteredName }).toArray((err, result) => {
-      console.log("DB: Retrieving expected password for user");
-      if (err) throw err;
-      if (result[0] === undefined) {
-         console.log("DB: User not found");
-         res.send(JSON.stringify({ success: false }));
-         return;
-      }
-      const expectedPass = result[0].password;
-      if (enteredPass !== expectedPass) {
-         // Check that password matches
-         console.log("Passwords did not match!");
-         res.send(JSON.stringify({ success: false }));
-         return;
-      }
-      const newSessionId = generateId(); // Generate random number for sid cookie
-      sessionsCollection.insertOne(
-         { sessionId: newSessionId, user: enteredName },
-         (err, result) => {
-            if (err) throw err;
-            console.log("DB: Successfully added entry to Sessions collection");
+   //************ LOGIN ************//
+   app.post("/login", upload.none(), function (req, res) {
+      const { username: enteredName, password: enteredPass } = req.body;
+      // Check remote users collection in db
+      usersCollection.find({ username: enteredName }).toArray((err, result) => {
+         console.log("DB: Retrieving expected password for user");
+         if (err) throw err;
+         if (result[0] === undefined) {
+            console.log("DB: User not found");
+            res.send(JSON.stringify({ success: false }));
+            return;
          }
-      );
-      console.log(`Logging in user ${enteredName}`);
-      res.cookie("sid", newSessionId); // Send back set-cookie and successful response
-      res.send(JSON.stringify({ success: true, username: enteredName }));
+         const expectedPass = result[0].password;
+         if (enteredPass !== expectedPass) {
+            // Check that password matches
+            console.log("Passwords did not match!");
+            res.send(JSON.stringify({ success: false }));
+            return;
+         }
+         const newSessionId = generateId(); // Generate random number for sid cookie
+         sessionsCollection.insertOne(
+            { sessionId: newSessionId, user: enteredName },
+            (err, result) => {
+               if (err) throw err;
+               console.log("DB: Successfully added entry to Sessions collection");
+            }
+         );
+         console.log(`Logging in user ${enteredName}`);
+         res.cookie("sid", newSessionId); // Send back set-cookie and successful response
+         res.send(JSON.stringify({ success: true, username: enteredName }));
+      });
    });
-});
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//************ JAQUES STUFF ************//
-///////////////////////////////////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+   //************ JAQUES STUFF ************//
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const { spawn } = require("child_process");
-const chokidar = require("chokidar");
+   const { spawn } = require("child_process");
+   const chokidar = require("chokidar");
 
-let pollServer = `let __version = undefined
+   let pollServer = `let __version = undefined
 
 let delay = t => new Promise((res, rej) => setTimeout(() => res(), t))
 let checkVersion = async () => {
@@ -154,42 +167,42 @@ let checkVersion = async () => {
 checkVersion()
 `;
 
-//let generateId = () => "" + Math.floor(Math.random() * 10000000000);
-let __version = generateId();
-app.get("/__version", (req, res) => {
-   res.send(__version);
-});
-
-chokidar
-   .watch(__dirname + "/build", { ignored: /(^|[\/\\])\../ })
-   .on("all", (event, path) => {
-      webpackError = undefined;
-      __version = generateId();
+   //let generateId = () => "" + Math.floor(Math.random() * 10000000000);
+   let __version = generateId();
+   app.get("/__version", (req, res) => {
+      res.send(__version);
    });
 
-let webpackError = undefined;
-app.all("/*", (req, res, next) => {
-   if (webpackError) {
-      res.send(
-         "<h4>" + webpackError + "</h4><script>" + pollServer + "</script>"
-      );
-   } else {
-      next();
-   }
-});
-app.use("/", express.static("build"));
-app.all("/*", (req, res) => {
-   res.sendFile(__dirname + "/build/index.html");
-});
-let counter = 0;
-let setup = async () => {
-   const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
-   let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
-   webpack.stdout.on("data", data => {
-      webpackError = data.toString();
+   chokidar
+      .watch(__dirname + "/build", { ignored: /(^|[\/\\])\../ })
+      .on("all", (event, path) => {
+         webpackError = undefined;
+         __version = generateId();
+      });
+
+   let webpackError = undefined;
+   app.all("/*", (req, res, next) => {
+      if (webpackError) {
+         res.send(
+            "<h4>" + webpackError + "</h4><script>" + pollServer + "</script>"
+         );
+      } else {
+         next();
+      }
    });
-   app.listen(4000, "0.0.0.0", () => {
-      console.log("Running on port 4000 , 0.0.0.0");
+   app.use("/", express.static("build"));
+   app.all("/*", (req, res) => {
+      res.sendFile(__dirname + "/build/index.html");
    });
-};
-setup();
+   let counter = 0;
+   let setup = async () => {
+      const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
+      let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
+      webpack.stdout.on("data", data => {
+         webpackError = data.toString();
+      });
+      app.listen(4000, "0.0.0.0", () => {
+         console.log("Running on port 4000 , 0.0.0.0");
+      });
+   };
+   setup();
