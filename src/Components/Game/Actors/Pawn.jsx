@@ -15,14 +15,9 @@ class Pawn extends Component {
   };
 
   render = () => {
-    const style = {
-      fill: "#0044ff"
-      //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
-    };
-
     return (
-      <rect
-        style={style}
+      <image
+        xlinkHref="/assets/char-pawn-blue.png"
         x={this.props.xFrontend + "%"}
         y={this.props.yFrontend + "%"}
         width={this.props.width + "%"}

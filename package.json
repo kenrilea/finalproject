@@ -33,13 +33,11 @@
     "multer": "^1.4.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-particles-js": "^2.6.0",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.0.0",
     "reactjs-popup": "^1.4.0",
     "redux": "^4.0.1",
     "shelljs": "^0.8.3",
-    "three": "^0.104.0",
     "webpack-inject-plugin": "^1.5.0"
   }
 }
