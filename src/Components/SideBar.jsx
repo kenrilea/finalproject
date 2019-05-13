@@ -22,6 +22,10 @@ class UnconnectedSideBar extends Component {
          type: "SIGN-OUT",
          toggle: false
       })
+
+      fetch("/logout", {
+         credentials: "include"
+      })
    }
 
    render = () => {

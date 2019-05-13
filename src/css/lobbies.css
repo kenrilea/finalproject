@@ -6,9 +6,15 @@
 }
 
 .lobbies-foreground {
+   overflow: scroll;
    margin: 0 auto;
    width: 60vw;
    height: 60vh;
    background-color: white;
 }
 
+.lobbies-lobby-elem {
+   width: 45vw;
+   height: 5vw;
+   border: 1px solid black;
+}
