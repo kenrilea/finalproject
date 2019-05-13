@@ -1,9 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu } from "./../../../Actions";
+import { deflate } from "zlib";
 
 class Pawn extends Component {
   componentDidMount = () => {};
+
+  getCallbackFunc = action => {
+    switch (action) {
+      case "move":
+        return () => console.log("Triggered action: " + action);
+      default:
+        return () => console.log("Unknown action");
+    }
+  };
 
   handleClick = () => {
     event.stopPropagation();
@@ -20,7 +30,7 @@ class Pawn extends Component {
           this.props.actorData.actions.map(action => {
             return {
               text: action,
-              callbackFunc: () => console.log("hiya!")
+              callbackFunc: this.getCallbackFunc(action)
             };
           })
         )

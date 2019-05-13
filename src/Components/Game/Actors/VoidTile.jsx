@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu } from "./../../../Actions";
 
-class Tile extends Component {
+class VoidTile extends Component {
   componentDidMount = () => {};
 
   handleClick = event => {
     event.stopPropagation();
-    console.log("Tile: ", this.props.actorData.actorId);
+    console.log("VoidTile: ", this.props.actorData.actorId);
 
     if (this.props.visible) {
       this.props.dispatch(setActionMenu(false, 0, 0, []));
@@ -16,7 +16,7 @@ class Tile extends Component {
 
   render = () => {
     const style = {
-      fill: "#004400"
+      fill: "#000000"
       //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
     };
 
@@ -43,4 +43,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Tile);
+export default connect(mapStateToProps)(VoidTile);
