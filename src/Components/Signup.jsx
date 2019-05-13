@@ -51,13 +51,22 @@ class UnconnectedSignup extends Component {
         let body = JSON.parse(resBody);
 
         if (!body.success) {
-          console.log("Error creating account!");
+          console.log(body);
+          this.props.dispatch({
+            type: "show-message",
+            message: "Error creating account. Please try again"
+          });
           return;
         }
+
         this.props.dispatch({
           type: "logged-in",
           toggle: true,
           username: data.username
+        });
+        this.props.dispatch({
+          type: "show-message",
+          message: "Welcome " + this.state.username + "."
         });
       });
   };
