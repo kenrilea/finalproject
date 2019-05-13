@@ -1,0 +1,14 @@
+.lobbies-background {
+   width: 100%;
+   height: 100%;
+   background-color: orange;
+   padding: 15vh;
+}
+
+.lobbies-foreground {
+   margin: 0 auto;
+   width: 60vw;
+   height: 60vh;
+   background-color: white;
+}
+
