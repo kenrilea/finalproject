@@ -1,17 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import "../css/login.css"
+import "../css/login.css";
 
 class UnconnectedLogin extends Component {
-
    constructor(props) {
-      super(props)
+      super(props);
       this.state = {
          username: "",
-         password: "",
-      }
+         password: ""
+      };
    }
+
+   handleUsername = event => {
+      this.setState({
+         username: event.target.value
+      });
+   };
 
    handleUsername = event => {
       this.setState({
@@ -58,32 +63,69 @@ class UnconnectedLogin extends Component {
          toggle: true,
          currentUser: this.state.username
       })
-   }
+         .then(resBody => {
+            let body = JSON.parse(resBody);
 
-   render = () => {
+            if (!body.success) {
+               console.log("Error signing in!");
+               return;
+            }
 
-      return (
-         <div>
-            <form className="login-form" onSubmit={this.handleSubmit}>
+            return (
                <div>
-                  <div className="login-label">Username</div>
-                  <input className="coolInput" type="text" onChange={this.handleUsername} required={true} />
-                  <span></span>
+                  <form className="login-form" onSubmit={this.handleSubmit}>
+                     <div>
+                        <div className="login-label">Username</div>
+                        <input className="coolInput" type="text" onChange={this.handleUsername} required={true} />
+                        <span></span>
+                     </div>
+                     <div>
+                        <div className="login-label">Password</div>
+                        <input className="coolInput" type="text" onChange={this.handlePassword} required={true} />
+                        <span></span>
+                     </div>
+                     <div><input className="ghost-button top-margin" type="submit" value="Login!" /></div>
+                  </form>
                </div>
-               <div>
-                  <div className="login-label">Password</div>
-                  <input className="coolInput" type="text" onChange={this.handlePassword} required={true} />
-                  <span></span>
-               </div>
-               <div><input className="ghost-button top-margin" type="submit" value="Login!" /></div>
-            </form>
-         </div>
-      )
-   }
+            )
+         }
 
-}
+  render = () => {
+               return (
+                  <div>
+                     <form className="login-form" onSubmit={this.handleSubmit}>
+                        <div>
+                           <div className="login-label">Username</div>
+                           <input
+                              className="coolInput"
+                              type="text"
+                              onChange={this.handleUsername}
+                           />
+                           <span />
+                        </div>
+                        <div>
+                           <div className="login-label">Password</div>
+                           <input
+                              className="coolInput"
+                              type="text"
+                              onChange={this.handlePassword}
+                           />
+                           <span />
+                        </div>
+                        <div>
+                           <input
+                              className="ghost-button top-margin"
+                              type="submit"
+                              value="Login!"
+                           />
+                        </div>
+                     </form>
+                  </div>
+               );
+            };
+   }
 
 
 let Login = connect()(UnconnectedLogin)
 
-export default Login
+export default Login;
