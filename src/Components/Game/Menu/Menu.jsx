@@ -11,7 +11,7 @@ class Menu extends Component {
       bottom: "50%",
       zIndex: 100,
       margin: 0,
-      padding: "10px",
+      paddingTop: "10px",
       width: "120px",
       height: "auto",
       background: "#000000"

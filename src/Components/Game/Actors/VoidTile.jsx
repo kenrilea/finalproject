@@ -26,9 +26,6 @@ class Tile extends Component {
     return (
       <rect
         style={style}
-        stroke="red"
-        stroke-width="2"
-        stroke-linecap="square"
         x={xFrontend + "%"}
         y={yFrontend + "%"}
         width={this.props.gameData.width + "%"}
