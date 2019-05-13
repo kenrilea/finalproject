@@ -12,6 +12,7 @@ import TopBar from "./Components/TopBar.jsx";
 import SideBar from "./Components/SideBar.jsx"
 import Leaderboard from "./Components/Leaderboard.jsx";
 import Signup from "./Components/Signup.jsx"
+import Lobbies from "./Components/Lobbies.jsx"
 
 let root = (
    <Provider store={store}>
@@ -27,6 +28,7 @@ let root = (
                      <Route exact={true} path="/game/:gameId" component={GameFrame} />
                      <Route exact={true} path="/leaderboard" component={Leaderboard} />
                      <Route exact={true} path="/signup" component={Signup} />
+                     <Route exact={true} path="/lobbies" component={Lobbies} />
                      <Route
                         render={props => (
                            <Oops {...props} message={"This page doesn't exist... yet"} />
