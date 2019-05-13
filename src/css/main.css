@@ -64,12 +64,12 @@ body {
 
  .ghost-button:hover , .ghost-button-dark:hover {
     border-color: orange;
-    color: orange;
+    /* color: orange; */
  }
 
  .ghost-button:focus , .ghost-button-dark:focus {
    border-color: orange;
-   color: orange;
+   /* color: orange; */
  }
 
  .ghost-button-dark {
