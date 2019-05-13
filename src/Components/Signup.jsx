@@ -44,6 +44,9 @@ class Signup extends Component {
          method: "POST",
          body: data
       })
+         .then(resHead => {
+            return resHead.text()
+         })
          .then(resBody => {
             let body = JSON.parse(resBody);
 
