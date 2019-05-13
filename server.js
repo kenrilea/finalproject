@@ -81,17 +81,31 @@ app.post("/signup", upload.none(), function(req, res) {
           { sessionId: newSessionId, user: req.body.username },
           (err, result) => {
             if (err) throw err;
-            console.log("DB: Successfully added entry to Sessions collection");
-            res.cookie("sid", newSessionId);
-            res.send(
-              JSON.stringify({ success: true, username: req.body.username })
+            console.log(
+              `DB: Successfully inserted user ${
+                req.body.username
+              } into Users collection`
+            );
+
+            const newSessionId = generateId();
+            sessionsCollection.insertOne(
+              { sessionId: newSessionId, user: req.body.username },
+              (err, result) => {
+                if (err) throw err;
+                console.log(
+                  "DB: Successfully added entry to Sessions collection"
+                );
+                res.cookie("sid", newSessionId);
+                res.send(
+                  JSON.stringify({ success: true, username: req.body.username })
+                );
+              }
             );
           }
         );
       });
     });
 });
-
 //************ LOGIN ************//
 app.post("/login", upload.none(), function(req, res) {
   const { username: enteredName, password: enteredPass } = req.body;
@@ -124,7 +138,6 @@ app.post("/login", upload.none(), function(req, res) {
     res.send(JSON.stringify({ success: true, username: enteredName }));
   });
 });
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,8 +167,7 @@ let checkVersion = async () => {
         } catch (err) { }
     }
 }
-checkVersion()
-`;
+checkVersion()`;
 
 //let generateId = () => "" + Math.floor(Math.random() * 10000000000);
 let __version = generateId();

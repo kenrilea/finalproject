@@ -95,7 +95,13 @@ div {
    transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
  }
 
- .animated-fade-in{animation:opac 0.8s}
+ .animated-fade-in{
+    animation:opac 0.8s
+   }
+
+ .animated-fade-in-delay{
+    animation:opac 0.8s;
+   }
  
  @keyframes opac{from{opacity:0} to{opacity:1}}
 
