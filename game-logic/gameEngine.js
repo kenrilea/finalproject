@@ -115,7 +115,8 @@ let handlerUserInput = input => {
       players[gameInstances[input.gameId]["turn"] % players.length] ===
       input.team
     ) {
-      editGameData(input.gameId, input.action);
+      console.log("working");
+      editGameData(input.gameId, [input.action]);
       gameInstances[gameId]["turn"] = playersgameInstances[gameId]["turn"] + 1;
     }
   }

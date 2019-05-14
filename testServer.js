@@ -161,9 +161,13 @@ io.on("connection", socket => {
     gameEngine.handlerUserInput({
       gameId: "test",
       action: input,
-      player: "user1"
+      team: "user1"
     });
-    socket.emit("game-state-change", { success: true, changes: [input] });
+    socket.emit("game-state-change", {
+      success: true,
+      changes: [input],
+      team: "user1"
+    });
   });
 
   console.log(socket.request.headers.cookie);
