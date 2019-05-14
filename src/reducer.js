@@ -4,10 +4,12 @@ const reducer = (state, action) => {
          return {
             ...state,
             loggedIn: action.toggle,
-            currentUser: action.currentUser
+            currentUser: action.username
          };
       case "SIGN-OUT":
          return { ...state, loggedIn: action.toggle, currentUser: "" };
+      case "JOIN-LOBBY":
+         return { ...state, currentLobby: action.lobbyId, inLobby: true }
       case "show-message":
          return { ...state, message: action.message };
       case "set-action-menu":

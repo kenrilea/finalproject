@@ -4,8 +4,20 @@ import reducer from "./reducer.js";
 const initialState = {
    loggedIn: false,
    currentUser: "",
+   inLobby: false,
    currentLobby: "",
-   message: "Welcome!"
+   message: "Welcome!",
+   actionMenu: {
+      visible: false,
+      xPos: 0,
+      yPos: 0,
+      options: []
+   },
+   gameData: {
+      actors: [],
+      width: 0,
+      height: 0
+   }
 };
 
 const store = createStore(
