@@ -15,6 +15,8 @@ class MenuItem extends Component {
 
   render = () => {
     const style = {
+      width: "100%",
+      height: "100%",
       color: "white",
       textAlign: "center",
       marginBottom: "7px"
