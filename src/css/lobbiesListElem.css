@@ -1,13 +1,17 @@
 .lobbies-list-elem-container {
    display: flex;
-   width: 45vw;
+   width: 55vw;
    height: 10vh;
    border: 2px solid black;
+   justify-content: space-between;
+   margin: 0 auto;
 }
 
-/* .player-label {
+.player-label {
    font-size: 1.3em;
    border: 2px solid black;
    padding: 10px;
-} */
+}
+
+
 

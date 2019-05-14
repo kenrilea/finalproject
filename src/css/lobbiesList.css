@@ -1,7 +1,7 @@
 .lobbies-list-background {
    width: 100%;
    height: 100%;
-   background-color: orange;
+   background-color: darkgray;
    padding: 10vh;
 }
 
@@ -11,6 +11,7 @@
    width: 60vw;
    height: 60vh;
    background-color: white;
+   padding: 20px;
 }
 
 .lobbies-list-elem {

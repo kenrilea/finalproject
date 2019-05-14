@@ -53,6 +53,10 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerOne}
             </div>
 
+            <div>
+               -VS-
+            </div>
+
             <div className="player-label">
                {this.props.playerTwo ? this.props.playerTwo : "Waiting for challenger..."}
             </div>
