@@ -159,7 +159,7 @@ io.on("connection", socket => {
   });
   socket.on("game-input", input => {
     gameEngine.handlerUserInput(input);
-    socket.emit("game-state-change", { success: true });
+    socket.emit("game-state-change", { success: true, changes: [input] });
   });
 
   console.log(socket.request.headers.cookie);
