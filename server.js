@@ -155,6 +155,37 @@ app.get("/logout", upload.none(), function(req, res) {
   res.send(JSON.stringify({ success: true }));
 });
 
+//************ AUTOLOGIN ************//
+app.get("/verify-cookie", function(req, res) {
+  const currentCookie = req.cookies.sid;
+  let query = [
+    {
+      $match: {
+        sessionId: currentCookie
+      }
+    },
+    {
+      $lookup: {
+        from: "Users",
+        localField: "user",
+        foreignField: "username",
+        as: "user"
+      }
+    }
+  ];
+  sessionsCollection.aggregate(query).toArray((err, result) => {
+    if (err) throw err;
+    if (result === undefined || result.length === 0) {
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+
+    res.send(
+      JSON.stringify({ success: true, username: result[0].user[0].username })
+    );
+  });
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ USER RELATED ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
