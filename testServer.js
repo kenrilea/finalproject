@@ -4,7 +4,7 @@ const multer = require("multer");
 const fs = require("fs");
 const cookieParser = require("cookie-parser");
 const app = express();
-const http = require("http").Server(app);
+const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 
@@ -64,7 +64,6 @@ io.on("connection", socket => {
       changes: changes,
       team: "user1"
     });
-    socket.emit("game,data", gameEngine.getGameInst("test"));
   });
 
   console.log(socket.request.headers.cookie);
@@ -73,7 +72,7 @@ io.on("connection", socket => {
     console.log(socket.request.headers.cookie);
   });
 });
-http.listen(4000);
+//http.listen(4000);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,8 +138,11 @@ let setup = async () => {
   webpack.stdout.on("data", data => {
     webpackError = data.toString();
   });
-  app.listen(4000, "0.0.0.0", () => {
+  http.listen(4000, "0.0.0.0", () => {
     console.log("Running on port 4000 , 0.0.0.0");
   });
+  /*app.listen(4000, "0.0.0.0", () => {
+    console.log("Running on port 4000 , 0.0.0.0");
+  });*/
 };
 setup();
