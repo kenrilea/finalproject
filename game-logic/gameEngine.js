@@ -7,11 +7,11 @@ let data = require(__dirname + "/DATA.js");
 let gameInstances = {};
 
 let editGameData = (gameId, mods) => {
+  let changes = [];
   if (gameInstances[gameId] === undefined) {
     console.log("gameId: " + gameId + " does not exist");
-    return;
+    return changes;
   }
-  let changes = [];
   mods.forEach(mod => {
     if (mod.type === "add-new") {
       gameInstances[gameId]["map"].push(mod.actor);
@@ -41,26 +41,26 @@ let editGameData = (gameId, mods) => {
         });
         gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
           actor => {
-            console.log("ID: " + actor.actorId);
             if (actor.team !== char.team && actor.team !== "none") {
-              console.log("A");
               if (actor.pos.x === mod.dest.x && actor.pos.y === mod.dest.y) {
-                console.log("B");
+                changes.push({ type: "died", actorId: actor.actorId });
                 return false;
               }
-              console.log("C");
             }
-            console.log("D");
+
             return true;
           }
         );
         if (allyTeamCollision.length < 1) {
+          changes.push(mod);
           char.pos.x = mod.dest.x;
           char.pos.y = mod.dest.y;
         }
       }
     }
   });
+
+  return changes;
 };
 //________________________________________________________________________________________________
 let addMessage = (gameId, message) => {
@@ -105,21 +105,26 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
+  console.log("___");
+  console.log(input);
+  console.log("___");
+  let changes = [];
   if (input.action.type === "move") {
     let players = gameInstances[input.gameId]["players"];
-    console.log(players);
-    console.log(
-      "index: " + players[gameInstances[input.gameId]["turn"] % players.length]
-    );
     if (
-      players[gameInstances[input.gameId]["turn"] % players.length] ===
-      input.team
+      players[
+        parseInt(gameInstances[input.gameId]["turn"]) % players.length
+      ] === input.team
     ) {
       console.log("working");
-      editGameData(input.gameId, [input.action]);
-      gameInstances[gameId]["turn"] = playersgameInstances[gameId]["turn"] + 1;
+      changes = changes.concat(editGameData(input.gameId, [input.action]));
+      gameInstances[input.gameId]["turn"] =
+        parseInt(gameInstances[input.gameId]["turn"]) + 1;
     }
   }
+  console.log("handler");
+  console.log(changes);
+  return changes;
 };
 let getGameInst = gameId => {
   return gameInstances[gameId];
