@@ -2,19 +2,27 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import "../css/lobbies.css"
+import mockLobbies from "./mockLobbies.jsx"
+
+import LobbiesListElem from "./LobbiesListElem.jsx"
+
+import "../css/lobbiesList.css"
 
 class UnconnectedLobbiesList extends Component {
 
    getLobbies = () => {
 
-      fetch("get-lobbies")
+      fetch("/get-lobbies")
          .then(resHead => {
             return resHead.text()
          })
          .then(resBody => {
-            return resBody.lobbies
+            return resBody.lobbies // Array of all lobbies in collection
          })
+   }
+
+   getMockLobbies = () => {
+      return mockLobbies;
    }
 
    createLobby = () => {
@@ -41,29 +49,6 @@ class UnconnectedLobbiesList extends Component {
          })
    }
 
-   joinLobby = lobbyId => {
-
-      let data = formData()
-      data.append("lobbyId", lobbyId)
-
-      fetch("/join-lobby", {
-         method: "POST",
-         body: data
-      })
-         .then(resHead => {
-            return resHead.text()
-         })
-         .then(resBody => {
-            if (!resBody.success) {
-               console.log("Error joining lobby")
-            }
-         })
-
-      this.props.disptach({
-         type: "JOIN-LOBBY",
-         lobbyId: lobbyId,
-      })
-   }
 
    render = () => {
 
@@ -72,13 +57,14 @@ class UnconnectedLobbiesList extends Component {
       }
 
       return (
-         <div className="lobbies-background">
+         <div className="lobbies-list-background">
             <button onClick={this.createLobby}>Create new lobby</button>
-            <div className="lobbies-foreground animated-fade-in-delay">
+            <div className="lobbies-list-foreground animated-fade-in-delay">
                Lobbies
-               <div className="lobbies-lobby-elem">
-                  Lobby 1 , User 1, User 2
-               </div>
+
+               {this.getMockLobbies().map(elem => {
+                  return <LobbiesListElem lobbyId={elem.lobbyId} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
+               })}
 
             </div>
          </div>

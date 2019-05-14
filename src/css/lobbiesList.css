@@ -1,19 +1,19 @@
-.lobbies-background {
+.lobbies-list-background {
    width: 100%;
    height: 100%;
    background-color: orange;
-   padding: 15vh;
+   padding: 10vh;
 }
 
-.lobbies-foreground {
-   overflow: scroll;
+.lobbies-list-foreground {
+   overflow: hidden;
    margin: 0 auto;
    width: 60vw;
    height: 60vh;
    background-color: white;
 }
 
-.lobbies-lobby-elem {
+.lobbies-list-elem {
    width: 45vw;
    height: 5vw;
    border: 1px solid black;
