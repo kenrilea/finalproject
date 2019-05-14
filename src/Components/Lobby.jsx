@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import socket from "./SocketSettings.jsx"
+
 import "../css/lobby.css";
 
 class UnconnectedLobby extends Component {
@@ -14,6 +16,17 @@ class UnconnectedLobby extends Component {
          playerTwo: ""
       };
    }
+
+   componentDidMount = () => {
+      socket.open()
+
+      socket.on("bothPlayersReady", () => {
+         this.setState({ readyOne: !state.readyOne })
+      })
+
+      this.getCurrentLobby()
+   }
+
 
    getCurrentLobby = () => {
 
@@ -52,9 +65,11 @@ class UnconnectedLobby extends Component {
    };
    handlerReadyButtonOne = () => {
       this.setState({ readyOne: !this.state.readyOne });
+      socket.emit("playerOneReady")
    };
    handlerReadyButtonTwo = () => {
       this.setState({ readyTwo: !this.state.readyTwo });
+      socket.emit("playerTwoReady")
    };
    renderReadyButtonOne = () => {
       let buttonClass = "lobbyButtonNotReady";
@@ -89,13 +104,17 @@ class UnconnectedLobby extends Component {
       }
    };
    render = () => {
+
       return (
          <div className={"MainLobbyDiv animated-fade-in"}>
             <div className={"PlayerOneLobbyDiv"}>
                <img src="/assets/char-pawn-blue.png" />
                <div className={"lobbyCenterContent"}>
                   <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
-                  {this.renderReadyButtonOne()}
+                  {/* {this.renderReadyButtonOne()} */}
+                  <button onClick={this.handlerReadyButtonOne}>
+                     Ready
+                  </button>
                </div>
             </div>
             <div className={"PlayerTwoLobbyDiv"}>
@@ -108,6 +127,7 @@ class UnconnectedLobby extends Component {
          </div>
       );
    };
+
 }
 let mapStateToProps = state => {
    return {
