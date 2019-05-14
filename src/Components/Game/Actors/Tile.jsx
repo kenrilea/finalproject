@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { setActionMenu, setGameData, setGameState } from "./../../../Actions";
 import { STATES, selectUnit } from "./../../../GameStates";
 import { resetToSelectUnitState } from "./../../../Helpers/GameStateHelpers.js";
+import socket from "./../../SocketSettings.jsx";
 
 class Tile extends Component {
   componentDidMount = () => {};
@@ -30,8 +31,17 @@ class Tile extends Component {
         // send a ws message that the player wants to move
         // to that position
 
+        socket.emit("game-input", {
+          type: "move",
+          actorId: this.props.gameState.unitInAction.actorId,
+          dest: {
+            x: this.props.actorData.pos.x,
+            y: this.props.actorData.pos.y
+          }
+        });
+
         // temp action: actually move :D
-        this.props.dispatch(
+        /*this.props.dispatch(
           setGameData(
             this.props.gameData.actors.map(actor => {
               if (actor.actorId === this.props.gameState.unitInAction.actorId) {
@@ -50,7 +60,7 @@ class Tile extends Component {
             this.props.gameData.width,
             this.props.gameData.height
           )
-        );
+        );*/
 
         resetToSelectUnitState();
       }

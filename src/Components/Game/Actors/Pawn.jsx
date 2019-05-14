@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { setActionMenu, setGameData, setGameState } from "./../../../Actions";
 import { selectTile, STATES } from "./../../../GameStates";
 import { isInRange } from "./../../../Helpers/calcs.js";
+import socket from "./../../SocketSettings.jsx";
 
 class Pawn extends Component {
   componentDidMount = () => {};
