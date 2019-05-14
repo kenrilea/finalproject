@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 let usersCollection;
 let sessionsCollection;
-let lobbeyCollection;
+let lobbyCollection;
 let gamesCollection;
 
 //Connection to DB, do not close!
@@ -219,7 +219,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
   };
 
   //Insert lobby into the database
-  lobbeyCollection.insertOne(newLobby, (err, result) => {
+  lobbyCollection.insertOne(newLobby, (err, result) => {
     //Add new user to remote database
     if (err) throw err;
     console.log(
