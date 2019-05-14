@@ -30,17 +30,6 @@ let sessionsCollection;
 let lobbiesCollection;
 let gamesCollection;
 
-//Connection to DB, do not close!
-MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
-  console.log("-------------------Hey db started-----------------------");
-  // Add option useNewUrlParser to get rid of console warning message
-  if (err) throw err;
-  finalProjectDB = allDbs.db("FinalProject-DB");
-  usersCollection = finalProjectDB.collection("Users");
-  sessionsCollection = finalProjectDB.collection("Sessions");
-  lobbiesCollection = finalProjectDB.collection("Lobbies");
-});
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ GENERAL FUNCTIONS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,10 +173,8 @@ app.get("/logout", upload.none(), function(req, res) {
 
 //************ AUTOLOGIN ************//
 app.get("/verify-cookie", function(req, res) {
-  setTimeout(() => {
-    let username = getCurrentSessionUsername(req, res);
-    res.send(JSON.stringify({ success: true, username: username }));
-  }, 200);
+  let username = getCurrentSessionUsername(req, res);
+  res.send(JSON.stringify({ success: true, username: username }));
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,15 +226,12 @@ app.post("/create-lobby", upload.none(), function(req, res) {
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function(req, res) {
   console.log("Getting lobbies...");
-
-  setTimeout(() => {
-    lobbiesCollection.find({}).toArray((err, result) => {
-      if (err) throw err;
-      console.log("Lobbies:");
-      console.log(result);
-      res.send(JSON.stringify(result));
-    });
-  }, 200);
+  lobbiesCollection.find({}).toArray((err, result) => {
+    if (err) throw err;
+    console.log("Lobbies:");
+    console.log(result);
+    res.send(JSON.stringify(result));
+  });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +312,17 @@ app.all("/*", (req, res) => {
 });
 let counter = 0;
 let setup = async () => {
+  //Connection to DB, do not close!
+  MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
+    console.log("-------------------Hey db started-----------------------");
+    // Add option useNewUrlParser to get rid of console warning message
+    if (err) throw err;
+    finalProjectDB = allDbs.db("FinalProject-DB");
+    usersCollection = finalProjectDB.collection("Users");
+    sessionsCollection = finalProjectDB.collection("Sessions");
+    lobbiesCollection = finalProjectDB.collection("Lobbies");
+  });
+
   const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
   let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
   webpack.stdout.on("data", data => {
