@@ -24,6 +24,7 @@ app.use(cookieParser());
 
 let usersCollection;
 let sessionsCollection;
+let lobbeyCollection;
 let gamesCollection;
 
 //Connection to DB, do not close!
@@ -33,18 +34,20 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
   finalProjectDB = allDbs.db("FinalProject-DB");
   usersCollection = finalProjectDB.collection("Users");
   sessionsCollection = finalProjectDB.collection("Sessions");
+  lobbyCollection = finalProjectDB.collection("Lobbies");
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ GENERAL FUNCTIONS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//Returns random number
+
+//Generates random Id
 const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000000);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//************ LOGIN, LOGOUT & SIGNUP ************//
+//************ SIGNUP, LOGIN, LOGOUT & AUTOLOGIN  ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //************ SIGNUP ************//
@@ -107,6 +110,7 @@ app.post("/signup", upload.none(), function(req, res) {
       });
     });
 });
+
 //************ LOGIN ************//
 app.post("/login", upload.none(), function(req, res) {
   console.log(req.body);
@@ -190,6 +194,7 @@ app.get("/verify-cookie", function(req, res) {
 //************ USER RELATED ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//************ GET LEADERBOARD ************//
 app.get("/get-leaderboard", upload.none(), function(req, res) {
   console.log("Getting leaderboard..."); //check get all items
   let leaderboard = usersCollection.find().sort({ wins: -1, losses: 1 });
@@ -197,6 +202,33 @@ app.get("/get-leaderboard", upload.none(), function(req, res) {
   leaderboard.toArray((err, result) => {
     if (err) throw err;
     console.log(result);
+    res.send(JSON.stringify(result));
+  });
+});
+
+//************ CREATE LOBBY ************//
+app.post("/create-lobby", upload.none(), function(req, res) {
+  //Lobby to be inserted
+  const newLobby = {
+    playerOne: req.body.playerOne,
+    playerTwo: req.body.playerTwo,
+    readyPlayerOne: req.body.readyPlayerOne, // should be a boolean
+    readyPlayerTwo: req.body.readyPlayerTwo, // should be a boolean
+    //password: req.body.password,
+    creationTime: req.body.creationTime, //The Date and hour
+    active: req.body.active
+  };
+
+  //Insert lobby into the database
+  lobbeyCollection.insertOne(newLobby, (err, result) => {
+    //Add new user to remote database
+    if (err) throw err;
+    console.log(
+      `DB: Successfully added lobby for ${req.body.playerOne +
+        " and " +
+        req.body.playerTwo} into Users collection`
+    );
+    //use this result to get the _Id from the lobby object
     res.send(JSON.stringify(result));
   });
 });
