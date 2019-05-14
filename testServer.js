@@ -148,7 +148,7 @@ app.post("/login", upload.none(), function(req, res) {
 //***********************************SOCKET.IO******************************************************/
 gameEngine.createTestGameInst(
   "user1",
-  "user2",
+  "user1",
   gameData.defaultArmyB,
   gameData.defaultArmyA
 );
@@ -158,7 +158,11 @@ io.on("connection", socket => {
     socket.emit("game-data", gameEngine.getGameInst(message.gameId));
   });
   socket.on("game-input", input => {
-    gameEngine.handlerUserInput(input);
+    gameEngine.handlerUserInput({
+      gameId: "test",
+      action: input,
+      player: "user1"
+    });
     socket.emit("game-state-change", { success: true, changes: [input] });
   });
 

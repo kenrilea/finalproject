@@ -106,13 +106,14 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
   if (input.action.type === "move") {
-    let players = gameInstance[gameId]["players"];
+    let players = gameInstances[input.gameId]["players"];
     console.log(players);
     console.log(
-      "index: " + players[gameInstances[gameId]["turn"] % players.length]
+      "index: " + players[gameInstances[input.gameId]["turn"] % players.length]
     );
     if (
-      players[gameInstances[gameId]["turn"] % players.length] === input.turn
+      players[gameInstances[input.gameId]["turn"] % players.length] ===
+      input.turn
     ) {
       editGameData(input.gameId, input.action);
       gameInstances[gameId]["turn"] = playersgameInstances[gameId]["turn"] + 1;
