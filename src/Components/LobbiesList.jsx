@@ -36,7 +36,6 @@ class UnconnectedLobbiesList extends Component {
                lobbies: parsedLobbies
             })
          })
-
    }
 
    getMockLobbies = () => {

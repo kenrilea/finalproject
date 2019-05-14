@@ -34,7 +34,13 @@ class Leaderboard extends Component {
       { console.log("State : ", this.state) }
       {
          if (this.state.leaderboard.length === 0) {
-            return <div>Loading ...</div>
+            return (
+               <div className="lobbies-list-background">
+                  <div className="lobbies-list-foreground">
+                     Loading...
+               </div>
+               </div>
+            )
          }
       }
 

@@ -15,6 +15,7 @@ import Signup from "./Components/Signup.jsx";
 import LobbiesList from "./Components/LobbiesList.jsx";
 import AutoLogin from "./components/AutoLogin.jsx";
 import Lobby from "./components/Lobby.jsx"
+import About from "./components/About.jsx"
 
 let root = (
    <Provider store={store}>
@@ -33,6 +34,7 @@ let root = (
                      <Route exact={true} path="/signup" component={Signup} />
                      <Route exact={true} path="/lobbies_list" component={LobbiesList} />
                      <Route exact={true} path="/lobby/:lobbyId" component={Lobby} />
+                     <Route exact={true} path="/about" component={About} />
                      <Route
                         render={props => (
                            <Oops {...props} message={"This page doesn't exist... yet"} />
