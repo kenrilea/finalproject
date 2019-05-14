@@ -113,7 +113,7 @@ let handlerUserInput = input => {
     );
     if (
       players[gameInstances[input.gameId]["turn"] % players.length] ===
-      input.turn
+      input.team
     ) {
       editGameData(input.gameId, input.action);
       gameInstances[gameId]["turn"] = playersgameInstances[gameId]["turn"] + 1;
