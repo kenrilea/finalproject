@@ -57,7 +57,7 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerOne}
             </div>
 
-            <div>
+            <div className="player-label">
                -VS-
             </div>
 

@@ -14,47 +14,45 @@ import Leaderboard from "./Components/Leaderboard.jsx";
 import Signup from "./Components/Signup.jsx";
 import LobbiesList from "./Components/LobbiesList.jsx";
 import AutoLogin from "./components/AutoLogin.jsx";
+import Lobby from "./components/Lobby.jsx"
 
 let root = (
-  <Provider store={store}>
-    <BrowserRouter>
-      <div className="main-container">
-        <Route exact={false} path="/" component={AutoLogin} />
-        <Route exact={false} path="/" component={AnimatedMessage} />
-        <TopBar />
-        <div className="sidebar-and-game-container">
-          <SideBar />
-          <div className="main-div">
-            <Switch>
-              <Route exact={true} path="/" component={HomePage} />
-              <Route exact={true} path="/game/:gameId" component={GameFrame} />
-              <Route exact={true} path="/leaderboard" component={Leaderboard} />
-              <Route exact={true} path="/signup" component={Signup} />
-              <Route
-                exact={true}
-                path="/lobbies_list"
-                component={LobbiesList}
-              />
-              <Route
-                render={props => (
-                  <Oops {...props} message={"This page doesn't exist... yet"} />
-                )}
-              />
-            </Switch>
-          </div>
-        </div>
-        {/* Google Fonts imports */}
-        <link
-          href="https://fonts.googleapis.com/css?family=Merriweather"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css?family=Rubik"
-          rel="stylesheet"
-        />
-      </div>
-    </BrowserRouter>
-  </Provider>
+   <Provider store={store}>
+      <BrowserRouter>
+         <div className="main-container">
+            <Route exact={false} path="/" component={AutoLogin} />
+            <Route exact={false} path="/" component={AnimatedMessage} />
+            <TopBar />
+            <div className="sidebar-and-game-container">
+               <SideBar />
+               <div className="main-div">
+                  <Switch>
+                     <Route exact={true} path="/" component={HomePage} />
+                     <Route exact={true} path="/game/:gameId" component={GameFrame} />
+                     <Route exact={true} path="/leaderboard" component={Leaderboard} />
+                     <Route exact={true} path="/signup" component={Signup} />
+                     <Route exact={true} path="/lobbies_list" component={LobbiesList} />
+                     <Route exact={true} path="/lobby/:lobbyId" component={Lobby} />
+                     <Route
+                        render={props => (
+                           <Oops {...props} message={"This page doesn't exist... yet"} />
+                        )}
+                     />
+                  </Switch>
+               </div>
+            </div>
+            {/* Google Fonts imports */}
+            <link
+               href="https://fonts.googleapis.com/css?family=Merriweather"
+               rel="stylesheet"
+            />
+            <link
+               href="https://fonts.googleapis.com/css?family=Rubik"
+               rel="stylesheet"
+            />
+         </div>
+      </BrowserRouter>
+   </Provider>
 );
 
 ReactDOM.render(root, document.getElementById("root"));
