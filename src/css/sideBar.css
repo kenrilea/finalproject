@@ -1,4 +1,5 @@
 .sideBar {
+   z-index: 10;
    width: 20vw;
    background: linear-gradient(to right, #232526, #414345);
    text-align: center;

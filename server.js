@@ -6,6 +6,9 @@ const cookieParser = require("cookie-parser");
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
 
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ PATHS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,6 +251,23 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+//************ SOCKET IO STUFF ************//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+io.on("connection", socket => {
+  console.log("Connected to socket");
+  socket.on("playerOneReady", () => {
+    console.log("Socket: Player one is ready!");
+  });
+  socket.on("playerTwoReady", () => {
+    console.log("Socket: Player two is ready!");
+  });
+  socket.on("login", () => {
+    console.log("Socket: Logging in");
+  });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -301,6 +321,7 @@ app.all("/*", (req, res, next) => {
     next();
   }
 });
+
 app.use("/", express.static("build"));
 app.all("/*", (req, res) => {
   res.sendFile(__dirname + "/build/index.html");
@@ -312,7 +333,7 @@ let setup = async () => {
   webpack.stdout.on("data", data => {
     webpackError = data.toString();
   });
-  app.listen(4000, "0.0.0.0", () => {
+  http.listen(4000, "0.0.0.0", () => {
     console.log("Running on port 4000 , 0.0.0.0");
   });
 };
