@@ -19,7 +19,8 @@ class MenuItem extends Component {
       height: "100%",
       color: "white",
       textAlign: "center",
-      marginBottom: "7px"
+      paddingTop: "7px",
+      paddingBottom: "7px"
     };
 
     return (
