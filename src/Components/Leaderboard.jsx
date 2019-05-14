@@ -7,8 +7,40 @@ import mockLeaderboardData from "./mockLeaderboardData.jsx"
 
 class Leaderboard extends Component {
 
+   constructor(props) {
+      super(props)
+      this.state = {
+         leaderboard: []
+      }
+   }
+
+   componentDidMount = () => {
+
+
+
+      fetch("/get-leaderboard")
+         .then(resHead => {
+            return resHead.text()
+         })
+         .then(resBody => {
+            let parsed = JSON.parse(resBody)
+
+            this.setState({
+               leaderboard: parsed
+            })
+         })
+   }
+
+
 
    render = () => {
+      { console.log("State : ", this.state) }
+      {
+         if (this.state.leaderboard.length === 0) {
+            return <div>Loading ...</div>
+         }
+      }
+
       return (
          <div className="animated-fade-in">
             <div id="scrolltable">
@@ -23,7 +55,7 @@ class Leaderboard extends Component {
                      </tr>
                   </thead>
                   <tbody className="leader-body">
-                     {mockLeaderboardData.map((user, standing) => {
+                     {this.state.leaderboard.map((user, standing) => {
                         return (
                            <tr className="leader-row">
                               <td className="leader-entry">{standing + 1}</td>

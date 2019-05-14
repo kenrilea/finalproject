@@ -10,8 +10,7 @@ class UnconnectedLobbiesListElem extends Component {
       super(props)
       this.state = {
 
-         full: false,
-         playerTwo: ""
+         //
       }
    }
 
@@ -31,14 +30,18 @@ class UnconnectedLobbiesListElem extends Component {
          .then(resBody => {
             if (!resBody.success) {
                console.log("Error joining lobby")
+               return;
             }
+
+            console.log("Joining lobby...")
+
+            this.props.dispatch({
+               type: "JOIN-LOBBY",
+               lobbyId: lobbyId,
+               inLobby: true,
+            })
          })
-      console.log("Joining lobby...")
-      this.props.dispatch({
-         type: "JOIN-LOBBY",
-         lobbyId: lobbyId,
-      })
-      this.setState({ full: true, playerTwo: this.props.currentUser })
+
    }
 
    render = () => {
@@ -62,7 +65,7 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerTwo ? this.props.playerTwo : "Waiting for challenger..."}
             </div>
 
-            <button className="ghost-button-dark" /*onClick={this.props.full ? undefined : this.joinLobby(this.props.lobbyId)} */ >
+            <button className="ghost-button-dark" onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
                {this.props.playerTwo ? "In Progress" : "I want some!"}
             </button>
 

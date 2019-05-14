@@ -113,7 +113,6 @@ app.post("/signup", upload.none(), function(req, res) {
 
 //************ LOGIN ************//
 app.post("/login", upload.none(), function(req, res) {
-  console.log(req.body);
   const { username: enteredName, password: enteredPass } = req.body;
   // Check remote users collection in db
   usersCollection.find({ username: enteredName }).toArray((err, result) => {
