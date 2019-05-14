@@ -43,19 +43,21 @@ const generateId = () => {
 const getCurrentSessionUsername = (req, res) => {
   const currentCookie = req.cookies.sid;
   let username;
-  sessionsCollection.findOne({ sessionId: currentCookie }, function(
-    err,
-    result
-  ) {
-    if (err) throw err;
-    if (result === undefined || result === "" || result === null) {
-      //res.send(JSON.stringify({ success: false }));
-      return;
-    }
-    console.log("Username from current session: ");
-    console.log(result.user);
-    username = result.user;
-  });
+  setTimeout(() => {
+    sessionsCollection.findOne({ sessionId: currentCookie }, function(
+      err,
+      result
+    ) {
+      if (err) throw err;
+      if (result === undefined || result === "" || result === null) {
+        //res.send(JSON.stringify({ success: false }));
+        return;
+      }
+      console.log("Username from current session: ");
+      console.log(result.user);
+      username = result.user;
+    });
+  }, 200);
   return username;
 };
 
@@ -314,7 +316,9 @@ let counter = 0;
 let setup = async () => {
   //Connection to DB, do not close!
   MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
-    console.log("-------------------Hey db started-----------------------");
+    console.log(
+      "-----------------------Database Initialised-----------------------"
+    );
     // Add option useNewUrlParser to get rid of console warning message
     if (err) throw err;
     finalProjectDB = allDbs.db("FinalProject-DB");
