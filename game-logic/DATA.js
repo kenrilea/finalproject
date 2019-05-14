@@ -8,7 +8,7 @@ let defaultArmyA = [
     charType: "pawn",
     actions: ["move"],
     static: false,
-    pos: { x: 1, y: 0 },
+    pos: { x: 7, y: 0 },
     actorType: "char",
     moveSpeed: 1
   },
@@ -16,7 +16,7 @@ let defaultArmyA = [
     charType: "pawn",
     actions: ["move"],
     static: false,
-    pos: { x: 1, y: 1 },
+    pos: { x: 7, y: 7 },
     actorType: "char",
     moveSpeed: 1
   }
@@ -34,7 +34,7 @@ let defaultArmyB = [
     charType: "pawn",
     actions: ["move"],
     static: false,
-    pos: { x: 0, y: 1 },
+    pos: { x: 0, y: 7 },
     actorType: "char",
     moveSpeed: 1
   }

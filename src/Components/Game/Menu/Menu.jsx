@@ -4,11 +4,10 @@ import MenuItem from "./MenuItem.jsx";
 
 class Menu extends Component {
   render = () => {
-    if (!this.props.visible) return null;
+    if (!this.props.actionMenu.visible) return null;
 
     const style = {
       position: "absolute",
-      bottom: "50%",
       zIndex: 100,
       margin: 0,
       paddingTop: "10px",
@@ -16,6 +15,20 @@ class Menu extends Component {
       height: "auto",
       background: "#000000"
     };
+
+    const xPercent = this.props.actionMenu.xPos;
+    if (xPercent < 50) {
+      style.left = xPercent + this.props.dimensions.w + "%";
+    } else {
+      style.right = 100 - xPercent + "%";
+    }
+
+    const yPercent = this.props.actionMenu.yPos;
+    if (yPercent < 50) {
+      style.top = yPercent + "%";
+    } else {
+      style.bottom = 100 - yPercent - this.props.dimensions.h + "%";
+    }
 
     return (
       <div style={style}>
@@ -35,7 +48,11 @@ class Menu extends Component {
 
 const mapStateToProps = state => {
   return {
-    visible: state.actionMenu.visible
+    actionMenu: state.actionMenu,
+    dimensions: {
+      w: state.gameData.width,
+      h: state.gameData.height
+    }
   };
 };
 

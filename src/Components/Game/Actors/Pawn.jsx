@@ -57,8 +57,8 @@ class Pawn extends Component {
         this.props.dispatch(
           setActionMenu(
             true,
-            this.props.xFrontend, // Not being used right now.
-            this.props.yFrontend, // Not being used right now.
+            this.props.actorData.pos.x * this.props.gameData.width, // Not being used right now.
+            this.props.actorData.pos.y * this.props.gameData.height, // Not being used right now.
             this.props.actorData.actions.map(action => {
               return {
                 text: action,
