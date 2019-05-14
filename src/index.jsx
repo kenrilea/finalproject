@@ -18,7 +18,6 @@ let root = (
    <Provider store={store}>
       <BrowserRouter>
          <div className="main-container">
-            <Route exact={false} path="/" component={AnimatedMessage} />
             <TopBar />
             <div className="sidebar-and-game-container">
                <SideBar />
