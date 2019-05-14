@@ -16,6 +16,7 @@ const url =
   "mongodb+srv://admin:admin@samurai-murit.mongodb.net/test?retryWrites=true"; // URI for remote database!
 
 app.use("/assets", express.static(__dirname + "/assets"));
+app.use(cookieParser());
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ STORAGE ************//
@@ -43,7 +44,7 @@ const generateId = () => {
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//************ LOGIN & SIGNUP ************//
+//************ LOGIN, LOGOUT & SIGNUP ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //************ SIGNUP ************//
@@ -108,6 +109,7 @@ app.post("/signup", upload.none(), function(req, res) {
 });
 //************ LOGIN ************//
 app.post("/login", upload.none(), function(req, res) {
+  console.log(req.body);
   const { username: enteredName, password: enteredPass } = req.body;
   // Check remote users collection in db
   usersCollection.find({ username: enteredName }).toArray((err, result) => {
@@ -138,6 +140,36 @@ app.post("/login", upload.none(), function(req, res) {
     res.send(JSON.stringify({ success: true, username: enteredName }));
   });
 });
+
+//************ LOGOUT ************//
+app.get("/logout", upload.none(), function(req, res) {
+  console.log("Logging out...");
+  sessionsCollection.deleteOne(
+    { sessionId: req.cookies.sid },
+    (err, result) => {
+      // Remove from remote database
+      if (err) throw err;
+      console.log("DB: Successfully removed entry from sessions collection!");
+    }
+  );
+  res.send(JSON.stringify({ success: true }));
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//************ USER RELATED ************//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.get("/get-leaderboard", upload.none(), function(req, res) {
+  console.log("Getting leaderboard..."); //check get all items
+  let leaderboard = usersCollection.find().sort({ wins: -1, losses: 1 });
+  console.log("Leaderboard:");
+  leaderboard.toArray((err, result) => {
+    if (err) throw err;
+    console.log(result);
+    res.send(JSON.stringify(result));
+  });
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
