@@ -47,6 +47,26 @@ const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000000);
 };
 
+//Get username from session
+const getCurrentSessionUsername = (req, res) => {
+  const currentCookie = req.cookies.sid;
+  let username;
+  sessionsCollection.findOne({ sessionId: currentCookie }, function(
+    err,
+    result
+  ) {
+    if (err) throw err;
+    if (result === undefined || result === "" || result === null) {
+      //res.send(JSON.stringify({ success: false }));
+      return;
+    }
+    console.log("Username from current session: ");
+    console.log(result.user);
+    username = result.user;
+  });
+  return username;
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SIGNUP, LOGIN, LOGOUT & AUTOLOGIN  ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,34 +181,10 @@ app.get("/logout", upload.none(), function(req, res) {
 
 //************ AUTOLOGIN ************//
 app.get("/verify-cookie", function(req, res) {
-  const currentCookie = req.cookies.sid;
-  let query = [
-    {
-      $match: {
-        sessionId: currentCookie
-      }
-    },
-    {
-      $lookup: {
-        from: "Users",
-        localField: "user",
-        foreignField: "username",
-        as: "user"
-      }
-    }
-  ];
   setTimeout(() => {
-    sessionsCollection.aggregate(query).toArray((err, result) => {
-      if (err) throw err;
-      if (result === undefined || result.length === 0) {
-        res.send(JSON.stringify({ success: false }));
-        return;
-      }
-      res.send(
-        JSON.stringify({ success: true, username: result[0].user[0].username })
-      );
-    });
-  }, 500);
+    let username = getCurrentSessionUsername(req, res);
+    res.send(JSON.stringify({ success: true, username: username }));
+  }, 200);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,15 +207,16 @@ app.get("/get-leaderboard", upload.none(), function(req, res) {
 
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function(req, res) {
+  let username = getCurrentSessionUsername(req, res);
+
   //Lobby to be inserted
   const newLobby = {
-    playerOne: req.body.playerOne,
-    playerTwo: req.body.playerTwo,
-    readyPlayerOne: req.body.readyPlayerOne, // should be a boolean
-    readyPlayerTwo: req.body.readyPlayerTwo, // should be a boolean
+    playerOne: username,
+    playerTwo: "",
+    readyPlayerOne: false,
+    readyPlayerTwo: false,
     //password: req.body.password,
-    creationTime: req.body.creationTime, //The Date and hour
-    decritpion: req.body.description //user can write a description/taunt etc...
+    creationTime: new Date()
   };
 
   //Insert lobby into the database
@@ -227,9 +224,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
     //Add new user to remote database
     if (err) throw err;
     console.log(
-      `DB: Successfully added lobby for ${req.body.playerOne +
-        " and " +
-        req.body.playerTwo} into Users collection`
+      `DB: Successfully added lobby for ${username} into lobby collection`
     );
     //use this result to get the _Id from the lobby object
     console.log(result);
@@ -249,7 +244,7 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
       console.log(result);
       res.send(JSON.stringify(result));
     });
-  }, 500);
+  }, 200);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
