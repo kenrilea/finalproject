@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 let usersCollection;
 let sessionsCollection;
-let lobbyCollection;
+let lobbiesCollection;
 let gamesCollection;
 
 //Connection to DB, do not close!
@@ -34,7 +34,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
   finalProjectDB = allDbs.db("FinalProject-DB");
   usersCollection = finalProjectDB.collection("Users");
   sessionsCollection = finalProjectDB.collection("Sessions");
-  lobbyCollection = finalProjectDB.collection("Lobbies");
+  lobbiesCollection = finalProjectDB.collection("Lobbies");
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,19 +190,21 @@ app.get("/verify-cookie", function(req, res) {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//************ USER RELATED ************//
+//************ LEADERBOARD & LOBBY RELATED ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //************ GET LEADERBOARD ************//
 app.get("/get-leaderboard", upload.none(), function(req, res) {
-  console.log("Getting leaderboard..."); //check get all items
-  let leaderboard = usersCollection.find().sort({ wins: -1, losses: 1 });
-  console.log("Leaderboard:");
-  leaderboard.toArray((err, result) => {
-    if (err) throw err;
-    console.log(result);
-    res.send(JSON.stringify(result));
-  });
+  console.log("Getting leaderboard...");
+  usersCollection
+    .find()
+    .sort({ wins: -1, losses: 1 })
+    .toArray((err, result) => {
+      if (err) throw err;
+      console.log("Leaderboard:");
+      console.log(result);
+      res.send(JSON.stringify(result));
+    });
 });
 
 //************ CREATE LOBBY ************//
@@ -215,11 +217,11 @@ app.post("/create-lobby", upload.none(), function(req, res) {
     readyPlayerTwo: req.body.readyPlayerTwo, // should be a boolean
     //password: req.body.password,
     creationTime: req.body.creationTime, //The Date and hour
-    active: req.body.active
+    decritpion: req.body.description //user can write a description/taunt etc...
   };
 
   //Insert lobby into the database
-  lobbyCollection.insertOne(newLobby, (err, result) => {
+  lobbiesCollection.insertOne(newLobby, (err, result) => {
     //Add new user to remote database
     if (err) throw err;
     console.log(
@@ -228,6 +230,19 @@ app.post("/create-lobby", upload.none(), function(req, res) {
         req.body.playerTwo} into Users collection`
     );
     //use this result to get the _Id from the lobby object
+    console.log(result);
+    res.send({ success: true, lobby: result });
+    //res.send(JSON.stringify(result));
+  });
+});
+
+//************ GET LOBBIES ************//
+app.get("/get-lobbies", upload.none(), function(req, res) {
+  console.log("Getting lobbies...");
+  lobbiesCollection.find({}).toArray((err, result) => {
+    if (err) throw err;
+    console.log("Lobbies:");
+    console.log(result);
     res.send(JSON.stringify(result));
   });
 });
