@@ -7,6 +7,9 @@ const MongoClient = require("mongodb").MongoClient;
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
+const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
+
+const gameData = require(__dirname + "/game-logic/DATA.js");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ PATHS ************//
@@ -26,6 +29,8 @@ app.use("/assets", express.static(__dirname + "/assets"));
 let usersCollection;
 let sessionsCollection;
 let gamesCollection;
+//_______SOCKET STORAGE_____________
+let socketClients = {};
 
 //Connection to DB, do not close!
 MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
@@ -140,14 +145,27 @@ app.post("/login", upload.none(), function(req, res) {
     res.send(JSON.stringify({ success: true, username: enteredName }));
   });
 });
-
 //***********************************SOCKET.IO******************************************************/
+gameEngine.createTestGameInst(
+  "user1",
+  "user2",
+  gameData.defaultArmyB,
+  gameData.defaultArmyA
+);
 io.on("connection", socket => {
-  console.log("user logged in");
-  socket.on("init-lobby", recieved => {
-    console.log("triggered");
-    console.log(recieved.test);
-    socket.emit("lobby-data", { newData: "cool" });
+  console.log("connected");
+  socket.on("get-game-data", message => {
+    socket.emit("game-data", gameEngine.getGameInst(message.gameId));
+  });
+  socket.on("game-input", input => {
+    gameEngine.handlerUserInput(input);
+    socket.emit("game-state-change", { success: true });
+  });
+
+  console.log(socket.request.headers.cookie);
+  socket.on("init-lobby", message => {
+    console.log("message");
+    console.log(socket.request.headers.cookie);
   });
 });
 http.listen(4000);

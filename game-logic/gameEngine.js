@@ -11,6 +11,7 @@ let editGameData = (gameId, mods) => {
     console.log("gameId: " + gameId + " does not exist");
     return;
   }
+  let changes = [];
   mods.forEach(mod => {
     if (mod.type === "add-new") {
       gameInstances[gameId]["map"].push(mod.actor);
@@ -77,7 +78,23 @@ let createGameInst = (teamA, teamB, armyA, armyB) => {
   gameInstances[gameId] = {
     map: [],
     turn: 0,
-    players: [],
+    players: [teamA, teamB],
+    chat: [],
+    width,
+    height
+  };
+  editGameData(gameId, createMap(width, height));
+  editGameData(gameId, createArmy(armyA, teamA));
+  editGameData(gameId, createArmy(armyB, teamB));
+};
+let createTestGameInst = (teamA, teamB, armyA, armyB) => {
+  let width = 8;
+  let height = 8;
+  let gameId = "test";
+  gameInstances[gameId] = {
+    map: [],
+    turn: 0,
+    players: [teamA, teamB],
     chat: [],
     width,
     height
@@ -102,5 +119,15 @@ let handlerUserInput = input => {
     }
   }
 };
+let getGameInst = gameId => {
+  return gameInstances[gameId];
+};
 //________________________________________________________________________________________________
-module.exports = { editGameData, addMessage, createGameInst, handlerUserInput };
+module.exports = {
+  editGameData,
+  addMessage,
+  createGameInst,
+  handlerUserInput,
+  createTestGameInst,
+  getGameInst
+};
