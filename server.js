@@ -34,6 +34,7 @@ let gamesCollection;
 
 //Connection to DB, do not close!
 MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
+   console.log("-------------------Hey db started-----------------------");
    // Add option useNewUrlParser to get rid of console warning message
    if (err) throw err;
    finalProjectDB = allDbs.db("FinalProject-DB");
@@ -181,16 +182,18 @@ app.get("/verify-cookie", function (req, res) {
          }
       }
    ];
-   sessionsCollection.aggregate(query).toArray((err, result) => {
-      if (err) throw err;
-      if (result === undefined || result.length === 0) {
-         res.send(JSON.stringify({ success: false }));
-         return;
-      }
-      res.send(
-         JSON.stringify({ success: true, username: result[0].user[0].username })
-      );
-   });
+   setTimeout(() => {
+      sessionsCollection.aggregate(query).toArray((err, result) => {
+         if (err) throw err;
+         if (result === undefined || result.length === 0) {
+            res.send(JSON.stringify({ success: false }));
+            return;
+         }
+         res.send(
+            JSON.stringify({ success: true, username: result[0].user[0].username })
+         );
+      });
+   }, 500);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,12 +246,15 @@ app.post("/create-lobby", upload.none(), function (req, res) {
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function (req, res) {
    console.log("Getting lobbies...");
-   lobbiesCollection.find({}).toArray((err, result) => {
-      if (err) throw err;
-      console.log("Lobbies:");
-      console.log(result);
-      res.send(JSON.stringify(result));
-   });
+
+   setTimeout(() => {
+      lobbiesCollection.find({}).toArray((err, result) => {
+         if (err) throw err;
+         console.log("Lobbies:");
+         console.log(result);
+         res.send(JSON.stringify(result));
+      });
+   }, 500);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
