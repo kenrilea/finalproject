@@ -52,15 +52,23 @@ class UnconnectedLobbiesList extends Component {
 
    render = () => {
 
+
       if (!this.props.loggedIn) {
          return <Redirect to="/" />
       }
 
+      if (this.props.inLobby) {
+         return <Redirect to={"lobby/:" + this.props.lobbyToJoinId} />
+      }
+
       return (
          <div className="lobbies-list-background">
-            <button onClick={this.createLobby}>Create new lobby</button>
+
             <div className="lobbies-list-foreground animated-fade-in-delay">
+
                Lobbies
+
+               <button className="ghost-button-dark" onClick={this.createLobby}>Create new lobby</button>
 
                {this.getMockLobbies().map(elem => {
                   return <LobbiesListElem lobbyId={elem.lobbyId} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
@@ -76,7 +84,9 @@ class UnconnectedLobbiesList extends Component {
 let mapStateToProps = state => {
    return {
       loggedIn: state.loggedIn,
-      currentLobby: state.currentLobby
+      currentLobby: state.currentLobby,
+      inLobby: state.inLobby,
+      lobbyToJoinId: state.currentLobby
    }
 }
 

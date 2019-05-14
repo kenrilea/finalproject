@@ -9,9 +9,9 @@ class UnconnectedLobbiesListElem extends Component {
    constructor(props) {
       super(props)
       this.state = {
-         playerOne: props.playerOne, //Not sure if we can pass playerOne's id as a prop?
-         playerTwo: undefined
-         //Lobby id is passed in props 
+
+         full: false,
+         playerTwo: ""
       }
    }
 
@@ -38,6 +38,7 @@ class UnconnectedLobbiesListElem extends Component {
          type: "JOIN-LOBBY",
          lobbyId: lobbyId,
       })
+      this.setState({ full: true, playerTwo: this.props.currentUser })
    }
 
    render = () => {
@@ -61,8 +62,8 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerTwo ? this.props.playerTwo : "Waiting for challenger..."}
             </div>
 
-            <button className="ghost-button-dark" onClick={this.props.playerTwo ? undefined : this.joinLobby(this.props.lobbyId)}>
-               {this.props.playerTwo ? "In Progress" : "Let's do this"}
+            <button className="ghost-button-dark" /*onClick={this.props.full ? undefined : this.joinLobby(this.props.lobbyId)} */ >
+               {this.props.playerTwo ? "In Progress" : "I want some!"}
             </button>
 
          </div>
@@ -71,6 +72,12 @@ class UnconnectedLobbiesListElem extends Component {
    }
 }
 
-let LobbiesListElem = connect()(UnconnectedLobbiesListElem)
+let mapStateToProps = state => {
+   return {
+      currentUser: state.currentUser
+   }
+}
+
+let LobbiesListElem = connect(mapStateToProps)(UnconnectedLobbiesListElem)
 
 export default LobbiesListElem
