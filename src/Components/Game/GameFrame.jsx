@@ -56,15 +56,17 @@ class GameFrame extends Component {
 
     return (
       <div className="wrapper">
-        <svg
-          className="gameframe wrapper"
-          id="chess-2-canvas"
-          /*preserveAspectRatio="xMaxYMax none"
+        <div className="gameframe wrapper">
+          <svg
+            className="svg-canvas"
+            id="chess-2-canvas"
+            /*preserveAspectRatio="xMaxYMax none"
           viewBox="0 0 100 100"*/
-        >
-          {this.getActorElements()}
-        </svg>
-        <Menu options={this.props.actionMenuOptions} />
+          >
+            {this.getActorElements()}
+          </svg>
+          <Menu options={this.props.actionMenuOptions} />
+        </div>
       </div>
     );
   };
