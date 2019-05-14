@@ -30,8 +30,6 @@ class Leaderboard extends Component {
 
    }
 
-
-
    render = () => {
       { console.log("State : ", this.state) }
       {
@@ -42,7 +40,7 @@ class Leaderboard extends Component {
 
       return (
          <div className="lobbies-list-background">
-            <div className="animated-fade-in lobbies-list-foreground">
+            <div className="animated-fade-in lobbies-list-foreground material-shadow">
                <div id="scrolltable">
                   <table className="leader-table">
                      <thead className="leader-header">

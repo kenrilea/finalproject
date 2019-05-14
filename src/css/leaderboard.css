@@ -1,14 +1,14 @@
 .leader-table {
    border-collapse: collapse;
-   width: 82vw;
+   width: 100%;
    margin-left: 5px;
-  
  }
  
  .leader-entry {
    border: 1px solid #dddddd;
    text-align: left;
    padding: 8px;
+   text-align: center;
  }
 
  .leader-entry:first-of-type {
