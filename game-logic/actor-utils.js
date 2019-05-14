@@ -35,8 +35,12 @@ let dispatch = action => {
       actions: ["move"],
       static: false,
       team: "none",
+      health: 1,
       moveSpeed: 0
     };
+    if (typeof action.health === "number") {
+      newCharProps.health = action.health;
+    }
     if (typeof action.charType === "string") {
       newCharProps.charType = action.charType;
     }

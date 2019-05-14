@@ -122,6 +122,19 @@ let handlerUserInput = input => {
         parseInt(gameInstances[input.gameId]["turn"]) + 1;
     }
   }
+  if (input.action.type === "attack") {
+    let players = gameInstances[input.gameId]["players"];
+    if (
+      players[
+        parseInt(gameInstances[input.gameId]["turn"]) % players.length
+      ] === input.team
+    ) {
+      console.log("working");
+      changes = changes.concat(editGameData(input.gameId, [input.action]));
+      gameInstances[input.gameId]["turn"] =
+        parseInt(gameInstances[input.gameId]["turn"]) + 1;
+    }
+  }
   console.log("handler");
   console.log(changes);
   return changes;
