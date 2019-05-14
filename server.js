@@ -16,6 +16,7 @@ const url =
   "mongodb+srv://admin:admin@samurai-murit.mongodb.net/test?retryWrites=true"; // URI for remote database!
 
 app.use("/assets", express.static(__dirname + "/assets"));
+app.use(cookieParser());
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ STORAGE ************//
@@ -23,6 +24,7 @@ app.use("/assets", express.static(__dirname + "/assets"));
 
 let usersCollection;
 let sessionsCollection;
+let lobbiesCollection;
 let gamesCollection;
 
 //Connection to DB, do not close!
@@ -32,18 +34,20 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
   finalProjectDB = allDbs.db("FinalProject-DB");
   usersCollection = finalProjectDB.collection("Users");
   sessionsCollection = finalProjectDB.collection("Sessions");
+  lobbiesCollection = finalProjectDB.collection("Lobbies");
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ GENERAL FUNCTIONS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//Returns random number
+
+//Generates random Id
 const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000000);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//************ LOGIN & SIGNUP ************//
+//************ SIGNUP, LOGIN, LOGOUT & AUTOLOGIN  ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //************ SIGNUP ************//
@@ -106,6 +110,7 @@ app.post("/signup", upload.none(), function(req, res) {
       });
     });
 });
+
 //************ LOGIN ************//
 app.post("/login", upload.none(), function(req, res) {
   const { username: enteredName, password: enteredPass } = req.body;
@@ -138,6 +143,109 @@ app.post("/login", upload.none(), function(req, res) {
     res.send(JSON.stringify({ success: true, username: enteredName }));
   });
 });
+
+//************ LOGOUT ************//
+app.get("/logout", upload.none(), function(req, res) {
+  console.log("Logging out...");
+  sessionsCollection.deleteOne(
+    { sessionId: req.cookies.sid },
+    (err, result) => {
+      // Remove from remote database
+      if (err) throw err;
+      console.log("DB: Successfully removed entry from sessions collection!");
+    }
+  );
+  res.send(JSON.stringify({ success: true }));
+});
+
+//************ AUTOLOGIN ************//
+app.get("/verify-cookie", function (req, res) {
+   const currentCookie = req.cookies.sid;
+   let query = [
+      {
+         $match: {
+            sessionId: currentCookie
+         }
+      },
+      {
+         $lookup: {
+            from: "Users",
+            localField: "user",
+            foreignField: "username",
+            as: "user"
+         }
+      }
+   ];
+   sessionsCollection.aggregate(query).toArray((err, result) => {
+      if (err) throw err;
+      if (result === undefined || result.length === 0) {
+         res.send(JSON.stringify({ success: false }));
+         return;
+      }
+      res.send(
+         JSON.stringify({ success: true, username: result[0].user[0].username })
+      );
+   });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//************ LEADERBOARD & LOBBY RELATED ************//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//************ GET LEADERBOARD ************//
+app.get("/get-leaderboard", upload.none(), function(req, res) {
+  console.log("Getting leaderboard...");
+  usersCollection
+    .find()
+    .sort({ wins: -1, losses: 1 })
+    .toArray((err, result) => {
+      if (err) throw err;
+      console.log("Leaderboard:");
+      console.log(result);
+      res.send(JSON.stringify(result));
+    });
+});
+
+//************ CREATE LOBBY ************//
+app.post("/create-lobby", upload.none(), function(req, res) {
+  //Lobby to be inserted
+  const newLobby = {
+    playerOne: req.body.playerOne,
+    playerTwo: req.body.playerTwo,
+    readyPlayerOne: req.body.readyPlayerOne, // should be a boolean
+    readyPlayerTwo: req.body.readyPlayerTwo, // should be a boolean
+    //password: req.body.password,
+    creationTime: req.body.creationTime, //The Date and hour
+    decritpion: req.body.description //user can write a description/taunt etc...
+  };
+
+  //Insert lobby into the database
+  lobbiesCollection.insertOne(newLobby, (err, result) => {
+    //Add new user to remote database
+    if (err) throw err;
+    console.log(
+      `DB: Successfully added lobby for ${req.body.playerOne +
+        " and " +
+        req.body.playerTwo} into Users collection`
+    );
+    //use this result to get the _Id from the lobby object
+    console.log(result);
+    res.send({ success: true, lobby: result });
+    //res.send(JSON.stringify(result));
+  });
+});
+
+//************ GET LOBBIES ************//
+app.get("/get-lobbies", upload.none(), function(req, res) {
+  console.log("Getting lobbies...");
+  lobbiesCollection.find({}).toArray((err, result) => {
+    if (err) throw err;
+    console.log("Lobbies:");
+    console.log(result);
+    res.send(JSON.stringify(result));
+  });
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

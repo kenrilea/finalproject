@@ -38,6 +38,7 @@
     "reactjs-popup": "^1.4.0",
     "redux": "^4.0.1",
     "shelljs": "^0.8.3",
+    "socketio": "^1.0.0",
     "webpack-inject-plugin": "^1.5.0"
   }
 }

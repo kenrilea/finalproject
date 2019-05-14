@@ -16,3 +16,10 @@ export const setGameData = (actors, width, height) => {
     height
   };
 };
+
+export const setGameState = gameState => {
+  return {
+    type: "set-game-state",
+    gameState
+  };
+};
