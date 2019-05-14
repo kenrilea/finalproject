@@ -47,6 +47,7 @@ gameEngine.createTestGameInst(
   gameData.defaultArmyB,
   gameData.defaultArmyA
 );
+console.log();
 io.on("connection", socket => {
   console.log("connected");
   socket.on("get-game-data", message => {
