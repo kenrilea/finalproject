@@ -71,26 +71,45 @@ class Tile extends Component {
   };
 
   render = () => {
-    const style = {
-      fill: !this.props.actorData.highlighted ? "#004400" : "#440000"
-      //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
-    };
-
     const xFrontend = this.props.actorData.pos.x * this.props.gameData.width;
     const yFrontend = this.props.actorData.pos.y * this.props.gameData.height;
 
-    return (
-      <rect
-        style={style}
-        stroke="red"
-        strokeWidth="2"
-        strokeLinecap="square"
-        x={xFrontend + "%"}
-        y={yFrontend + "%"}
-        width={this.props.gameData.width + "%"}
-        height={this.props.gameData.height + "%"}
-        onClick={this.handleClick}
+    const fill = "#000";
+    const stroke = "#42f4eb";
+
+    const style = {
+      fill: fill,
+      //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
+      stroke: stroke,
+      strokeWidth: "2",
+      strokeLinecap: "square",
+      x: xFrontend + "%",
+      y: yFrontend + "%",
+      width: this.props.gameData.width + "%",
+      height: this.props.gameData.height + "%"
+    };
+
+    const animate = this.props.actorData.highlighted ? (
+      <animate
+        xlinkHref={"#" + this.props.actorData.actorId}
+        attributeName="fill"
+        from="#000"
+        to="#999"
+        begin="0s"
+        dur="1s"
+        repeatCount="indefinite"
       />
+    ) : null;
+
+    return (
+      <g>
+        <rect
+          id={this.props.actorData.actorId}
+          style={style}
+          onClick={this.handleClick}
+        />
+        {animate}
+      </g>
     );
   };
 }

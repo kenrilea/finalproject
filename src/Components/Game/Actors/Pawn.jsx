@@ -27,7 +27,7 @@ class Pawn extends Component {
     dest.x = dest.x * this.props.gameData.width;
     dest.y = dest.y * this.props.gameData.height;
 
-    console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
 
     let newPos = this.updatePosition(
       { x: this.state.x, y: this.state.y },
@@ -167,7 +167,11 @@ class Pawn extends Component {
       <g>
         <image
           id={id}
-          xlinkHref="/assets/char-pawn-blue.png"
+          xlinkHref={
+            this.props.currentUser === this.props.actorData.team
+              ? "/assets/char-pawn-blue.png"
+              : "/assets/char-pawn-red.png"
+          }
           x={xFrontend + "%"}
           y={yFrontend + "%"}
           width={this.props.gameData.width + "%"}
@@ -181,6 +185,7 @@ class Pawn extends Component {
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.currentUser,
     actionMenuVisible: state.actionMenu.visible,
     numActions: state.actionMenu.options.length,
     gameData: state.gameData,
