@@ -16,12 +16,6 @@ const gameData = require(__dirname + "/game-logic/DATA.js");
 
 const upload = multer({ dest: __dirname + "/assets/" }); // Set file upload destination
 const imagePath = "/assets/";
-<<<<<<< HEAD
-const url =
-   "mongodb+srv://admin:admin@samurai-murit.mongodb.net/test?retryWrites=true"; // URI for remote database!
-
-=======
->>>>>>> 7e64b491d6a786d9fcc483173aaed618efed6496
 app.use("/assets", express.static(__dirname + "/assets"));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,16 +23,6 @@ app.use("/assets", express.static(__dirname + "/assets"));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Connection to DB, do not close!
-<<<<<<< HEAD
-MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
-   // Add option useNewUrlParser to get rid of console warning message
-   if (err) throw err;
-   finalProjectDB = allDbs.db("FinalProject-DB");
-   usersCollection = finalProjectDB.collection("Users");
-   sessionsCollection = finalProjectDB.collection("Sessions");
-});
-=======
->>>>>>> 7e64b491d6a786d9fcc483173aaed618efed6496
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ GENERAL FUNCTIONS ************//
@@ -64,6 +48,7 @@ gameEngine.createTestGameInst(
    gameData.defaultArmyB,
    gameData.defaultArmyA
 );
+console.log();
 io.on("connection", socket => {
    console.log("connected");
    socket.on("get-game-data", message => {

@@ -9,8 +9,6 @@ const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ PATHS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,17 +30,6 @@ let sessionsCollection;
 let lobbiesCollection;
 let gamesCollection;
 
-//Connection to DB, do not close!
-MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
-   console.log("-------------------Hey db started-----------------------");
-   // Add option useNewUrlParser to get rid of console warning message
-   if (err) throw err;
-   finalProjectDB = allDbs.db("FinalProject-DB");
-   usersCollection = finalProjectDB.collection("Users");
-   sessionsCollection = finalProjectDB.collection("Sessions");
-   lobbiesCollection = finalProjectDB.collection("Lobbies");
-});
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ GENERAL FUNCTIONS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +37,28 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
 //Generates random Id
 const generateId = () => {
    return "" + Math.floor(Math.random() * 100000000000);
+};
+
+//Get username from session
+const getCurrentSessionUsername = (req, res) => {
+   const currentCookie = req.cookies.sid;
+   let username;
+   setTimeout(() => {
+      sessionsCollection.findOne({ sessionId: currentCookie }, function (
+         err,
+         result
+      ) {
+         if (err) throw err;
+         if (result === undefined || result === "" || result === null) {
+            //res.send(JSON.stringify({ success: false }));
+            return;
+         }
+         console.log("Username from current session: ");
+         console.log(result.user);
+         username = result.user;
+      });
+   }, 200);
+   return username;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,34 +175,8 @@ app.get("/logout", upload.none(), function (req, res) {
 
 //************ AUTOLOGIN ************//
 app.get("/verify-cookie", function (req, res) {
-   const currentCookie = req.cookies.sid;
-   let query = [
-      {
-         $match: {
-            sessionId: currentCookie
-         }
-      },
-      {
-         $lookup: {
-            from: "Users",
-            localField: "user",
-            foreignField: "username",
-            as: "user"
-         }
-      }
-   ];
-   setTimeout(() => {
-      sessionsCollection.aggregate(query).toArray((err, result) => {
-         if (err) throw err;
-         if (result === undefined || result.length === 0) {
-            res.send(JSON.stringify({ success: false }));
-            return;
-         }
-         res.send(
-            JSON.stringify({ success: true, username: result[0].user[0].username })
-         );
-      });
-   }, 500);
+   let username = getCurrentSessionUsername(req, res);
+   res.send(JSON.stringify({ success: true, username: username }));
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,15 +199,16 @@ app.get("/get-leaderboard", upload.none(), function (req, res) {
 
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function (req, res) {
+   let username = getCurrentSessionUsername(req, res);
+
    //Lobby to be inserted
    const newLobby = {
-      playerOne: req.body.playerOne,
-      playerTwo: req.body.playerTwo,
-      readyPlayerOne: req.body.readyPlayerOne, // should be a boolean
-      readyPlayerTwo: req.body.readyPlayerTwo, // should be a boolean
+      playerOne: username,
+      playerTwo: "",
+      readyPlayerOne: false,
+      readyPlayerTwo: false,
       //password: req.body.password,
-      creationTime: req.body.creationTime, //The Date and hour
-      decritpion: req.body.description //user can write a description/taunt etc...
+      creationTime: new Date()
    };
 
    //Insert lobby into the database
@@ -232,9 +216,7 @@ app.post("/create-lobby", upload.none(), function (req, res) {
       //Add new user to remote database
       if (err) throw err;
       console.log(
-         `DB: Successfully added lobby for ${req.body.playerOne +
-         " and " +
-         req.body.playerTwo} into Users collection`
+         `DB: Successfully added lobby for ${username} into lobby collection`
       );
       //use this result to get the _Id from the lobby object
       console.log(result);
@@ -246,15 +228,12 @@ app.post("/create-lobby", upload.none(), function (req, res) {
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function (req, res) {
    console.log("Getting lobbies...");
-
-   setTimeout(() => {
-      lobbiesCollection.find({}).toArray((err, result) => {
-         if (err) throw err;
-         console.log("Lobbies:");
-         console.log(result);
-         res.send(JSON.stringify(result));
-      });
-   }, 500);
+   lobbiesCollection.find({}).toArray((err, result) => {
+      if (err) throw err;
+      console.log("Lobbies:");
+      console.log(result);
+      res.send(JSON.stringify(result));
+   });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,6 +320,19 @@ app.all("/*", (req, res) => {
 });
 let counter = 0;
 let setup = async () => {
+   //Connection to DB, do not close!
+   MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
+      console.log(
+         "-----------------------Database Initialised-----------------------"
+      );
+      // Add option useNewUrlParser to get rid of console warning message
+      if (err) throw err;
+      finalProjectDB = allDbs.db("FinalProject-DB");
+      usersCollection = finalProjectDB.collection("Users");
+      sessionsCollection = finalProjectDB.collection("Sessions");
+      lobbiesCollection = finalProjectDB.collection("Lobbies");
+   });
+
    const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
    let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
    webpack.stdout.on("data", data => {
@@ -351,4 +343,3 @@ let setup = async () => {
    });
 };
 setup();
-

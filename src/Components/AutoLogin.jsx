@@ -13,6 +13,8 @@ class UnconnectedAutoLogin extends Component {
           console.log("autologin fetch needs to return an object");
         }
         if (parsedBody.success === true) {
+          console.log("!!!!!!!!!!!!!!!!! LOGGED IN !!!!!!!!!!!!!!!!!!!!!!");
+          console.log(parsedBody);
           this.props.dispatch({
             type: "logged-in",
             toggle: true,
