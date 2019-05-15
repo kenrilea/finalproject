@@ -185,6 +185,10 @@ app.get("/verify-cookie", function (req, res) {
 
 app.get("/verify-cookie2", function (req, res) {
 
+   if (sessionsCollection === undefined) {
+      return;
+   }
+
    sessionsCollection.find({ sessionId: req.cookies.sid }).toArray((err, result) => {
       if (err) throw err;
       //result is an array, we must check it elements with [ ]
@@ -248,6 +252,11 @@ app.post("/create-lobby", upload.none(), function (req, res) {
 
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function (req, res) {
+
+   if (lobbiesCollection === undefined) {
+      return;
+   }
+
    console.log("Getting lobbies...");
    lobbiesCollection.find({}).toArray((err, result) => {
       if (err) throw err;
