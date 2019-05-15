@@ -58,6 +58,7 @@ const getCurrentSessionUsername = (req, res) => {
          username = result.user;
       });
    }, 200);
+   console.log("Username returned from sessions=>username function : ", username)
    return username;
 };
 
@@ -191,16 +192,16 @@ app.get("/get-leaderboard", upload.none(), function (req, res) {
       .sort({ wins: -1, losses: 1 })
       .toArray((err, result) => {
          if (err) throw err;
-         console.log("Leaderboard:");
-         console.log(result);
+         // console.log("Leaderboard:", result);
          res.send(JSON.stringify(result));
       });
 });
 
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function (req, res) {
-   let username = getCurrentSessionUsername(req, res);
-
+   console.log(req.cookies)
+   let username = getCurrentSessionUsername(req);
+   console.log("Username in create lobby: ", username)
    //Lobby to be inserted
    const newLobby = {
       playerOne: username,
@@ -219,7 +220,7 @@ app.post("/create-lobby", upload.none(), function (req, res) {
          `DB: Successfully added lobby for ${username} into lobby collection`
       );
       //use this result to get the _Id from the lobby object
-      console.log(result);
+      // console.log(result);
       res.send({ success: true, lobby: result });
       //res.send(JSON.stringify(result));
    });
@@ -230,8 +231,7 @@ app.get("/get-lobbies", upload.none(), function (req, res) {
    console.log("Getting lobbies...");
    lobbiesCollection.find({}).toArray((err, result) => {
       if (err) throw err;
-      console.log("Lobbies:");
-      console.log(result);
+      // console.log("Lobbies:", result);
       res.send(JSON.stringify(result));
    });
 });

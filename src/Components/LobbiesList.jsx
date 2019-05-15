@@ -29,9 +29,7 @@ class UnconnectedLobbiesList extends Component {
             return resHead.text()
          })
          .then(resBody => {
-
             let parsedLobbies = JSON.parse(resBody) // Array of all lobbies in collection
-
             this.setState({
                lobbies: parsedLobbies
             })
@@ -88,7 +86,7 @@ class UnconnectedLobbiesList extends Component {
                   <button className="ghost-button-dark" onClick={this.getLobbies}>Refresh lobbies </button>
                </div>
                <div className="lobbies-list-container">
-                  {this.getMockLobbies().map(elem => {
+                  {this.state.lobbies.map(elem => {
                      return <LobbiesListElem lobbyId={elem.lobbyId} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
                   })}
                </div>
