@@ -189,7 +189,7 @@ app.get("/verify-cookie2", function (req, res) {
       if (err) throw err;
       //result is an array, we must check it elements with [ ]
       if (result[0] === undefined || result.length === 0) {
-         //Send back success: false is username is not defined
+         //MUST send back success: false is username is not defined
          res.send(JSON.stringify({ success: false }));
          return;
       }
@@ -255,6 +255,28 @@ app.get("/get-lobbies", upload.none(), function (req, res) {
       res.send(JSON.stringify(result));
    });
 });
+
+//************ JOIN LOBBY ************//
+app.post("/join-lobby", upload.none(), function (req, res) {
+
+   const { lobbyId, currentUser } = req.body
+   console.log("Trying to join lobby with id ", lobbyId)
+   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+
+      if (result[0].playerTwo !== "") {
+         console.log("No space in this lobby!")
+         res.send(JSON.stringify({ success: false }))
+         return
+      }
+
+      lobbiesCollection.update({ _id: lobbyId }, { $set: { playerTwo: currentUser } }, (err, result) => {
+
+         if (err) throw err;
+         console.log(`DB: Adding user to lobbyId: ${lobbyId}`)
+         res.send(JSON.stringify({ success: true }))
+      })
+   })
+})
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SOCKET IO STUFF ************//

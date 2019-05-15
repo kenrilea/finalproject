@@ -93,7 +93,7 @@ class UnconnectedLobbiesList extends Component {
                </div>
                <div className="lobbies-list-container">
                   {this.state.lobbies.map(elem => {
-                     return <LobbiesListElem lobbyId={elem.lobbyId} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
+                     return <LobbiesListElem lobbyId={elem._id} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
                   })}
                </div>
 
