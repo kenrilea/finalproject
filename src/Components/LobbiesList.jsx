@@ -55,7 +55,9 @@ class UnconnectedLobbiesList extends Component {
          })
          .then(resBody => {
 
-            if (!resBody.success) {
+            let parsed = JSON.parse(resBody)
+
+            if (!parsed.success) {
                console.log("Error creating lobby")
                return
             }
@@ -63,7 +65,7 @@ class UnconnectedLobbiesList extends Component {
 
             this.props.dispatch({
                type: "JOIN-LOBBY",
-               lobbyId: resBody.lobbyId
+               lobbyId: parsed.lobbyId
             })
          })
    }

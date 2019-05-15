@@ -233,12 +233,15 @@ app.post("/create-lobby", upload.none(), function (req, res) {
    //Insert lobby into the database
    lobbiesCollection.insertOne(newLobby, (err, result) => {
       //Add new user to remote database
-      if (err) throw err;
+      if (err) {
+         res.send(JSON.stringify({ success: false }))
+         throw err;
+      }
       console.log(`DB: Successfully added lobby for ${newLobby.playerOne} into lobby collection`);
       console.log(`New LobbyId: ${newLobby._id}`)
       //use this result to get the _Id from the lobby object
       // console.log(result);
-      res.send({ success: true, lobby: newLobby._id });
+      res.send(JSON.stringify({ success: true, lobbyId: newLobby._id }))
       //res.send(JSON.stringify(result));
    });
 });
