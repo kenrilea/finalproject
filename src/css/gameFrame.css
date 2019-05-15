@@ -23,6 +23,10 @@
 
 /*@media only screen and (min-aspect-ratio: 5/4)*/
 @media (orientation: landscape) {
+  .wrapper {
+    flex-direction: row;
+  }
+
   .gameframe {
     /* width is 5/4 height */
     /*width: 125vh;*/
@@ -31,9 +35,19 @@
     height: 90vh;
     width: 90vh;
   }
+
+  .svg-canvas {
+    margin: 0px;
+    height: 90vh;
+    width: 90vh;
+  }
 }
 
 @media (orientation: portrait) {
+  .wrapper {
+    flex-direction: column;
+  }
+
   .gameframe {
     /* width is 5/4 height */
     /*width: 125vh;*/
@@ -42,9 +56,10 @@
     height: 80vw;
     width: 80vw;
   }
-}
 
-.svg-canvas {
-  height: 100%;
-  width: 100%;
+  .svg-canvas {
+    margin: 0px;
+    height: 80vw;
+    width: 80vw;
+  }
 }

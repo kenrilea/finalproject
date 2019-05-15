@@ -2,6 +2,7 @@ import "./../../css/gameFrame.css";
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import OuterBar from "./OuterBar.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
 import Pawn from "./Actors/Pawn.jsx";
@@ -33,23 +34,26 @@ class GameFrame extends Component {
       socket.emit("get-game-data", {
         gameId: "test"
       });
-
-      socket.on("game-data", data => {
-        const width = 100 / data.width;
-        const height = 100 / data.height;
-
-        let actors = data.map.slice();
-
-        console.log("actors: ", actors);
-        this.setState({
-          loaded: true
-        });
-        this.props.dispatch(setGameData(actors, width, height));
-
-        let player = data.players[parseInt(data.turn) % data.players.length];
-        console.log("Player turn: ", player);
-      });
     }
+
+    socket.on("game-data", data => {
+      const width = 100 / data.width;
+      const height = 100 / data.height;
+
+      let actors = data.map.slice();
+
+      console.log("actors: ", actors);
+      this.props.dispatch(
+        setGameData({ ...data, actors: data.map, width, height })
+      );
+
+      let player = data.players[parseInt(data.turn) % data.players.length];
+      console.log("Player turn: ", player);
+
+      this.setState({
+        loaded: true
+      });
+    });
 
     socket.on("game-state-change", data => {
       console.log("Changes: ", data);
@@ -92,6 +96,7 @@ class GameFrame extends Component {
           </svg>
           <Menu options={this.props.actionMenuOptions} />
         </div>
+        <OuterBar />
       </div>
     );
   };

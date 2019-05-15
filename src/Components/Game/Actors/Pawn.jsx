@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu, setGameData, setGameState } from "./../../../Actions";
 import { selectTile, STATES } from "./../../../GameStates";
-import { assignAnimationToActor } from "./../../../Helpers/GameStateHelpers.js";
+import {
+  assignAnimationToActor,
+  resetToSelectUnitState
+} from "./../../../Helpers/GameStateHelpers.js";
 import { isInRange } from "./../../../Helpers/calcs.js";
 import socket from "./../../SocketSettings.jsx";
 
@@ -38,7 +41,7 @@ class Pawn extends Component {
     if (newPos.x === dest.x && newPos.y === dest.y) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
-      cancelAnimationFrame(this.animationId);
+      cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
       this.setState({
         x: newPos.x,
@@ -52,9 +55,43 @@ class Pawn extends Component {
       y: newPos.y
     });
 
-    cancelAnimationFrame(this.animationId);
-    this.animationId = requestAnimationFrame(() => {
+    cancelAnimationFrame(this.animationMove);
+    this.animationMove = requestAnimationFrame(() => {
       this.updateMove();
+    });
+  };
+
+  updateDied = () => {
+    let dest = { ...this.props.actorData.action.dest, y: 110 };
+
+    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+
+    let newPos = this.updatePosition(
+      { x: this.state.x, y: this.state.y },
+      dest,
+      0.05
+    );
+
+    if (newPos.y > 100) {
+      console.log("cancelled anim");
+      this.props.actorData.action = undefined;
+      cancelAnimationFrame(this.animationDied);
+      assignAnimationToActor();
+      this.setState({
+        x: newPos.x,
+        y: newPos.y
+      });
+      return;
+    }
+
+    this.setState({
+      x: newPos.x,
+      y: newPos.y
+    });
+
+    cancelAnimationFrame(this.animationDied);
+    this.animationDied = requestAnimationFrame(() => {
+      this.updateDied();
     });
   };
 
@@ -65,8 +102,12 @@ class Pawn extends Component {
       this.props.actorData.action !== undefined
     ) {
       if (this.props.actorData.action.type === "move") {
-        this.animationId = requestAnimationFrame(() => {
+        this.animationMove = requestAnimationFrame(() => {
           this.updateMove();
+        });
+      } else if (this.props.actorData.action.type === "died") {
+        this.animationDied = requestAnimationFrame(() => {
+          this.updateDied();
         });
       }
     }
@@ -100,8 +141,9 @@ class Pawn extends Component {
         return () => {
           this.props.dispatch(
             // Highlight nearby tiles
-            setGameData(
-              this.props.gameData.actors.map(actor => {
+            setGameData({
+              ...this.props.gameData,
+              actors: this.props.gameData.actors.map(actor => {
                 let pawnPos = this.props.actorData.pos;
                 let pawnRange = this.props.actorData.moveSpeed;
                 if (isInRange(pawnRange, pawnPos, actor.pos)) {
@@ -112,10 +154,8 @@ class Pawn extends Component {
                 }
 
                 return actor;
-              }),
-              this.props.gameData.width,
-              this.props.gameData.height
-            )
+              })
+            })
           );
 
           // Set state to selectTile
@@ -154,6 +194,26 @@ class Pawn extends Component {
       }
     } else if (this.isGameState(STATES.SELECT_TILE)) {
       // do nothing
+      if (
+        this.props.actorData.team === this.props.gameState.unitInAction.team
+      ) {
+        // if actor is part of the unit in action's team,
+        // change game state back to SELECT_UNIT
+        resetToSelectUnitState();
+      } else {
+        // else,
+        // send a ws message that the player wants to move
+        // to that position
+
+        socket.emit("game-input", {
+          type: "move",
+          actorId: this.props.gameState.unitInAction.actorId,
+          dest: {
+            x: this.props.actorData.pos.x,
+            y: this.props.actorData.pos.y
+          }
+        });
+      }
     }
   };
 
@@ -163,8 +223,56 @@ class Pawn extends Component {
 
     const id = "actorId" + this.props.actorData.actorId;
 
+    const animateUnitInAction =
+      this.props.gameState.unitInAction !== undefined &&
+      this.props.actorData.actorId ===
+        this.props.gameState.unitInAction.actorId ? (
+        <animate
+          xlinkHref={"#" + id}
+          attributeName="y"
+          values={
+            yFrontend.toString() +
+            "%;" +
+            (yFrontend - 1).toString() +
+            "%;" +
+            yFrontend.toString() +
+            "%;"
+          }
+          begin="0s"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      ) : null;
+
+    const animateOtherUnits =
+      this.props.actorData.highlighted &&
+      this.props.gameState.unitInAction !== undefined &&
+      this.props.actorData.team !== this.props.gameState.unitInAction.team ? (
+        <rect
+          id={"rect" + id}
+          stroke={"#42f4eb"}
+          strokeWidth="2"
+          strokeLinecap="square"
+          x={xFrontend + "%"}
+          y={yFrontend + "%"}
+          width={this.props.gameData.width + "%"}
+          height={this.props.gameData.height + "%"}
+        >
+          <animate
+            xlinkHref={"#rect" + id}
+            attributeName="fill"
+            from="#000"
+            to="#f00"
+            begin="0s"
+            dur="1s"
+            repeatCount="indefinite"
+          />
+        </rect>
+      ) : null;
+
     return (
       <g>
+        {animateOtherUnits}
         <image
           id={id}
           xlinkHref={
@@ -178,6 +286,7 @@ class Pawn extends Component {
           height={this.props.gameData.height + "%"}
           onClick={this.handleClick}
         />
+        {animateUnitInAction}
       </g>
     );
   };

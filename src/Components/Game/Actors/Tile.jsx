@@ -83,15 +83,15 @@ class Tile extends Component {
       stroke: stroke,
       strokeWidth: "2",
       strokeLinecap: "square",
-      x: xFrontend + "%",
-      y: yFrontend + "%",
       width: this.props.gameData.width + "%",
       height: this.props.gameData.height + "%"
     };
 
+    const id = "actorId" + this.props.actorData.actorId;
+
     const animate = this.props.actorData.highlighted ? (
       <animate
-        xlinkHref={"#" + this.props.actorData.actorId}
+        xlinkHref={"#" + id}
         attributeName="fill"
         from="#000"
         to="#999"
@@ -104,8 +104,10 @@ class Tile extends Component {
     return (
       <g>
         <rect
-          id={this.props.actorData.actorId}
+          id={id}
           style={style}
+          x={xFrontend + "%"}
+          y={yFrontend + "%"}
           onClick={this.handleClick}
         />
         {animate}

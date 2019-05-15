@@ -1,0 +1,102 @@
+.outerbar {
+  background: #f00;
+  position: relative;
+  margin: 0px;
+  z-index: 1;
+}
+
+.outerbar-points-section {
+}
+
+.outerbar-point-label {
+  font-size: 20px;
+}
+
+.outerbar-points-container {
+}
+
+.outerbar-points-players {
+}
+
+.outerbar-player-names {
+}
+
+.outerbar-points {
+}
+
+.outerbar button {
+  border-color: blue;
+  border-width: 10px;
+}
+
+@media (orientation: landscape) {
+  .outerbar {
+    height: 100%;
+    width: 20vh;
+    display: flex;
+    justify-content: space-evenly;
+    flex-flow: column;
+  }
+
+  .outerbar-points-section {
+  }
+
+  .outerbar-point-label {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .outerbar-points-container {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .outerbar-points-players {
+  }
+
+  .outerbar-player-names {
+  }
+
+  .outerbar-points {
+  }
+
+  .outerbar button {
+  }
+}
+
+@media (orientation: portrait) {
+  .outerbar {
+    height: 20vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-flow: row;
+  }
+
+  .outerbar-points-section {
+  }
+
+  .outerbar-point-label {
+    margin: auto 0;
+    padding-right: 15px;
+  }
+
+  .outerbar-points-container {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+  }
+
+  .outerbar-points-players {
+    padding-top: 15px;
+  }
+
+  .outerbar-player-names {
+  }
+
+  .outerbar-points {
+  }
+
+  .outerbar button {
+  }
+}
