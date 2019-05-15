@@ -449,7 +449,6 @@ io.on("connection", socket => {
                 roomDataToBePassed.readyPlayerOne = ready;
               }
             );
-
             break;
           case result[0].playerTwo:
             console.log(
@@ -473,7 +472,7 @@ io.on("connection", socket => {
         }
       });
 
-      socket.to(room).emit("ready", roomDataToBePassed);
+      socket.in(room).emit("ready", roomDataToBePassed);
     };
 
   ////////////////////////////////
