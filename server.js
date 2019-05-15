@@ -59,7 +59,7 @@ const getCurrentSessionUsername = (req, res) => {
   const currentCookie = req.cookies.sid;
   let username;
 
-  sessionsCollection.findOne({ sessionId: currentCookie }, function(
+  return sessionsCollection.findOne({ sessionId: currentCookie }, function(
     err,
     result
   ) {
@@ -67,12 +67,14 @@ const getCurrentSessionUsername = (req, res) => {
     if (result === undefined || result === "" || result === null) {
       return;
     }
-    console.log("Username from current session: ");
-    console.log(result.user);
     username = result.user;
+    console.log(
+      "Username returned from sessions=>username function : ",
+      username
+    );
+    return username;
   });
-  //}, 200);
-  return username;
+  // }, 200);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,9 +190,28 @@ app.get("/logout", upload.none(), function(req, res) {
 });
 
 //************ AUTOLOGIN ************//
+
 app.get("/verify-cookie", function(req, res) {
   let username = getCurrentSessionUsername(req, res);
   res.send(JSON.stringify({ success: true, username: username }));
+});
+
+///////////////////////////////////////
+
+app.get("/verify-cookie2", function(req, res) {
+  sessionsCollection
+    .find({ sessionId: req.cookies.sid })
+    .toArray((err, result) => {
+      if (err) throw err;
+      //result is an array, we must check it elements with [ ]
+      if (result[0] === undefined || result.length === 0) {
+        //MUST send back success: false is username is not defined
+        res.send(JSON.stringify({ success: false }));
+        return;
+      }
+      // console.log("Username found in db from sessionId: ", result[0].user)
+      res.send(JSON.stringify({ success: true, username: result[0].user }));
+    });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,36 +226,39 @@ app.get("/get-leaderboard", upload.none(), function(req, res) {
     .sort({ wins: -1, losses: 1 })
     .toArray((err, result) => {
       if (err) throw err;
-      console.log("Leaderboard:");
-      console.log(result);
+      // console.log("Leaderboard:", result);
       res.send(JSON.stringify(result));
     });
 });
 
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function(req, res) {
-  let username = getCurrentSessionUsername(req, res);
-
   //Lobby to be inserted
   const newLobby = {
-    playerOne: username,
+    _id: generateId(),
+    playerOne: req.body.currentUser,
     playerTwo: "",
     readyPlayerOne: false,
     readyPlayerTwo: false,
-    //password: req.body.password,
-    creationTime: new Date()
+    creationTime: new Date().toLocaleString()
   };
 
   //Insert lobby into the database
   lobbiesCollection.insertOne(newLobby, (err, result) => {
     //Add new user to remote database
-    if (err) throw err;
+    if (err) {
+      res.send(JSON.stringify({ success: false }));
+      throw err;
+    }
     console.log(
-      `DB: Successfully added lobby for ${username} into lobby collection`
+      `DB: Successfully added lobby for ${
+        newLobby.playerOne
+      } into lobby collection`
     );
+    console.log(`New LobbyId: ${newLobby._id}`);
     //use this result to get the _Id from the lobby object
-    console.log(result);
-    res.send({ success: true, lobby: result });
+    // console.log(result);
+    res.send(JSON.stringify({ success: true, lobbyId: newLobby._id }));
     //res.send(JSON.stringify(result));
   });
 });
@@ -244,9 +268,31 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
   console.log("Getting lobbies...");
   lobbiesCollection.find({}).toArray((err, result) => {
     if (err) throw err;
-    console.log("Lobbies:");
-    console.log(result);
+    // console.log("Lobbies:", result);
     res.send(JSON.stringify(result));
+  });
+});
+
+//************ JOIN LOBBY ************//
+app.post("/join-lobby", upload.none(), function(req, res) {
+  const { lobbyId, currentUser } = req.body;
+  console.log("Trying to join lobby with id ", lobbyId);
+  lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+    if (result[0].playerTwo !== "") {
+      console.log("No space in this lobby!");
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+
+    lobbiesCollection.update(
+      { _id: lobbyId },
+      { $set: { playerTwo: currentUser } },
+      (err, result) => {
+        if (err) throw err;
+        console.log(`DB: Adding user to lobbyId: ${lobbyId}`);
+        res.send(JSON.stringify({ success: true }));
+      }
+    );
   });
 });
 
@@ -256,11 +302,15 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
 
 io.on("connection", socket => {
   console.log("Connected to socket");
+
   socket.on("playerOneReady", () => {
     console.log("Socket: Player one is ready!");
+    socket.emit("setStatePlayerOneReady");
   });
   socket.on("playerTwoReady", () => {
     console.log("Socket: Player two is ready!");
+    //
+    socket.emit("setStatePlayerTwoReady");
   });
   socket.on("login", () => {
     console.log("Socket: Logging in");

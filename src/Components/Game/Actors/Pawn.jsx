@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu, setGameData, setGameState } from "./../../../Actions";
 import { selectTile, STATES } from "./../../../GameStates";
+import { assignAnimationToActor } from "./../../../Helpers/GameStateHelpers.js";
 import { isInRange } from "./../../../Helpers/calcs.js";
 import socket from "./../../SocketSettings.jsx";
 
@@ -10,6 +11,35 @@ class Pawn extends Component {
 
   isGameState = state => {
     return state === this.props.gameState.type;
+  };
+
+  updatePosition = (start, end, mult) => {
+    let newPos = start;
+
+    newPos.x += (end.x - start.x) * mult;
+    newPos.y += (end.y - start.y) * mult;
+
+    if (Math.abs(newPos.x - end.x) < 0.5) {
+      newPos.x = end.x;
+    }
+    if (Math.abs(newPos.y - end.y) < 0.5) {
+      newPos.y = end.y;
+    }
+
+    return newPos;
+  };
+
+  componentDidUpdate = () => {
+    console.log("state: ", this.props.gameState.type);
+    if (
+      this.isGameState(STATES.SHOW_ANIMATIONS) &&
+      this.props.actorData.action !== undefined
+    ) {
+      console.log("moving");
+      setTimeout(() => {
+        assignAnimationToActor();
+      }, 3000);
+    }
   };
 
   getCallbackFunc = action => {
@@ -49,6 +79,8 @@ class Pawn extends Component {
     event.stopPropagation();
     console.log("Pawn: ", this.props.actorData.actorId);
 
+    if (this.isGameState(STATES.SHOW_ANIMATIONS)) return;
+
     if (this.isGameState(STATES.SELECT_UNIT)) {
       // Show or hide action menu
       if (this.props.actionMenuVisible) {
@@ -57,8 +89,8 @@ class Pawn extends Component {
         this.props.dispatch(
           setActionMenu(
             true,
-            this.props.actorData.pos.x * this.props.gameData.width, // Not being used right now.
-            this.props.actorData.pos.y * this.props.gameData.height, // Not being used right now.
+            this.props.actorData.pos.x * this.props.gameData.width,
+            this.props.actorData.pos.y * this.props.gameData.height,
             this.props.actorData.actions.map(action => {
               return {
                 text: action,
@@ -77,15 +109,47 @@ class Pawn extends Component {
     const xFrontend = this.props.actorData.pos.x * this.props.gameData.width;
     const yFrontend = this.props.actorData.pos.y * this.props.gameData.height;
 
+    const id = "actorId" + this.props.actorData.actorId;
+
+    const action = this.props.actorData.action;
+
+    const animations =
+      action !== undefined && action.type === "move" ? (
+        <g>
+          <animate
+            xlinkHref={"#" + id}
+            attributeName="x"
+            from={xFrontend + "%"}
+            to={action.dest.x * this.props.gameData.width + "%"}
+            dur="3s"
+            begin="0s"
+            fill="freeze"
+          />
+          <animate
+            xlinkHref={"#" + id}
+            attributeName="y"
+            from={yFrontend + "%"}
+            to={action.dest.y * this.props.gameData.height + "%"}
+            dur="3s"
+            begin="0s"
+            fill="freeze"
+          />
+        </g>
+      ) : null;
+
     return (
-      <image
-        xlinkHref="/assets/char-pawn-blue.png"
-        x={xFrontend + "%"}
-        y={yFrontend + "%"}
-        width={this.props.gameData.width + "%"}
-        height={this.props.gameData.height + "%"}
-        onClick={this.handleClick}
-      />
+      <g>
+        <image
+          id={id}
+          xlinkHref="/assets/char-pawn-blue.png"
+          x={xFrontend + "%"}
+          y={yFrontend + "%"}
+          width={this.props.gameData.width + "%"}
+          height={this.props.gameData.height + "%"}
+          onClick={this.handleClick}
+        />
+        {animations}
+      </g>
     );
   };
 }

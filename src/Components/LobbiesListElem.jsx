@@ -18,6 +18,7 @@ class UnconnectedLobbiesListElem extends Component {
 
       let data = new FormData()
       data.append("lobbyId", lobbyId)
+      data.append("currentUser", this.props.currentUser)
 
       fetch("/join-lobby", {
          method: "POST",
@@ -28,13 +29,15 @@ class UnconnectedLobbiesListElem extends Component {
             return resHead.text()
          })
          .then(resBody => {
-            if (!resBody.success) {
+
+            let parsed = JSON.parse(resBody)
+
+            if (!parsed.success) {
                console.log("Error joining lobby")
                return;
             }
 
             console.log("Joining lobby...")
-
             this.props.dispatch({
                type: "JOIN-LOBBY",
                lobbyId: lobbyId,
@@ -66,7 +69,7 @@ class UnconnectedLobbiesListElem extends Component {
             </div>
 
             <button className="ghost-button-dark" onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
-               {this.props.playerTwo ? "In Progress" : "I want some!"}
+               {this.props.playerTwo ? "In Progress" : "Join!"}
             </button>
 
          </div>

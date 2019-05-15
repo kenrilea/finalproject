@@ -29,9 +29,7 @@ class UnconnectedLobbiesList extends Component {
             return resHead.text()
          })
          .then(resBody => {
-
             let parsedLobbies = JSON.parse(resBody) // Array of all lobbies in collection
-
             this.setState({
                lobbies: parsedLobbies
             })
@@ -44,8 +42,12 @@ class UnconnectedLobbiesList extends Component {
 
    createLobby = () => {
 
+      let data = new FormData()
+      data.append("currentUser", this.props.currentUser)
+
       fetch("/create-lobby", {
          method: "POST",
+         body: data,
          credentials: "include"
       })
          .then(resHead => {
@@ -53,7 +55,9 @@ class UnconnectedLobbiesList extends Component {
          })
          .then(resBody => {
 
-            if (!resBody.success) {
+            let parsed = JSON.parse(resBody)
+
+            if (!parsed.success) {
                console.log("Error creating lobby")
                return
             }
@@ -61,7 +65,7 @@ class UnconnectedLobbiesList extends Component {
 
             this.props.dispatch({
                type: "JOIN-LOBBY",
-               lobbyId: resBody.lobbyId
+               lobbyId: parsed.lobbyId
             })
          })
    }
@@ -83,16 +87,20 @@ class UnconnectedLobbiesList extends Component {
             <div className="lobbies-list-foreground material-shadow animated-fade-in-delay">
 
                <div className="lobbies-list-button-cont">
+
+                  <h3 className="lobbies-label">Lobbies</h3>
                   <button className="ghost-button-dark" onClick={this.createLobby}>Create new lobby</button>
                   <button className="ghost-button-dark" onClick={this.getLobbies}>Refresh lobbies </button>
+
                </div>
                <div className="lobbies-list-container">
-                  {this.getMockLobbies().map(elem => {
-                     return <LobbiesListElem lobbyId={elem.lobbyId} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
+                  {this.state.lobbies.map(elem => {
+                     return <LobbiesListElem lobbyId={elem._id} playerOne={elem.playerOne} playerTwo={elem.playerTwo} />
                   })}
                </div>
 
             </div>
+
          </div>
       )
    }
@@ -102,6 +110,7 @@ class UnconnectedLobbiesList extends Component {
 let mapStateToProps = state => {
    return {
       loggedIn: state.loggedIn,
+      currentUser: state.currentUser,
       currentLobby: state.currentLobby,
       inLobby: state.inLobby,
       lobbyToJoinId: state.currentLobby
