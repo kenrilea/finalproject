@@ -240,6 +240,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function(req, res) {
   if (lobbiesCollection === undefined) {
+    res.send(JSON.stringify({ success: false }));
     return;
   }
 
@@ -256,6 +257,12 @@ app.post("/join-lobby", upload.none(), function(req, res) {
   const { lobbyId, currentUser } = req.body;
   console.log("Trying to join lobby with id ", lobbyId);
   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+    if (result[0] === undefined) {
+      console.log("Error joining lobby!");
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+
     if (result[0].playerTwo !== "") {
       console.log("No space in this lobby!");
       res.send(JSON.stringify({ success: false }));
@@ -274,6 +281,80 @@ app.post("/join-lobby", upload.none(), function(req, res) {
   });
 });
 
+//************ USER READY ************//
+app.post("/user-ready", upload.none(), function(req, res) {
+  const { lobbyId, currentUser } = req.body;
+  console.log(
+    `|Ready| button pressed by "` + currentUser + `" for lobby with id`,
+    lobbyId
+  );
+  lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+    if (
+      result[0].playerTwo !== currentUser &&
+      result[0].playerOne !== currentUser
+    ) {
+      console.log(
+        `Error, "` +
+          currentUser +
+          `" is not registered as playerOne or playerTwo`
+      );
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+
+    let ready;
+    switch (currentUser) {
+      case result[0].playerOne:
+        console.log(`User "` + currentUser + `" is registered as playerOne`);
+        ready = !result[0].readyPlayerOne;
+        lobbiesCollection.update(
+          { _id: lobbyId },
+          { $set: { readyPlayerOne: ready } },
+          (err, result) => {
+            if (err) throw err;
+            console.log(`DB: Updating playerOne ready to ${ready}`);
+            res.send(JSON.stringify({ success: true }));
+          }
+        );
+
+        break;
+      case result[0].playerTwo:
+        console.log(`User "` + currentUser + `" is registered as playerTwo`);
+        ready = !result[0].readyPlayerTwo;
+        lobbiesCollection.updateOne(
+          { _id: lobbyId },
+          { $set: { readyPlayerTwo: ready } },
+          (err, result) => {
+            if (err) throw err;
+            console.log(`DB: Updating playerTwo ready to ${ready}`);
+            res.send(JSON.stringify({ success: true }));
+          }
+        );
+        break;
+      default:
+        console.log(
+          "Error, current user is not registered as playerOne or playerTwo"
+        );
+        res.send(JSON.stringify({ success: false }));
+    }
+  });
+});
+
+//************ GET CURRENT LOBBY ************//
+app.post("/get-current-lobby", upload.none(), function(req, res) {
+  const currentLobbyId = req.body.currentLobbyId;
+
+  lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
+    if (err) throw err;
+    if (result[0] === undefined) {
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+    //Send back lobby object in response
+    res.send(JSON.stringify(result[0]));
+  });
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,13 +366,20 @@ io.on("connection", socket => {
     console.log("Socket: Player one is ready!");
     socket.emit("setStatePlayerOneReady");
   });
+
   socket.on("playerTwoReady", () => {
     console.log("Socket: Player two is ready!");
     //
     socket.emit("setStatePlayerTwoReady");
   });
+
   socket.on("login", () => {
     console.log("Socket: Logging in");
+  });
+
+  socket.on("lobby-update", () => {
+    //Refreshes lobby page for both users
+    socket.emit("refresh-lobby");
   });
 });
 
@@ -319,7 +407,7 @@ let checkVersion = async () => {
             let x = await fetch('/__version')
             let newVersion = await x.text()
             if (__version !== newVersion) {
-                location.reload();
+               location.reload();
             }
         } catch (err) { }
     }

@@ -44,7 +44,6 @@ class UnconnectedLobbiesListElem extends Component {
                inLobby: true,
             })
          })
-
    }
 
    render = () => {
