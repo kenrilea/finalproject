@@ -362,12 +362,44 @@ app.post("/get-current-lobby", upload.none(), function(req, res) {
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //_____________GAME TEST CODE____________________-
-let army = ["pawn"];
+let army = ["pawn", "archer", "knight", "legionary", "catapult"];
 gameEngine.createTestGameInst("user1", "user2", army, army);
+/*
+gameEngine.getGameInst("test").map.forEach(char => {
+  if (char.actorType !== "char") {
+    return;
+  }
+  console.log(char.pos);
+});
+let mres = gameEngine.handlerUserInput({
+  gameId: "test",
+  action: {
+    type: "move",
+    actorId: "26",
+    dest: { x: 0, y: 2 }
+  },
+  team: "user1"
+});
+console.log(mres);
+console.log("______________________");
+gameEngine.getGameInst("test").map.forEach(char => {
+  if (char.actorType !== "char") {
+    return;
+  }
+  console.log(char.actorId);
+  console.log(char.pos);
+});
+
+console.log(gameEngine.getGameInst("test")["points"]);
+console.log("_______________________________________________________________");
+console.log("_______________________________________________________________");*/
+//console.log(gameEngine.getGameInst("test"));
+
 //____________END OF GAME TEST CODE___________________
 
 io.on("connection", socket => {
   console.log("Connected to socket");
+  console.log(socket.request.headers.cookie);
 
   socket.on("playerOneReady", () => {
     console.log("Socket: Player one is ready!");

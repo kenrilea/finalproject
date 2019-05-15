@@ -118,6 +118,12 @@ let editGameData = (gameId, mods) => {
         });
       }
     }
+    if (mod.type === "ranged-shot") {
+      let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
+        return actor.actorId === mod.actorId;
+      });
+      let char = gameInstances[gameId]["map"][actorIndex];
+    }
   });
 
   return changes;
@@ -128,10 +134,14 @@ let addMessage = (gameId, message) => {
 };
 
 //________________________________________________________________________________________________
+
 let createGameInst = (teamA, teamB, armyA, armyB) => {
-  let width = 8;
-  let height = 8;
+  let width = 5;
+  let height = 5;
   let gameId = 0;
+  let points = {};
+  points[teamA] = 0;
+  points[teamB] = 0;
   do {
     gameId = Math.floor(Math.random() * 1000000);
   } while (gameInstances[gameId] !== undefined);
@@ -141,11 +151,14 @@ let createGameInst = (teamA, teamB, armyA, armyB) => {
     players: [teamA, teamB],
     chat: [],
     width,
-    height
+    height,
+    playerWon: undefined,
+    points: points
   };
   editGameData(gameId, createMap(width, height));
-  editGameData(gameId, createArmy(armyA, teamA), 1);
-  editGameData(gameId, createArmy(armyB, teamB), 2);
+  editGameData(gameId, createArmy(armyA, teamA, 1));
+  editGameData(gameId, createArmy(armyB, teamB, 2));
+  return gameId;
 };
 let createTestGameInst = (teamA, teamB, armyA, armyB) => {
   let width = 5;
@@ -167,28 +180,24 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
   editGameData(gameId, createMap(width, height));
   editGameData(gameId, createArmy(armyA, teamA, 1));
   editGameData(gameId, createArmy(armyB, teamB, 2));
+  return gameId;
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
   let changes = [];
   let success = true;
+
+  let players = gameInstances[input.gameId]["players"];
+  let gameTurn =
+    players[parseInt(gameInstances[input.gameId]["turn"]) % players.length];
   if (input.action.type === "move") {
-    let players = gameInstances[input.gameId]["players"];
-    if (
-      players[
-        parseInt(gameInstances[input.gameId]["turn"]) % players.length
-      ] === input.team
-    ) {
+    console.log("moving actor");
+    if (gameTurn === input.team) {
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
-  if (input.action.type === "attack") {
-    let players = gameInstances[input.gameId]["players"];
-    if (
-      players[
-        parseInt(gameInstances[input.gameId]["turn"]) % players.length
-      ] === input.team
-    ) {
+  if (input.action.type === "ranged-shot") {
+    if (gameTurn === input.team) {
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
