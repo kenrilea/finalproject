@@ -18,9 +18,10 @@ export const selectTile = unitInAction => {
   };
 };
 
-export const showAnimations = () => {
+export const updateAnimations = actionList => {
   return {
-    type: STATES.SHOW_ANIMATIONS
+    type: STATES.SHOW_ANIMATIONS,
+    actionList
   };
 };
 

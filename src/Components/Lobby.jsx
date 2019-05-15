@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import socket from "./SocketSettings.jsx"
 
@@ -20,8 +21,13 @@ class UnconnectedLobby extends Component {
    componentDidMount = () => {
       socket.open()
 
-      socket.on("bothPlayersReady", () => {
-         this.setState({ readyOne: !state.readyOne })
+      socket.on("setStatePlayerOneReady", () => {
+         console.log("Setting state for readyOne to true !!!")
+         this.setState({ readyOne: true })
+      })
+      socket.on("setStatePlayerTwoReady", () => {
+         console.log("Setting state for readyTwo to true !!!")
+         this.setState({ readyTwo: true })
       })
 
       this.getCurrentLobby()
@@ -64,11 +70,11 @@ class UnconnectedLobby extends Component {
       return "ready";
    };
    handlerReadyButtonOne = () => {
-      this.setState({ readyOne: !this.state.readyOne });
+      // this.setState({ readyOne: !this.state.readyOne });
       socket.emit("playerOneReady")
    };
    handlerReadyButtonTwo = () => {
-      this.setState({ readyTwo: !this.state.readyTwo });
+      // this.setState({ readyTwo: !this.state.readyTwo });
       socket.emit("playerTwoReady")
    };
    renderReadyButtonOne = () => {
@@ -83,7 +89,7 @@ class UnconnectedLobby extends Component {
          return (
             <button className={buttonClass} onClick={this.handlerReadyButtonOne}>
                Ready
-        </button>
+            </button>
          );
       }
    };
@@ -105,23 +111,35 @@ class UnconnectedLobby extends Component {
    };
    render = () => {
 
+      //Redirect to lobby list if !props.inLobby
+      if (!this.props.inLobby) {
+         return <Redirect to={"/lobbies_list"} />
+      }
+
+      //If both players have pressed ready, redirect to the appropriate game page
+      if (this.state.readyOne && this.state.readyTwo) {
+         return <Redirect to={"game/:" + this.props.lobbyToJoinId} />
+      }
+
       return (
-         <div className={"MainLobbyDiv animated-fade-in"}>
-            <div className={"PlayerOneLobbyDiv"}>
-               <img src="/assets/char-pawn-blue.png" />
-               <div className={"lobbyCenterContent"}>
-                  <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
-                  {/* {this.renderReadyButtonOne()} */}
-                  <button onClick={this.handlerReadyButtonOne}>
-                     Ready
-                  </button>
+         <div className="lobbies-list-background">
+            <div className={"MainLobbyDiv animated-fade-in lobbies-list-foreground material-shadow"}>
+               <div className={"PlayerOneLobbyDiv"}>
+                  <img src="/assets/char-pawn-blue.png" />
+                  <div className={"lobbyCenterContent"}>
+                     <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
+                     {/* {this.renderReadyButtonOne()} */}
+                     <button onClick={this.handlerReadyButtonOne}>
+                        Ready
+                     </button>
+                  </div>
                </div>
-            </div>
-            <div className={"PlayerTwoLobbyDiv"}>
-               <img src="/assets/char-pawn-red.png" />
-               <div className={"lobbyCenterContent"}>
-                  <p>{this.state.playerTwo + " is " + this.renderReadyTwo()}</p>
-                  {this.renderReadyButtonTwo()}
+               <div className={"PlayerTwoLobbyDiv"}>
+                  <img src="/assets/char-pawn-red.png" />
+                  <div className={"lobbyCenterContent"}>
+                     <p>{this.state.playerTwo + " is " + this.renderReadyTwo()}</p>
+                     {this.renderReadyButtonTwo()}
+                  </div>
                </div>
             </div>
          </div>
@@ -132,7 +150,8 @@ class UnconnectedLobby extends Component {
 let mapStateToProps = state => {
    return {
       currentUser: state.currentUser,
-      currentLobbyId: state.currentLobby
+      currentLobbyId: state.currentLobby,
+      inLobby: state.inLobby
    }
 };
 let Lobby = connect(mapStateToProps)(UnconnectedLobby);

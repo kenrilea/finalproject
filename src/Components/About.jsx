@@ -9,8 +9,8 @@ class About extends Component {
       return (
          <div className="lobbies-list-background">
             <div className="lobbies-list-foreground material-shadow animated-fade-in">
-               <h3> About us! </h3>
-               <div>This our about page. Wow!</div>
+               <h3 className="about-top-label"> About us! </h3>
+               <div>Don't believe the facts? Just <a href="https://github.com/kenrilea/finalproject">check out our GitHub repo</a> </div>
             </div>
          </div>
       )

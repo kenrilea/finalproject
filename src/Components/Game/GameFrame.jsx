@@ -7,6 +7,12 @@ import VoidTile from "./Actors/VoidTile.jsx";
 import Pawn from "./Actors/Pawn.jsx";
 import Menu from "./Menu/Menu.jsx";
 import { setGameData } from "./../../Actions";
+import { STATES } from "./../../GameStates";
+import {
+  resetToSelectUnitState,
+  updateAnimationPhase,
+  assignAnimationToActor
+} from "./../../Helpers/GameStateHelpers.js";
 import socket from "./../SocketSettings.jsx";
 
 class GameFrame extends Component {
@@ -16,6 +22,10 @@ class GameFrame extends Component {
       loaded: false
     };
   }
+
+  isGameState = state => {
+    return state === this.props.gameState.type;
+  };
 
   componentDidMount = () => {
     if (!this.state.loaded) {
@@ -35,8 +45,23 @@ class GameFrame extends Component {
           loaded: true
         });
         this.props.dispatch(setGameData(actors, width, height));
+
+        let player = data.players[parseInt(data.turn) % data.players.length];
+        console.log("Player turn: ", player);
       });
     }
+
+    socket.on("game-state-change", data => {
+      console.log("Changes: ", data);
+      if (!data.success) {
+        alert("error!");
+        return;
+      }
+
+      let changes = data.changes;
+
+      updateAnimationPhase(changes);
+    });
   };
 
   getActorElements = () => {
@@ -75,7 +100,8 @@ class GameFrame extends Component {
 const mapStateToProps = state => {
   return {
     actionMenuOptions: state.actionMenu.options,
-    gameData: state.gameData
+    gameData: state.gameData,
+    gameState: state.gameState
   };
 };
 

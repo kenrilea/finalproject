@@ -3,29 +3,41 @@ import { connect } from "react-redux";
 
 class UnconnectedAutoLogin extends Component {
   componentDidMount = () => {
-    fetch("/verify-cookie", { credentials: "include" })
-      .then(res => {
-        return res.text();
-      })
-      .then(resBody => {
-        let parsedBody = JSON.parse(resBody);
-        if (typeof parsedBody !== "object") {
-          console.log("autologin fetch needs to return an object");
-        }
-        if (parsedBody.success === true) {
-          console.log("!!!!!!!!!!!!!!!!! LOGGED IN !!!!!!!!!!!!!!!!!!!!!!");
+    //If not loggedIn in props, check if the cookie is valid!
+    if (!this.props.loggedIn) {
+      fetch("/verify-cookie", { credentials: "include" })
+        .then(res => {
+          return res.text();
+        })
+        .then(resBody => {
+          let parsedBody = JSON.parse(resBody);
+          if (!parsedBody.success) {
+            console.log("Auto-Login DENIED - Invalid cookie");
+            return;
+          }
+
+          console.log(`Automatically logging in ${parsedBody.username}`);
           console.log(parsedBody);
           this.props.dispatch({
             type: "logged-in",
             toggle: true,
             username: parsedBody.username
           });
-        }
-      });
+        });
+    }
   };
+
   render = () => {
     return null;
   };
 }
-let AutoLogin = connect()(UnconnectedAutoLogin);
+
+let mapStateToProps = state => {
+  return {
+    loggedIn: state.loggedIn
+  };
+};
+
+let AutoLogin = connect(mapStateToProps)(UnconnectedAutoLogin);
+
 export default AutoLogin;
