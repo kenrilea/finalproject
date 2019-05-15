@@ -122,22 +122,24 @@ class UnconnectedLobby extends Component {
       }
 
       return (
-         <div className={"MainLobbyDiv animated-fade-in"}>
-            <div className={"PlayerOneLobbyDiv"}>
-               <img src="/assets/char-pawn-blue.png" />
-               <div className={"lobbyCenterContent"}>
-                  <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
-                  {/* {this.renderReadyButtonOne()} */}
-                  <button onClick={this.handlerReadyButtonOne}>
-                     Ready
-                  </button>
+         <div className="lobbies-list-background">
+            <div className={"MainLobbyDiv animated-fade-in lobbies-list-foreground material-shadow"}>
+               <div className={"PlayerOneLobbyDiv"}>
+                  <img src="/assets/char-pawn-blue.png" />
+                  <div className={"lobbyCenterContent"}>
+                     <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
+                     {/* {this.renderReadyButtonOne()} */}
+                     <button onClick={this.handlerReadyButtonOne}>
+                        Ready
+                     </button>
+                  </div>
                </div>
-            </div>
-            <div className={"PlayerTwoLobbyDiv"}>
-               <img src="/assets/char-pawn-red.png" />
-               <div className={"lobbyCenterContent"}>
-                  <p>{this.state.playerTwo + " is " + this.renderReadyTwo()}</p>
-                  {this.renderReadyButtonTwo()}
+               <div className={"PlayerTwoLobbyDiv"}>
+                  <img src="/assets/char-pawn-red.png" />
+                  <div className={"lobbyCenterContent"}>
+                     <p>{this.state.playerTwo + " is " + this.renderReadyTwo()}</p>
+                     {this.renderReadyButtonTwo()}
+                  </div>
                </div>
             </div>
          </div>
