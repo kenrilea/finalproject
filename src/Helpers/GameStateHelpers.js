@@ -27,12 +27,7 @@ export const resetToSelectUnitState = () => {
   );
 };
 
-export const updateAnimationPhase = (actionList, numActions, counter) => {
-  console.log("change state");
-  store.dispatch(
-    setGameState(updateAnimations(actionList.slice(1), numActions, counter))
-  );
-
+export const updateAnimationPhase = actionList => {
   let action = actionList[0];
 
   store.dispatch(
@@ -51,10 +46,13 @@ export const updateAnimationPhase = (actionList, numActions, counter) => {
       store.getState().gameData.height
     )
   );
+
+  console.log("change state", actionList);
+  store.dispatch(setGameState(updateAnimations(actionList.slice(1))));
 };
 
 export const assignAnimationToActor = () => {
-  if (store.getState().gameState.actionList.length === 0) {
+  if (store.getState().gameState.actionList.length <= 0) {
     /*store.dispatch(
       setGameData(
         store.getState().gameData.actors.map(actor => {
