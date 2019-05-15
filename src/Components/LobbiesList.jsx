@@ -18,7 +18,7 @@ class UnconnectedLobbiesList extends Component {
    }
 
    componentDidMount = () => {
-      //Popular lobbies array in state upon loading!
+      //Populate lobbies array in state upon loading!
       this.getLobbies()
    }
 

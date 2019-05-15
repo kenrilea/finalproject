@@ -74,7 +74,6 @@ const getCurrentSessionUsername = (req, res) => {
       );
       return username;
    });
-   // }, 200);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,11 +198,9 @@ app.get("/verify-cookie", function (req, res) {
 ///////////////////////////////////////
 
 app.get("/verify-cookie2", function (req, res) {
-
    if (sessionsCollection === undefined) {
       return;
    }
-
    sessionsCollection.find({ sessionId: req.cookies.sid }).toArray((err, result) => {
       if (err) throw err;
       //result is an array, we must check it elements with [ ]
@@ -269,10 +266,6 @@ app.post("/create-lobby", upload.none(), function (req, res) {
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function (req, res) {
 
-   if (lobbiesCollection === undefined) {
-      return;
-   }
-
    console.log("Getting lobbies...");
    lobbiesCollection.find({}).toArray((err, result) => {
       if (err) throw err;
@@ -286,6 +279,13 @@ app.post("/join-lobby", upload.none(), function (req, res) {
    const { lobbyId, currentUser } = req.body;
    console.log("Trying to join lobby with id ", lobbyId);
    lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+
+      if (result[0] === undefined) {
+         console.log("Error joining lobby!");
+         res.send(JSON.stringify({ success: false }));
+         return;
+      }
+
       if (result[0].playerTwo !== "") {
          console.log("No space in this lobby!");
          res.send(JSON.stringify({ success: false }));
@@ -304,6 +304,22 @@ app.post("/join-lobby", upload.none(), function (req, res) {
    });
 });
 
+//************ GET CURRENT LOBBY ************//
+app.post("/get-current-lobby", upload.none(), function (req, res) {
+
+   const currentLobbyId = req.body.currentLobbyId
+
+   lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
+      if (err) throw err;
+      if (result[0] === undefined) {
+         res.send(JSON.stringify({ success: false }))
+         return
+      }
+      //Send back lobby object in response
+      res.send(JSON.stringify(result[0]))
+   })
+})
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,14 +331,22 @@ io.on("connection", socket => {
       console.log("Socket: Player one is ready!");
       socket.emit("setStatePlayerOneReady");
    });
+
    socket.on("playerTwoReady", () => {
       console.log("Socket: Player two is ready!");
       //
       socket.emit("setStatePlayerTwoReady");
    });
+
    socket.on("login", () => {
       console.log("Socket: Logging in");
    });
+
+   socket.on("lobby-update", () => {
+
+      socket.emit("refresh-lobby")
+   })
+
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,7 +373,7 @@ let checkVersion = async () => {
             let x = await fetch('/__version')
             let newVersion = await x.text()
             if (__version !== newVersion) {
-                location.reload();
+               location.reload();
             }
         } catch (err) { }
     }
