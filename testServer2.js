@@ -454,7 +454,7 @@ io.on("connection", socket => {
       action: input,
       team: "user1"
     });
-    if (result.changes.type === "game-over") {
+    if (result["changes"][0]["type"] === "game-over") {
       socket.emit("game-over", result);
     } else {
       socket.emit("game-state-change", {
