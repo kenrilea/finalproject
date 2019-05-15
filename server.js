@@ -30,6 +30,21 @@ let sessionsCollection;
 let lobbiesCollection;
 let gamesCollection;
 
+//Connection to DB, do not close!
+(async function initDB() {
+  await MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
+    console.log(
+      "-----------------------Database Initialised-----------------------"
+    );
+    // Add option useNewUrlParser to get rid of console warning message
+    if (err) throw err;
+    finalProjectDB = allDbs.db("FinalProject-DB");
+    usersCollection = finalProjectDB.collection("Users");
+    sessionsCollection = finalProjectDB.collection("Sessions");
+    lobbiesCollection = finalProjectDB.collection("Lobbies");
+  });
+})();
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ GENERAL FUNCTIONS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,21 +58,20 @@ const generateId = () => {
 const getCurrentSessionUsername = (req, res) => {
   const currentCookie = req.cookies.sid;
   let username;
-  setTimeout(() => {
-    sessionsCollection.findOne({ sessionId: currentCookie }, function(
-      err,
-      result
-    ) {
-      if (err) throw err;
-      if (result === undefined || result === "" || result === null) {
-        //res.send(JSON.stringify({ success: false }));
-        return;
-      }
-      console.log("Username from current session: ");
-      console.log(result.user);
-      username = result.user;
-    });
-  }, 200);
+
+  sessionsCollection.findOne({ sessionId: currentCookie }, function(
+    err,
+    result
+  ) {
+    if (err) throw err;
+    if (result === undefined || result === "" || result === null) {
+      return;
+    }
+    console.log("Username from current session: ");
+    console.log(result.user);
+    username = result.user;
+  });
+  //}, 200);
   return username;
 };
 
@@ -314,19 +328,6 @@ app.all("/*", (req, res) => {
 });
 let counter = 0;
 let setup = async () => {
-  //Connection to DB, do not close!
-  MongoClient.connect(url, { useNewUrlParser: true }, (err, allDbs) => {
-    console.log(
-      "-----------------------Database Initialised-----------------------"
-    );
-    // Add option useNewUrlParser to get rid of console warning message
-    if (err) throw err;
-    finalProjectDB = allDbs.db("FinalProject-DB");
-    usersCollection = finalProjectDB.collection("Users");
-    sessionsCollection = finalProjectDB.collection("Sessions");
-    lobbiesCollection = finalProjectDB.collection("Lobbies");
-  });
-
   const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
   let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
   webpack.stdout.on("data", data => {
