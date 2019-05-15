@@ -19,6 +19,7 @@ class UnconnectedLobby extends Component {
    }
 
    componentDidMount = () => {
+
       socket.open()
 
       socket.on("setStatePlayerOneReady", () => {
@@ -28,6 +29,10 @@ class UnconnectedLobby extends Component {
       socket.on("setStatePlayerTwoReady", () => {
          console.log("Setting state for readyTwo to true !!!")
          this.setState({ readyTwo: true })
+      })
+
+      socket.on("refresh-lobby", () => {
+         this.getCurrentLobby()
       })
 
       this.getCurrentLobby()
@@ -50,10 +55,16 @@ class UnconnectedLobby extends Component {
 
             let parsed = JSON.parse(resBody)
 
+            console.log("Parsed data : ", parsed)
+
+            console.log("playerOne returned from collection ", parsed.playerOne)
+
             this.setState({
                playerOne: parsed.playerOne,
                playerTwo: parsed.playerTwo,
             })
+
+            socket.emit("lobby-update")
          })
    }
 
@@ -128,10 +139,7 @@ class UnconnectedLobby extends Component {
                   <img src="/assets/char-pawn-blue.png" />
                   <div className={"lobbyCenterContent"}>
                      <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
-                     {/* {this.renderReadyButtonOne()} */}
-                     <button onClick={this.handlerReadyButtonOne}>
-                        Ready
-                     </button>
+                     {this.renderReadyButtonOne()}
                   </div>
                </div>
                <div className={"PlayerTwoLobbyDiv"}>

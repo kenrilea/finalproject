@@ -6,7 +6,7 @@ let defaultTile = {
 let defaultArmyA = [
   {
     charType: "pawn",
-    actions: ["move", "attack"],
+    actions: ["move"],
     static: false,
     pos: { x: 7, y: 0 },
     actorType: "char",
@@ -15,34 +15,101 @@ let defaultArmyA = [
   },
   {
     charType: "pawn",
-    actions: ["move", "attack"],
+    actions: ["move"],
     static: false,
     pos: { x: 7, y: 7 },
     actorType: "char",
-    health: 100,
     moveSpeed: 1
   }
 ];
 let defaultArmyB = [
   {
     charType: "pawn",
-    actions: ["move", "attack"],
+    actions: ["move"],
     static: false,
-    pos: { x: 0, y: 0 },
+    pos: { x: 0, y: 1 },
     actorType: "char",
-    health: 100,
     moveSpeed: 1
   },
   {
-    charType: "pawn",
-    actions: ["move", "attack"],
+    charType: "knight",
+    actions: ["move"],
     static: false,
-    pos: { x: 0, y: 7 },
+    pos: { x: 1, y: 1 },
     actorType: "char",
-    health: 100,
+    moveSpeed: 1
+  },
+  {
+    charType: "archer",
+    actions: ["move"],
+    static: false,
+    pos: { x: 1, y: 1 },
+    actorType: "char",
+    moveSpeed: 1
+  },
+  {
+    charType: "legionary",
+    actions: ["move"],
+    static: false,
+    pos: { x: 1, y: 1 },
+    actorType: "char",
+    moveSpeed: 1
+  },
+  {
+    charType: "catapult",
+    actions: ["move"],
+    static: false,
+    pos: { x: 2, y: 1 },
+    actorType: "char",
     moveSpeed: 1
   }
 ];
-let attacks = { attack: { range: 1, damage: 50 } };
+let unitTypes = {
+  pawn: {
+    charType: "pawn",
+    actions: ["move"],
+    static: false,
+    pos: { x: -1, y: -1 },
+    actorType: "char",
+    moveSpeed: 1,
+    points: 100
+  },
+  archer: {
+    charType: "archer",
+    actions: ["move", "shoot"],
+    static: false,
+    pos: { x: -1, y: -1 },
+    actorType: "char",
+    moveSpeed: 1,
+    points: 100
+  },
+  legionary: {
+    charType: "legionary",
+    actions: ["move"],
+    static: false,
+    pos: { x: -1, y: -1 },
+    actorType: "char",
+    moveSpeed: 1,
+    points: 100
+  },
+  knight: {
+    charType: "legionary",
+    actions: ["move", "charge"],
+    static: false,
+    pos: { x: -1, y: -1 },
+    actorType: "char",
+    moveSpeed: 1,
+    points: 100
+  },
+  catapult: {
+    charType: "catapult",
+    actions: ["move", "bombard"],
+    static: false,
+    pos: { x: -1, y: -1 },
+    actorType: "char",
+    moveSpeed: 1,
+    points: 100
+  }
+};
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };
-module.exports = { moveinput, defaultArmyA, defaultArmyB };
+module.exports = { moveinput, defaultArmyA, defaultArmyB, unitTypes };

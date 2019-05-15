@@ -35,11 +35,11 @@ let dispatch = action => {
       actions: ["move"],
       static: false,
       team: "none",
-      health: 1,
-      moveSpeed: 0
+      moveSpeed: 0,
+      points: 0
     };
-    if (typeof action.health === "number") {
-      newCharProps.health = action.health;
+    if (typeof action.charType === "string") {
+      newCharProps.points = action.points;
     }
     if (typeof action.charType === "string") {
       newCharProps.charType = action.charType;
@@ -70,7 +70,6 @@ let dispatch = action => {
       edits: charProps
     };
   }
-
   //______________________________________________________________________________
   return { success: false };
 };

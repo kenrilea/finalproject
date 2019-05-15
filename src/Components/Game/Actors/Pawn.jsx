@@ -7,17 +7,82 @@ import { isInRange } from "./../../../Helpers/calcs.js";
 import socket from "./../../SocketSettings.jsx";
 
 class Pawn extends Component {
-  componentDidMount = () => {};
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      x: this.props.actorData.pos.x * this.props.gameData.width,
+      y: this.props.actorData.pos.y * this.props.gameData.height,
+      startAnimation: false,
+      doneAnimation: false
+    };
+  }
+
+  componentDidMount = () => {
+    console.log("Pawn did mount");
+  };
+
+  updateMove = () => {
+    let dest = { ...this.props.actorData.action.dest };
+    dest.x = dest.x * this.props.gameData.width;
+    dest.y = dest.y * this.props.gameData.height;
+
+    console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+
+    let newPos = this.updatePosition(
+      { x: this.state.x, y: this.state.y },
+      dest,
+      0.05
+    );
+
+    if (newPos.x === dest.x && newPos.y === dest.y) {
+      console.log("cancelled anim");
+      this.props.actorData.action = undefined;
+      cancelAnimationFrame(this.animationId);
+      assignAnimationToActor();
+      this.setState({
+        x: newPos.x,
+        y: newPos.y
+      });
+      return;
+    }
+
+    this.setState({
+      x: newPos.x,
+      y: newPos.y
+    });
+
+    cancelAnimationFrame(this.animationId);
+    this.animationId = requestAnimationFrame(() => {
+      this.updateMove();
+    });
+  };
+
+  componentDidUpdate = () => {
+    console.log("state: ", this.props.gameState.type);
+    if (
+      this.isGameState(STATES.SHOW_ANIMATIONS) &&
+      this.props.actorData.action !== undefined
+    ) {
+      if (this.props.actorData.action.type === "move") {
+        this.animationId = requestAnimationFrame(() => {
+          this.updateMove();
+        });
+      }
+    }
+  };
 
   isGameState = state => {
     return state === this.props.gameState.type;
   };
 
   updatePosition = (start, end, mult) => {
-    let newPos = start;
+    let newPos = {};
 
-    newPos.x += (end.x - start.x) * mult;
-    newPos.y += (end.y - start.y) * mult;
+    /*newPos.x = (1 - mult) * start.x + mult * end.x;
+    newPos.y = (1 - mult) * start.y + mult * end.y;*/
+    newPos.x = start.x + mult * (end.x - start.x);
+    newPos.y = start.y + mult * (end.y - start.y);
 
     if (Math.abs(newPos.x - end.x) < 0.5) {
       newPos.x = end.x;
@@ -27,19 +92,6 @@ class Pawn extends Component {
     }
 
     return newPos;
-  };
-
-  componentDidUpdate = () => {
-    console.log("state: ", this.props.gameState.type);
-    if (
-      this.isGameState(STATES.SHOW_ANIMATIONS) &&
-      this.props.actorData.action !== undefined
-    ) {
-      console.log("moving");
-      setTimeout(() => {
-        assignAnimationToActor();
-      }, 3000);
-    }
   };
 
   getCallbackFunc = action => {
@@ -106,36 +158,10 @@ class Pawn extends Component {
   };
 
   render = () => {
-    const xFrontend = this.props.actorData.pos.x * this.props.gameData.width;
-    const yFrontend = this.props.actorData.pos.y * this.props.gameData.height;
+    const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
+    const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
 
     const id = "actorId" + this.props.actorData.actorId;
-
-    const action = this.props.actorData.action;
-
-    const animations =
-      action !== undefined && action.type === "move" ? (
-        <g>
-          <animate
-            xlinkHref={"#" + id}
-            attributeName="x"
-            from={xFrontend + "%"}
-            to={action.dest.x * this.props.gameData.width + "%"}
-            dur="3s"
-            begin="0s"
-            fill="freeze"
-          />
-          <animate
-            xlinkHref={"#" + id}
-            attributeName="y"
-            from={yFrontend + "%"}
-            to={action.dest.y * this.props.gameData.height + "%"}
-            dur="3s"
-            begin="0s"
-            fill="freeze"
-          />
-        </g>
-      ) : null;
 
     return (
       <g>
@@ -148,7 +174,6 @@ class Pawn extends Component {
           height={this.props.gameData.height + "%"}
           onClick={this.handleClick}
         />
-        {animations}
       </g>
     );
   };
