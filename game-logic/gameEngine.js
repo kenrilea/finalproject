@@ -45,7 +45,7 @@ let editGameData = (gameId, mods) => {
   let changes = [];
   if (gameInstances[gameId]["playerWon"] !== undefined) {
     changes = changes.concat([
-      { type: "game over", winner: gameInstances[gameId]["playerWon"] }
+      { type: "game-over", winner: gameInstances[gameId]["playerWon"] }
     ]);
     return changes;
   }
@@ -143,7 +143,6 @@ let editGameData = (gameId, mods) => {
                     return false;
                   }
                 }
-
                 return true;
               });
             }
@@ -234,7 +233,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "leave") {
     let winner = endGame(input.gameId, input.team);
-    changes = changes.concat({ type: "game over", winner: winner });
+    changes = changes.concat({ type: "game-over", winner: winner });
   }
   if (changes.length > 0) {
     gameInstances[input.gameId]["turn"] =
