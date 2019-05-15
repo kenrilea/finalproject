@@ -220,30 +220,25 @@ app.get("/get-leaderboard", upload.none(), function (req, res) {
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function (req, res) {
 
-   // console.log(req.cookies)
-   // let username = getCurrentSessionUsername(req);
-   // console.log("Username in /create-lobby: ", username)
-
    //Lobby to be inserted
    const newLobby = {
-      playerOne: getCurrentSessionUsername(req),
+      _id: generateId(),
+      playerOne: req.body.currentUser,
       playerTwo: "",
       readyPlayerOne: false,
       readyPlayerTwo: false,
-      //password: req.body.password,
-      creationTime: new Date()
+      creationTime: new Date().toLocaleString
    };
 
    //Insert lobby into the database
    lobbiesCollection.insertOne(newLobby, (err, result) => {
       //Add new user to remote database
       if (err) throw err;
-      console.log(
-         `DB: Successfully added lobby for ${username} into lobby collection`
-      );
+      console.log(`DB: Successfully added lobby for ${newLobby.playerOne} into lobby collection`);
+      console.log(`New LobbyId: ${newLobby._id}`)
       //use this result to get the _Id from the lobby object
       // console.log(result);
-      res.send({ success: true, lobby: result });
+      res.send({ success: true, lobby: newLobby._id });
       //res.send(JSON.stringify(result));
    });
 });
