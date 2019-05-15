@@ -29,7 +29,7 @@ app.use("/assets", express.static(__dirname + "/assets"));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //Returns random number
 const generateId = () => {
-   return "" + Math.floor(Math.random() * 100000000000);
+  return "" + Math.floor(Math.random() * 100000000000);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,36 +43,36 @@ const generateId = () => {
 //***********************************SOCKET.IO******************************************************/
 
 gameEngine.createTestGameInst(
-   "user1",
-   "user2",
-   gameData.defaultArmyB,
-   gameData.defaultArmyA
+  "user1",
+  "user2",
+  gameData.defaultArmyB,
+  gameData.defaultArmyA
 );
 console.log();
 io.on("connection", socket => {
-   console.log("connected");
-   socket.on("get-game-data", message => {
-      socket.emit("game-data", gameEngine.getGameInst("test"));
-   });
-   socket.on("game-input", input => {
-      console.log("here");
-      let changes = gameEngine.handlerUserInput({
-         gameId: "test",
-         action: input,
-         team: "user1"
-      });
-      socket.emit("game-state-change", {
-         success: true,
-         changes: changes,
-         team: "user1"
-      });
-   });
+  console.log("connected");
+  socket.on("get-game-data", message => {
+    socket.emit("game-data", gameEngine.getGameInst("test"));
+  });
+  socket.on("game-input", input => {
+    console.log("here");
+    let changes = gameEngine.handlerUserInput({
+      gameId: "test",
+      action: input,
+      team: "user1"
+    });
+    socket.emit("game-state-change", {
+      success: true,
+      changes: changes,
+      team: "user1"
+    });
+  });
 
-   console.log(socket.request.headers.cookie);
-   socket.on("init-lobby", message => {
-      console.log("message");
-      console.log(socket.request.headers.cookie);
-   });
+  console.log(socket.request.headers.cookie);
+  socket.on("init-lobby", message => {
+    console.log("message");
+    console.log(socket.request.headers.cookie);
+  });
 });
 //http.listen(4000);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,41 +109,41 @@ checkVersion()`;
 //let generateId = () => "" + Math.floor(Math.random() * 10000000000);
 let __version = generateId();
 app.get("/__version", (req, res) => {
-   res.send(__version);
+  res.send(__version);
 });
 
 chokidar
-   .watch(__dirname + "/build", { ignored: /(^|[\/\\])\../ })
-   .on("all", (event, path) => {
-      webpackError = undefined;
-      __version = generateId();
-   });
+  .watch(__dirname + "/build", { ignored: /(^|[\/\\])\../ })
+  .on("all", (event, path) => {
+    webpackError = undefined;
+    __version = generateId();
+  });
 
 let webpackError = undefined;
 app.all("/*", (req, res, next) => {
-   if (webpackError) {
-      res.send(
-         "<h4>" + webpackError + "</h4><script>" + pollServer + "</script>"
-      );
-   } else {
-      next();
-   }
+  if (webpackError) {
+    res.send(
+      "<h4>" + webpackError + "</h4><script>" + pollServer + "</script>"
+    );
+  } else {
+    next();
+  }
 });
 app.use("/", express.static("build"));
 app.all("/*", (req, res) => {
-   res.sendFile(__dirname + "/build/index.html");
+  res.sendFile(__dirname + "/build/index.html");
 });
 let counter = 0;
 let setup = async () => {
-   const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
-   let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
-   webpack.stdout.on("data", data => {
-      webpackError = data.toString();
-   });
-   http.listen(4000, "0.0.0.0", () => {
-      console.log("Running on port 4000 , 0.0.0.0");
-   });
-   /*app.listen(4000, "0.0.0.0", () => {
+  const cmd = /^win/.test(process.platform) ? "npx.cmd" : "npx";
+  let webpack = spawn(cmd, ["webpack", "--watch", "--display", "errors-only"]);
+  webpack.stdout.on("data", data => {
+    webpackError = data.toString();
+  });
+  http.listen(4000, "0.0.0.0", () => {
+    console.log("Running on port 4000 , 0.0.0.0");
+  });
+  /*app.listen(4000, "0.0.0.0", () => {
      console.log("Running on port 4000 , 0.0.0.0");
    });*/
 };

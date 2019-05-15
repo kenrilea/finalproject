@@ -54,28 +54,6 @@ const generateId = () => {
    return "" + Math.floor(Math.random() * 100000000000);
 };
 
-//Get username from session
-const getCurrentSessionUsername = (req, res) => {
-   const currentCookie = req.cookies.sid;
-   let username;
-
-   return sessionsCollection.findOne({ sessionId: currentCookie }, function (
-      err,
-      result
-   ) {
-      if (err) throw err;
-      if (result === undefined || result === "" || result === null) {
-         return;
-      }
-      username = result.user;
-      console.log(
-         "Username returned from sessions=>username function : ",
-         username
-      );
-      return username;
-   });
-};
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SIGNUP, LOGIN, LOGOUT & AUTOLOGIN  ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,27 +169,23 @@ app.get("/logout", upload.none(), function (req, res) {
 //************ AUTOLOGIN ************//
 
 app.get("/verify-cookie", function (req, res) {
-   let username = getCurrentSessionUsername(req, res);
-   res.send(JSON.stringify({ success: true, username: username }));
-});
-
-///////////////////////////////////////
-
-app.get("/verify-cookie2", function (req, res) {
    if (sessionsCollection === undefined) {
       return;
    }
-   sessionsCollection.find({ sessionId: req.cookies.sid }).toArray((err, result) => {
-      if (err) throw err;
-      //result is an array, we must check it elements with [ ]
-      if (result[0] === undefined || result.length === 0) {
-         //MUST send back success: false is username is not defined
-         res.send(JSON.stringify({ success: false }));
-         return;
-      }
-      // console.log("Username found in db from sessionId: ", result[0].user)
-      res.send(JSON.stringify({ success: true, username: result[0].user }));
-   });
+
+   sessionsCollection
+      .find({ sessionId: req.cookies.sid })
+      .toArray((err, result) => {
+         if (err) throw err;
+         //result is an array, we must check it elements with [ ]
+         if (result[0] === undefined || result.length === 0) {
+            //MUST send back success: false is username is not defined
+            res.send(JSON.stringify({ success: false }));
+            return;
+         }
+         // console.log("Username found in db from sessionId: ", result[0].user)
+         res.send(JSON.stringify({ success: true, username: result[0].user }));
+      });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,6 +239,11 @@ app.post("/create-lobby", upload.none(), function (req, res) {
 
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function (req, res) {
+
+   if (lobbiesCollection === undefined) {
+      res.send(JSON.stringify({ success: false }))
+      return
+   }
 
    console.log("Getting lobbies...");
    lobbiesCollection.find({}).toArray((err, result) => {
@@ -343,7 +322,7 @@ io.on("connection", socket => {
    });
 
    socket.on("lobby-update", () => {
-
+      //Refreshes lobby page for both users
       socket.emit("refresh-lobby")
    })
 

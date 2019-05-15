@@ -45,6 +45,9 @@ class GameFrame extends Component {
           loaded: true
         });
         this.props.dispatch(setGameData(actors, width, height));
+
+        let player = data.players[parseInt(data.turn) % data.players.length];
+        console.log("Player turn: ", player);
       });
     }
 
@@ -55,9 +58,9 @@ class GameFrame extends Component {
         return;
       }
 
-      const changes = data.changes;
+      let changes = data.changes;
 
-      updateAnimationPhase(changes, changes.length, 0);
+      updateAnimationPhase(changes);
     });
   };
 
