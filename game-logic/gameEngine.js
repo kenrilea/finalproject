@@ -5,9 +5,44 @@ let data = require(__dirname + "/DATA.js");
 
 //________________________________________________________________________________________________
 let gameInstances = {};
+let endGame = (gameId, team) => {
+  gameInstances[gameId]["points"][team] =
+    gameInstances[gameId]["points"][team] - 50;
 
+  let winner = undefined;
+  let winnerPoints = undefined;
+  gameInstances[gameId]["players"].forEach(player => {
+    if (winnerPoints === undefined) {
+      winner = player;
+      winnerPoints = gameInstances[gameId]["points"][player];
+
+      return;
+    }
+    if (gameInstances[gameId]["points"][player] > winnerPoints) {
+      winner = player;
+      winnerPoints = gameInstances[gameId]["points"][player];
+
+      return;
+    }
+    if (gameInstances[gameId]["points"][player] === winnerPoints) {
+      winner = undefined;
+      winnerPoints = gameInstances[gameId]["points"][player];
+
+      return;
+    }
+  });
+
+  gameInstances[gameId]["playerWon"] = winner;
+  return winner;
+};
 let editGameData = (gameId, mods) => {
   let changes = [];
+  if (gameInstances[gameId]["playerWon"] !== undefined) {
+    changes = changes.concat([
+      { type: "game over", winner: gameInstances[gameId]["playerWon"] }
+    ]);
+    return changes;
+  }
   if (gameInstances[gameId] === undefined) {
     console.log("gameId: " + gameId + " does not exist");
     return changes;
@@ -44,6 +79,8 @@ let editGameData = (gameId, mods) => {
             if (actor.team !== char.team && actor.team !== "none") {
               if (actor.pos.x === mod.dest.x && actor.pos.y === mod.dest.y) {
                 changes.push({ type: "died", actorId: actor.actorId });
+                gameInstances[gameId]["points"][char.team] =
+                  gameInstances[gameId]["points"][char.team] + actor.points;
                 return false;
               }
             }
@@ -56,6 +93,21 @@ let editGameData = (gameId, mods) => {
           char.pos.x = mod.dest.x;
           char.pos.y = mod.dest.y;
         }
+      }
+    }
+    if (mod.type === "attack") {
+      let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
+        return actor.actorId === mod.actorId;
+      });
+      let char = gameInstances[gameId]["map"][actorIndex];
+      if (data.attacks[char.charType] !== undefined) {
+        let allChars = gameInstances[gameId]["map"].filter(actor => {
+          return actorType === "char";
+        });
+        charsOntile = gameInstances[gameId]["map"].filter(actor => {
+          // return true if on the target tile not implemented yet
+          return true;
+        });
       }
     }
   });
@@ -84,30 +136,32 @@ let createGameInst = (teamA, teamB, armyA, armyB) => {
     height
   };
   editGameData(gameId, createMap(width, height));
-  editGameData(gameId, createArmy(armyA, teamA));
-  editGameData(gameId, createArmy(armyB, teamB));
+  editGameData(gameId, createArmy(armyA, teamA), 1);
+  editGameData(gameId, createArmy(armyB, teamB), 2);
 };
 let createTestGameInst = (teamA, teamB, armyA, armyB) => {
-  let width = 8;
-  let height = 8;
+  let width = 3;
+  let height = 3;
   let gameId = "test";
+  let points = {};
+  points[teamA] = 0;
+  points[teamB] = 0;
   gameInstances[gameId] = {
     map: [],
     turn: 0,
     players: [teamA, teamB],
     chat: [],
     width,
-    height
+    height,
+    playerWon: undefined,
+    points: points
   };
   editGameData(gameId, createMap(width, height));
-  editGameData(gameId, createArmy(armyA, teamA));
-  editGameData(gameId, createArmy(armyB, teamB));
+  editGameData(gameId, createArmy(armyA, teamA, 1));
+  editGameData(gameId, createArmy(armyB, teamB, 2));
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
-  console.log("___");
-  console.log(input);
-  console.log("___");
   let changes = [];
   if (input.action.type === "move") {
     let players = gameInstances[input.gameId]["players"];
@@ -116,10 +170,7 @@ let handlerUserInput = input => {
         parseInt(gameInstances[input.gameId]["turn"]) % players.length
       ] === input.team
     ) {
-      console.log("working");
       changes = changes.concat(editGameData(input.gameId, [input.action]));
-      gameInstances[input.gameId]["turn"] =
-        parseInt(gameInstances[input.gameId]["turn"]) + 1;
     }
   }
   if (input.action.type === "attack") {
@@ -129,16 +180,21 @@ let handlerUserInput = input => {
         parseInt(gameInstances[input.gameId]["turn"]) % players.length
       ] === input.team
     ) {
-      console.log("working");
       changes = changes.concat(editGameData(input.gameId, [input.action]));
-      gameInstances[input.gameId]["turn"] =
-        parseInt(gameInstances[input.gameId]["turn"]) + 1;
     }
   }
-  console.log("handler");
-  console.log(changes);
+  if (input.action.type === "leave") {
+    let winner = endGame(input.gameId, input.team);
+    changes = changes.concat({ type: "game over", winner: winner });
+  }
+  gameInstances[input.gameId]["turn"] =
+    parseInt(gameInstances[input.gameId]["turn"]) + 1;
+  if (changes.length < 1) {
+    changes.push({ success: false });
+  }
   return changes;
 };
+
 let getGameInst = gameId => {
   return gameInstances[gameId];
 };

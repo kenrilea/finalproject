@@ -41,14 +41,63 @@ const generateId = () => {
 //************ LOGIN ************//
 
 //***********************************SOCKET.IO******************************************************/
+///____________GAME TESTING CODE________________////
+let army = ["pawn"];
+gameEngine.createTestGameInst("user1", "user2", army, army);
+/*
+gameEngine.getGameInst("test").map.forEach(char => {
+  if (char.actorType !== "char") {
+    return;
+  }
+  console.log(char.pos);
+});
+gameEngine.handlerUserInput({
+  gameId: "test",
+  action: {
+    type: "move",
+    actorId: "10",
+    dest: { x: 0, y: 2 }
+  },
+  team: "user1"
+});
 
+<<<<<<< HEAD
+console.log("______________________");
+gameEngine.getGameInst("test").map.forEach(char => {
+  if (char.actorType !== "char") {
+    return;
+  }
+  console.log(char.pos);
+});
+console.log(
+  gameEngine.handlerUserInput({
+    gameId: "test",
+    action: { type: "leave" },
+    team: "user1"
+  })
+=======
 gameEngine.createTestGameInst(
   "user1",
   "user2",
   gameData.defaultArmyB,
   gameData.defaultArmyA
+>>>>>>> f6ffa2c5055c6288c47e55cd4b502c67003c1f54
 );
-console.log();
+console.log(gameEngine.getGameInst("test")["points"]);
+
+console.log("TRYING TO MOVE AFTER GAME OVER");
+console.log(
+  gameEngine.handlerUserInput({
+    gameId: "test",
+    action: {
+      type: "move",
+      actorId: "10",
+      dest: { x: 0, y: 2 }
+    },
+    team: "user1"
+  })
+);*/
+///____________END OF GAME TESTING CODE________________////
 io.on("connection", socket => {
   console.log("connected");
   socket.on("get-game-data", message => {
