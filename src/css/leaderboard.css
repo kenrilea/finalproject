@@ -23,12 +23,13 @@
    overflow: auto;
  }
  
-.leader-row {
+.leader-row:not(:first-of-type) {
    transition: background-color 0.1s ease-in-out;
+   background-color: rgba(255,255,255,0.5)
 }
 
  .leader-row:nth-child(even) {
-   background-color: #dddddd;
+   background-color: rgba(255,255,255,0.2)
  }
 
  .leader-row:hover {

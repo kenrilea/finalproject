@@ -84,6 +84,7 @@ class UnconnectedLobbiesList extends Component {
 
                <div className="lobbies-list-button-cont">
                   <button className="ghost-button-dark" onClick={this.createLobby}>Create new lobby</button>
+                  <h3 className="lobbies-label">Lobbies</h3>
                   <button className="ghost-button-dark" onClick={this.getLobbies}>Refresh lobbies </button>
                </div>
                <div className="lobbies-list-container">

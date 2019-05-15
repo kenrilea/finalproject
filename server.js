@@ -262,16 +262,22 @@ app.get("/get-lobbies", upload.none(), function (req, res) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 io.on("connection", socket => {
+
    console.log("Connected to socket")
+
    socket.on("playerOneReady", () => {
       console.log("Socket: Player one is ready!")
+      socket.emit("setStatePlayerOneReady")
    })
    socket.on("playerTwoReady", () => {
       console.log("Socket: Player two is ready!")
+      //
+      socket.emit("setStatePlayerTwoReady")
    })
    socket.on("login", () => {
       console.log("Socket: Logging in")
    })
+
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
