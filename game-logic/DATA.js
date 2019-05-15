@@ -81,7 +81,8 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100
+    points: 100,
+    range: 3
   },
   legionary: {
     charType: "legionary",

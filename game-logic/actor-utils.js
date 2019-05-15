@@ -36,8 +36,12 @@ let dispatch = action => {
       static: false,
       team: "none",
       moveSpeed: 0,
-      points: 0
+      points: 0,
+      range: 0
     };
+    if (typeof action.range === "number") {
+      newCharProps.range = action.range;
+    }
     if (typeof action.charType === "string") {
       newCharProps.points = action.points;
     }

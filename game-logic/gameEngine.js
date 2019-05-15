@@ -103,26 +103,56 @@ let editGameData = (gameId, mods) => {
         }
       }
     }
-    if (mod.type === "attack") {
-      let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
-        return actor.actorId === mod.actorId;
-      });
-      let char = gameInstances[gameId]["map"][actorIndex];
-      if (data.attacks[char.charType] !== undefined) {
-        let allChars = gameInstances[gameId]["map"].filter(actor => {
-          return actorType === "char";
-        });
-        charsOntile = gameInstances[gameId]["map"].filter(actor => {
-          // return true if on the target tile not implemented yet
-          return true;
-        });
-      }
-    }
     if (mod.type === "ranged-shot") {
       let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
         return actor.actorId === mod.actorId;
       });
       let char = gameInstances[gameId]["map"][actorIndex];
+      if (char.team === gameTurn) {
+        if (char.actions.includes("ranged-shot")) {
+          if (calcs.lineRange(char.range, char.pos, mod.target)) {
+            let arrowPos = { ...char.pos };
+            let stopArrow = false;
+            console.log("target");
+            console.log(mod.target);
+            for (let i = 0; i < char.range; i++) {
+              let stepLine = calcs.lineMove(char.range, char.pos, mod.target);
+              arrowPos.x = arrowPos.x + stepLine.x;
+              arrowPos.y = arrowPos.y + stepLine.y;
+
+              gameInstances[gameId]["map"] = gameInstances[gameId][
+                "map"
+              ].filter(actor => {
+                if (stopArrow) {
+                  return true;
+                }
+                if (actor.team !== char.team && actor.team !== "none") {
+                  if (
+                    actor.pos.x === arrowPos.x &&
+                    actor.pos.y === arrowPos.y
+                  ) {
+                    gameInstances[gameId]["points"][char.team] =
+                      gameInstances[gameId]["points"][char.team] + actor.points;
+                    stopArrow = true;
+                    console.log("setting end");
+                    changes = changes.concat({
+                      ...mod,
+                      target: { ...arrowPos }
+                    });
+                    changes.push({ type: "died", actorId: actor.actorId });
+                    return false;
+                  }
+                }
+
+                return true;
+              });
+            }
+            if (stopArrow === false) {
+              changes = changes.concat(mod);
+            }
+          }
+        }
+      }
     }
   });
 
@@ -190,6 +220,7 @@ let handlerUserInput = input => {
   let players = gameInstances[input.gameId]["players"];
   let gameTurn =
     players[parseInt(gameInstances[input.gameId]["turn"]) % players.length];
+  console.log("playerTurn: ", gameTurn);
   if (input.action.type === "move") {
     console.log("moving actor");
     if (gameTurn === input.team) {
