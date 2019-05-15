@@ -140,8 +140,8 @@ let createGameInst = (teamA, teamB, armyA, armyB) => {
   editGameData(gameId, createArmy(armyB, teamB), 2);
 };
 let createTestGameInst = (teamA, teamB, armyA, armyB) => {
-  let width = 3;
-  let height = 3;
+  let width = 5;
+  let height = 5;
   let gameId = "test";
   let points = {};
   points[teamA] = 0;
@@ -163,6 +163,7 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
   let changes = [];
+  let success = true;
   if (input.action.type === "move") {
     let players = gameInstances[input.gameId]["players"];
     if (
@@ -190,9 +191,9 @@ let handlerUserInput = input => {
   gameInstances[input.gameId]["turn"] =
     parseInt(gameInstances[input.gameId]["turn"]) + 1;
   if (changes.length < 1) {
-    changes.push({ success: false });
+    success = false;
   }
-  return changes;
+  return { changes, success };
 };
 
 let getGameInst = gameId => {

@@ -61,7 +61,6 @@ gameEngine.handlerUserInput({
   team: "user1"
 });
 
-<<<<<<< HEAD
 console.log("______________________");
 gameEngine.getGameInst("test").map.forEach(char => {
   if (char.actorType !== "char") {
@@ -75,13 +74,6 @@ console.log(
     action: { type: "leave" },
     team: "user1"
   })
-=======
-gameEngine.createTestGameInst(
-  "user1",
-  "user2",
-  gameData.defaultArmyB,
-  gameData.defaultArmyA
->>>>>>> f6ffa2c5055c6288c47e55cd4b502c67003c1f54
 );
 console.log(gameEngine.getGameInst("test")["points"]);
 
@@ -105,15 +97,14 @@ io.on("connection", socket => {
   });
   socket.on("game-input", input => {
     console.log("here");
-    let changes = gameEngine.handlerUserInput({
+    let result = gameEngine.handlerUserInput({
       gameId: "test",
       action: input,
       team: "user1"
     });
     socket.emit("game-state-change", {
-      success: true,
-      changes: changes,
-      team: "user1"
+      success: result.success,
+      changes: result.changes
     });
   });
 
