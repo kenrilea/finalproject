@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import socket from "./SocketSettings.jsx"
 
@@ -109,6 +110,12 @@ class UnconnectedLobby extends Component {
       }
    };
    render = () => {
+
+      //Redirect to lobby list if !props.inLobby
+      if (!this.props.inLobby) {
+         return <Redirect to={"/lobbies_list"} />
+      }
+
       //If both players have pressed ready, redirect to the appropriate game page
       if (this.state.readyOne && this.state.readyTwo) {
          return <Redirect to={"game/:" + this.props.lobbyToJoinId} />
@@ -141,7 +148,8 @@ class UnconnectedLobby extends Component {
 let mapStateToProps = state => {
    return {
       currentUser: state.currentUser,
-      currentLobbyId: state.currentLobby
+      currentLobbyId: state.currentLobby,
+      inLobby: state.inLobby
    }
 };
 let Lobby = connect(mapStateToProps)(UnconnectedLobby);
