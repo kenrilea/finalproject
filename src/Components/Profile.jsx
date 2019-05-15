@@ -7,7 +7,7 @@ class UnconnectedProfile extends Component {
 
 
    render = () => {
-      console.log("Current user from state: ", this.props.currentUser)
+
       return (
          <div className="profile animated-fade-in">
             <label className="profile-label">Current User</label>

@@ -43,23 +43,23 @@ const generateId = () => {
 const getCurrentSessionUsername = (req, res) => {
    const currentCookie = req.cookies.sid;
    let username;
-   setTimeout(() => {
-      sessionsCollection.findOne({ sessionId: currentCookie }, function (
-         err,
-         result
-      ) {
-         if (err) throw err;
-         if (result === undefined || result === "" || result === null) {
-            //res.send(JSON.stringify({ success: false }));
-            return;
-         }
-         console.log("Username from current session: ");
-         console.log(result.user);
-         username = result.user;
-      });
-   }, 200);
-   console.log("Username returned from sessions=>username function : ", username)
-   return username;
+   // setTimeout(() => {
+   return sessionsCollection.findOne({ sessionId: currentCookie }, function (
+      err,
+      result
+   ) {
+      if (err) throw err;
+      if (result === undefined || result === "" || result === null) {
+         //res.send(JSON.stringify({ success: false }));
+         return;
+      }
+      username = result.user;
+      console.log("Username returned from sessions=>username function : ", username)
+      return username;
+   });
+   // }, 200);
+
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,9 +175,29 @@ app.get("/logout", upload.none(), function (req, res) {
 });
 
 //************ AUTOLOGIN ************//
+
 app.get("/verify-cookie", function (req, res) {
    let username = getCurrentSessionUsername(req, res);
    res.send(JSON.stringify({ success: true, username: username }));
+});
+
+///////////////////////////////////////
+
+app.get("/verify-cookie2", function (req, res) {
+
+   sessionsCollection.find({ sessionId: req.cookies.sid }).toArray((err, result) => {
+      if (err) throw err;
+      //result is an array, we must check it elements with [ ]
+      if (result[0] === undefined || result.length === 0) {
+         //Send back success: false is username is not defined
+         res.send(JSON.stringify({ success: false }));
+         return;
+      }
+      // console.log("Username found in db from sessionId: ", result[0].user)
+      res.send(
+         JSON.stringify({ success: true, username: result[0].user })
+      );
+   });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,12 +219,14 @@ app.get("/get-leaderboard", upload.none(), function (req, res) {
 
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function (req, res) {
-   console.log(req.cookies)
-   let username = getCurrentSessionUsername(req);
-   console.log("Username in create lobby: ", username)
+
+   // console.log(req.cookies)
+   // let username = getCurrentSessionUsername(req);
+   // console.log("Username in /create-lobby: ", username)
+
    //Lobby to be inserted
    const newLobby = {
-      playerOne: username,
+      playerOne: getCurrentSessionUsername(req),
       playerTwo: "",
       readyPlayerOne: false,
       readyPlayerTwo: false,

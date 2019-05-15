@@ -42,8 +42,12 @@ class UnconnectedLobbiesList extends Component {
 
    createLobby = () => {
 
+      let data = new FormData()
+      data.append("currentUser", this.props.currentUser)
+
       fetch("/create-lobby", {
          method: "POST",
+         body: data,
          credentials: "include"
       })
          .then(resHead => {
@@ -101,6 +105,7 @@ class UnconnectedLobbiesList extends Component {
 let mapStateToProps = state => {
    return {
       loggedIn: state.loggedIn,
+      currentUser: state.currentUser,
       currentLobby: state.currentLobby,
       inLobby: state.inLobby,
       lobbyToJoinId: state.currentLobby
