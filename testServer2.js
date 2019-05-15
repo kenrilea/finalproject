@@ -364,7 +364,7 @@ app.post("/get-current-lobby", upload.none(), function(req, res) {
 //_____________GAME TEST CODE____________________-
 let army = ["pawn", "archer", "knight", "legionary", "catapult"];
 gameEngine.createTestGameInst("user1", "user2", army, army);
-
+/*
 gameEngine.getGameInst("test").map.forEach(char => {
   if (char.actorType !== "char") {
     return;
@@ -417,7 +417,7 @@ console.log(gameEngine.getGameInst("test")["points"]);
 console.log("_______________________________________________________________");
 console.log("_______________________________________________________________");
 //console.log(gameEngine.getGameInst("test"));
-
+*/
 //____________END OF GAME TEST CODE___________________
 
 io.on("connection", socket => {
@@ -454,10 +454,14 @@ io.on("connection", socket => {
       action: input,
       team: "user1"
     });
-    socket.emit("game-state-change", {
-      success: result.success,
-      changes: result.changes
-    });
+    if (result.action.type === "game-over") {
+      socket.emit("game-over", result);
+    } else {
+      socket.emit("game-state-change", {
+        success: result.success,
+        changes: result.changes
+      });
+    }
   });
   //_______________________END OF GAME________________________________________________
 });
