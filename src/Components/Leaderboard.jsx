@@ -55,6 +55,7 @@ class Leaderboard extends Component {
                            <th className="leader-entry">Username</th>
                            <th className="leader-entry">Rank</th>
                            <th className="leader-entry">Wins</th>
+                           <th className="leader-entry">Losses</th>
                            <th className="leader-entry">Country</th>
                         </tr>
                      </thead>
@@ -66,6 +67,7 @@ class Leaderboard extends Component {
                                  <td className="leader-entry">{user.username}</td>
                                  <td className="leader-entry">{user.rank}</td>
                                  <td className="leader-entry">{user.wins}</td>
+                                 <td className="leader-entry">{user.losses}</td>
                                  <td className="leader-entry">{user.country}</td>
                               </tr>
                            )
@@ -73,6 +75,7 @@ class Leaderboard extends Component {
                         <tr className="leader-row">
                            <td className="leader-entry"></td>
                            <td className="leader-entry">END OF LIST</td>
+                           <td className="leader-entry"></td>
                            <td className="leader-entry"></td>
                            <td className="leader-entry"></td>
                            <td className="leader-entry"></td>

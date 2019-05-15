@@ -98,6 +98,7 @@ class UnconnectedLobbiesList extends Component {
                </div>
 
             </div>
+
          </div>
       )
    }

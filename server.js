@@ -227,7 +227,7 @@ app.post("/create-lobby", upload.none(), function (req, res) {
       playerTwo: "",
       readyPlayerOne: false,
       readyPlayerTwo: false,
-      creationTime: new Date().toLocaleString
+      creationTime: new Date().toLocaleString()
    };
 
    //Insert lobby into the database
