@@ -371,19 +371,6 @@ let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 io.on("connection", socket => {
    console.log("Connected to socket");
 
-   socket.on("playerOneReady", () => {
-      console.log("Socket: Player one is ready!");
-      socket.emit("setStatePlayerOneReady");
-   });
-
-   socket.on("playerTwoReady", () => {
-      console.log("Socket: Player two is ready!");
-      socket.emit("setStatePlayerTwoReady");
-   });
-
-   socket.on("login", () => {
-      console.log("Socket: Logging in");
-   });
 
    socket.on("lobby-update", () => {
       //Refreshes lobby page for both users
