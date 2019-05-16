@@ -52,12 +52,14 @@ lineTarget = (range, origin, dest) => {
     return false;
   }
   if (origin.x === dest.x) {
-    if (Math.abs(origin.y - dest.y)) {
+    if (Math.abs(origin.y - dest.y) === range) {
       return true;
     }
   }
   if (origin.y === dest.y) {
-    return true;
+    if (Math.abs(origin.x - dest.x) === range) {
+      return true;
+    }
   }
   if (Math.abs(origin.y - dest.y) === Math.abs(origin.x - dest.x)) {
     if (
