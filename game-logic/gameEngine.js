@@ -53,10 +53,14 @@ let editGameData = (gameId, mods) => {
     console.log("gameId: " + gameId + " does not exist");
     return changes;
   }
+  //_________________________________________________________
+  ///////////////////////////////////////////////////////////
+  //_________________________________________________________
   mods.forEach(mod => {
     if (mod.type === "add-new") {
       gameInstances[gameId]["map"].push(mod.actor);
     }
+    //_________________________________________________________
     if (mod.type === "edit-existing") {
       let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
         return actor.actorId === mod.actorId;
@@ -65,6 +69,7 @@ let editGameData = (gameId, mods) => {
         gameInstances[gameId]["map"][actorIndex][edit.prop] = edit.value;
       });
     }
+    //_________________________________________________________
     if (mod.type === "move") {
       let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
         return actor.actorId === mod.actorId;
@@ -94,7 +99,10 @@ let editGameData = (gameId, mods) => {
                     actor.pos.x === mod.dest.x &&
                     actor.pos.y === mod.dest.y
                   ) {
-                    collidedWithEnemy = true;
+                    if (actor.charType === "legionary") {
+                      collidedWithEnemy = true;
+                    }
+
                     changes.push({ type: "died", actorId: actor.actorId });
                     gameInstances[gameId]["points"][char.team] =
                       gameInstances[gameId]["points"][char.team] + actor.points;
@@ -122,6 +130,7 @@ let editGameData = (gameId, mods) => {
         }
       }
     }
+    //_________________________________________________________
     if (mod.type === "move-passive") {
       let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
         return actor.actorId === mod.actorId;
@@ -152,6 +161,7 @@ let editGameData = (gameId, mods) => {
         }
       }
     }
+    //_________________________________________________________
     if (mod.type === "ranged-shot") {
       let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
         return actor.actorId === mod.actorId;
@@ -199,6 +209,7 @@ let editGameData = (gameId, mods) => {
         }
       }
     }
+    //_________________________________________________________
     if (mod.type === "charge") {
       let char = utils.findActor(mod.actorId, gameInstances[gameId]);
       if (char.team === gameTurn) {
@@ -237,6 +248,7 @@ let editGameData = (gameId, mods) => {
         }
       }
     }
+    //_________________________________________________________
     if (mod.type === "bombard") {
       let char = utils.findActor(mod.actorId, gameInstances[gameId]);
       if (char.team === gameTurn) {
@@ -267,8 +279,8 @@ let editGameData = (gameId, mods) => {
         }
       }
     }
+    //_________________________________________________________
   });
-
   return changes;
 };
 //________________________________________________________________________________________________
@@ -278,16 +290,13 @@ let addMessage = (gameId, message) => {
 
 //________________________________________________________________________________________________
 
-let createGameInst = (teamA, teamB, armyA, armyB) => {
+let createGameInst = (teamA, teamB, armyA, armyB, gameId) => {
   let width = 5;
   let height = 5;
-  let gameId = 0;
   let points = {};
   points[teamA] = 0;
   points[teamB] = 0;
-  do {
-    gameId = Math.floor(Math.random() * 1000000);
-  } while (gameInstances[gameId] !== undefined);
+
   gameInstances[gameId] = {
     map: [],
     turn: 0,
@@ -329,7 +338,9 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 let handlerUserInput = input => {
   let changes = [];
   let success = true;
-
+  if (input.action === undefined) {
+    return { changes, successs: false };
+  }
   let players = gameInstances[input.gameId]["players"];
   let gameTurn =
     players[parseInt(gameInstances[input.gameId]["turn"]) % players.length];

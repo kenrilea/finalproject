@@ -43,6 +43,32 @@ lineRange = (range, origin, dest) => {
   }
   return false;
 };
+//_________________________________________________________________
+lineTarget = (range, origin, dest) => {
+  if (
+    Math.abs(origin.y - dest.y) > range ||
+    Math.abs(origin.x - dest.x) > range
+  ) {
+    return false;
+  }
+  if (origin.x === dest.x) {
+    if (Math.abs(origin.y - dest.y)) {
+      return true;
+    }
+  }
+  if (origin.y === dest.y) {
+    return true;
+  }
+  if (Math.abs(origin.y - dest.y) === Math.abs(origin.x - dest.x)) {
+    if (
+      Math.abs(origin.y - dest.y) === range &&
+      Math.abs(origin.x - dest.x) === range
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
 //__________________________________________________________________
 lineMove = (range, origin, dest) => {
   let check = false;
@@ -104,5 +130,6 @@ module.exports = {
   getDistance,
   isInRange,
   lineRange,
-  lineMove
+  lineMove,
+  lineTarget
 };
