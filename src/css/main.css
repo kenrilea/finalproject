@@ -106,7 +106,7 @@ div {
    }
 
 .animated-grow {
-   animation: expand 0.8s;
+   animation: expand 0.8s ease-in-out;
 }
 
 @keyframes expand {from{transform: scale(0)} to{transform: scale(1)}}

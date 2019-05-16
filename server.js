@@ -392,8 +392,10 @@ io.on("connection", socket => {
    });
 
    socket.on("refresh-lobby-list", () => {
+      console.log("REFRESHING  LOBBY LIST")
       lobbiesCollection.find().toArray((err, result) => {
-         console.log("Lobbies from socket: ", result)
+
+         // console.log("Lobbies from socket: ", result)
          io.emit("lobby-list-data", result)
       })
    })
@@ -406,11 +408,17 @@ io.on("connection", socket => {
          //If playerOne is alone in lobby, remove it from db!
          if (result[0].playerOne === data.currentUser && result[0].playerTwo === "") {
             lobbiesCollection.remove({ _id: data.lobbyId })
+            lobbiesCollection.find().toArray((err, result) => {
+               io.emit("lobby-list-data", result)
+            })
          }
 
          //If playerTwo is alone in lobby, remove it as well!
          if (result[0].playerTwo === data.currentUser && result[0].playerOne === "") {
             lobbiesCollection.remove({ _id: data.lobbyId })
+            lobbiesCollection.find().toArray((err, result) => {
+               io.emit("lobby-list-data", result)
+            })
          }
 
          //If playerOne leaves and is not alone, update lobby and emit!
@@ -421,6 +429,9 @@ io.on("connection", socket => {
 
                lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
                   io.in(data.lobbyId).emit("lobby-data", result[0])
+                  lobbiesCollection.find().toArray((err, result) => {
+                     io.emit("lobby-list-data", result)
+                  })
                })
             })
          }
@@ -433,6 +444,9 @@ io.on("connection", socket => {
 
                lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
                   io.in(data.lobbyId).emit("lobby-data", result[0])
+                  lobbiesCollection.find().toArray((err, result) => {
+                     io.emit("lobby-list-data", result)
+                  })
                })
             });
          }
