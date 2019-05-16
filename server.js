@@ -305,18 +305,18 @@ app.post("/user-ready", upload.none(), function (req, res) {
          return;
       }
 
-      let ready;
+      // let ready;
       switch (currentUser) {
 
          case result[0].playerOne:
             console.log(`User "${currentUser}" is registered as playerOne`);
-            ready = !result[0].readyPlayerOne;
+            // ready = !result[0].readyPlayerOne;
             lobbiesCollection.update(
                { _id: lobbyId },
-               { $set: { readyPlayerOne: ready } },
+               { $set: { readyPlayerOne: true } },
                (err, result) => {
                   if (err) throw err;
-                  console.log(`DB: Updating playerOne ready to ${ready}`);
+                  // console.log(`DB: Updating playerOne ready to ${ready}`);
                   res.send(JSON.stringify({ success: true, user: 1 }));
                }
             );
@@ -324,13 +324,13 @@ app.post("/user-ready", upload.none(), function (req, res) {
 
          case result[0].playerTwo:
             console.log(`User "` + currentUser + `" is registered as playerTwo`);
-            ready = !result[0].readyPlayerTwo;
+            // ready = !result[0].readyPlayerTwo;
             lobbiesCollection.updateOne(
                { _id: lobbyId },
-               { $set: { readyPlayerTwo: ready } },
+               { $set: { readyPlayerTwo: true } },
                (err, result) => {
                   if (err) throw err;
-                  console.log(`DB: Updating playerTwo ready to ${ready}`);
+                  // console.log(`DB: Updating playerTwo ready to ${ready}`);
                   res.send(JSON.stringify({ success: true, user: 2 }));
                }
             );
@@ -358,14 +358,15 @@ app.post("/get-current-lobby", upload.none(), function (req, res) {
    });
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//************ SOCKET IO STUFF ************//
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
 //_____________GAME TEST CODE____________________-
 let army = ["pawn"];
 let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 //____________END OF GAME TEST CODE___________________
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//************ SOCKET IO STUFF ************//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 io.on("connection", socket => {
    console.log("Connected to socket");
@@ -386,11 +387,11 @@ io.on("connection", socket => {
 
    socket.on("lobby-update", () => {
       //Refreshes lobby page for both users
-      socket.emit("refresh-lobby");
+      io.emit("refresh-lobby");
    });
 
    socket.on("refresh-lobby", currentLobbyId => {
-
+      console.log("Socket: Refresh lobby listener called")
       lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
          if (err) throw err;
          if (result[0] === undefined) {
@@ -401,7 +402,10 @@ io.on("connection", socket => {
       });
    })
 
+
+
    //_______________________GAME________________________________________________
+
    socket.on("get-game-data", message => {
       //-- add gameIdFromUsernameCollection("username") to get gameId when its implemented
       let gameData = gameEngine.getGameInst(gameId); //temporary gameId for testing, use collection later...
@@ -487,7 +491,10 @@ io.on("connection", socket => {
    //    };
 
    ////////////////////////////////
+
 });
+
+
 //_______________________END OF GAME________________________________________________
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

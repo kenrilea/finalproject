@@ -20,6 +20,8 @@ class UnconnectedLobby extends Component {
 
    componentDidMount = () => {
 
+      console.log("Initial state from constructor: ", this.state)
+
       socket.open()
 
       socket.on("lobby-data", lobby => {
@@ -27,59 +29,19 @@ class UnconnectedLobby extends Component {
          this.setState({
             playerOne: lobby.playerOne,
             playerTwo: lobby.playerTwo,
-            readyOne: lobby.readyOne,
-            readyTwo: lobby.readyTwo
+            readyOne: lobby.readyPlayerOne,
+            readyTwo: lobby.readyPlayerTwo
          })
       })
 
       socket.emit("refresh-lobby", this.props.currentLobbyId)
 
-      // this.getCurrentLobby()
    }
 
+   componentWillUnmount = () => {
+      socket.close()
+   }
 
-   // getCurrentLobby = () => {
-
-   //    let data = new FormData()
-   //    data.append("currentLobbyId", this.props.currentLobbyId)
-
-   //    fetch("/get-current-lobby", {
-   //       method: "POST",
-   //       body: data,
-   //    })
-   //       .then(resHead => {
-   //          return resHead.text()
-   //       })
-   //       .then(resBody => {
-
-   //          let parsed = JSON.parse(resBody)
-
-   //          console.log("Parsed body: ", parsed)
-
-   //          this.setState({
-   //             playerOne: parsed.playerOne,
-   //             playerTwo: parsed.playerTwo,
-   //             readyOne: parsed.readyOne,
-   //             readyTwo: parsed.readyTwo
-   //          })
-
-   //          socket.emit("lobby-update")
-   //       })
-   // }
-
-   renderReadyOne = () => {
-      if (this.state.readyOne === false) {
-         return "not ready";
-      }
-      return "ready";
-   };
-
-   renderReadyTwo = () => {
-      if (this.state.readyTwo === false) {
-         return "not ready";
-      }
-      return "ready";
-   };
 
    handlerReadyButton = () => {
 
@@ -110,9 +72,22 @@ class UnconnectedLobby extends Component {
                this.setState({ readyTwo: true })
             }
 
-            socket.emit("lobby-update")
-
+            socket.emit("refresh-lobby", this.props.currentLobbyId)
          })
+   };
+
+   renderReadyOne = () => {
+      if (this.state.readyOne === true) {
+         return "ready to go";
+      }
+      return "not yet ready";
+   };
+
+   renderReadyTwo = () => {
+      if (this.state.readyTwo === true) {
+         return "ready to go";
+      }
+      return "not yet ready";
    };
 
 
