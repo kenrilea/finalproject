@@ -167,6 +167,7 @@ class UnconnectedLobby extends Component {
          type: "LEAVE-LOBBY"
       })
       socket.emit("leave-lobby", { lobbyId: this.props.currentLobbyId, currentUser: this.props.currentUser })
+      socket.emit("refresh-lobby-list")
    }
 
    render = () => {

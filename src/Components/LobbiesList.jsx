@@ -6,6 +6,8 @@ import mockLobbies from "./mockLobbies.jsx";
 
 import LobbiesListElem from "./LobbiesListElem.jsx";
 
+import socket from "./SocketSettings.jsx"
+
 import "../css/lobbiesList.css";
 
 class UnconnectedLobbiesList extends Component {
@@ -18,8 +20,19 @@ class UnconnectedLobbiesList extends Component {
    }
 
    componentDidMount = () => {
-      //Populate lobbies array in state upon loading!
-      this.getLobbies()
+
+      socket.open()
+
+      socket.on("lobby-list-data", data => {
+         console.log("Socket: receiving data from backend: ", data)
+         this.setState({
+            lobbies: data
+         })
+      })
+
+      socket.emit("refresh-lobby-list")
+
+      // this.getLobbies()
    }
 
    getLobbies = () => {
@@ -36,27 +49,6 @@ class UnconnectedLobbiesList extends Component {
          })
    }
 
-   getMockLobbies = () => {
-      return mockLobbies;
-   }
-
-   createLobby = () => {
-
-      let data = new FormData()
-      data.append("currentUser", this.props.currentUser)
-
-      fetch("/create-lobby", {
-         method: "POST",
-         body: data,
-         credentials: "include"
-      })
-         .then(resBody => {
-            let parsedLobbies = JSON.parse(resBody); // Array of all lobbies in collection
-            this.setState({
-               lobbies: parsedLobbies
-            });
-         });
-   };
 
    getMockLobbies = () => {
       return mockLobbies;
@@ -87,6 +79,7 @@ class UnconnectedLobbiesList extends Component {
                type: "JOIN-LOBBY",
                lobbyId: parsed.lobbyId
             });
+            socket.emit("refresh-lobby-list")
          });
    };
 

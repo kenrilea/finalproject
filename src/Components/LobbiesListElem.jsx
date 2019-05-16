@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
+import socket from "./SocketSettings.jsx"
+
 import "../css/lobbiesListElem.css"
 
 class UnconnectedLobbiesListElem extends Component {
@@ -43,6 +45,7 @@ class UnconnectedLobbiesListElem extends Component {
                lobbyId: lobbyId,
                inLobby: true,
             })
+            socket.emit("refresh-lobby-list")
          })
    }
 
