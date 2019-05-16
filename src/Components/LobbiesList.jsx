@@ -21,9 +21,12 @@ class UnconnectedLobbiesList extends Component {
 
    componentDidMount = () => {
 
+      console.log("Component mounted")
+
       socket.open()
 
       socket.on("lobby-list-data", data => {
+         console.log("LOBBY LIST RECEIVED")
          console.log("Socket: receiving data from backend: ", data)
          this.setState({
             lobbies: data
@@ -100,9 +103,6 @@ class UnconnectedLobbiesList extends Component {
                   <button className="ghost-button-dark" onClick={this.createLobby}>
                      Create new lobby
             </button>
-                  <button className="ghost-button-dark" onClick={this.getLobbies}>
-                     Refresh lobbies{" "}
-                  </button>
                </div>
                <div className="lobbies-list-container">
                   {this.state.lobbies.map(elem => {
