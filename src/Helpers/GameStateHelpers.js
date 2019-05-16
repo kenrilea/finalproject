@@ -19,6 +19,7 @@ export const resetToSelectUnitState = () => {
       actors: store.getState().gameData.actors.map(actor => {
         return {
           ...actor,
+          onTarget: false,
           highlighted: false
         };
       })

@@ -7,7 +7,11 @@ import {
   resetToSelectUnitState
 } from "./../../../Helpers/GameStateHelpers.js";
 import { updatePosition, isInRange } from "./../../../Helpers/calcs.js";
-import { ASSET_ACTOR_TYPE, ASSET_TEAM } from "./../../../AssetConstants";
+import {
+  ASSET_ACTOR_TYPE,
+  ASSET_TEAM,
+  ACTOR_HIGHLIGHT
+} from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
 class Pawn extends Component {
@@ -130,6 +134,7 @@ class Pawn extends Component {
                 if (isInRange(pawnRange, pawnPos, actor.pos)) {
                   return {
                     ...actor,
+                    onTarget: true,
                     highlighted: true
                   };
                 }
@@ -240,6 +245,7 @@ class Pawn extends Component {
           stroke={"#42f4eb"}
           strokeWidth="0.1"
           strokeLinecap="square"
+          fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
           width={this.props.gameData.width}
@@ -247,9 +253,9 @@ class Pawn extends Component {
         >
           <animate
             xlinkHref={"#rect" + id}
-            attributeName="fill"
-            from="#000"
-            to="#f00"
+            attributeName="opacity"
+            from="0"
+            to="1"
             begin="0s"
             dur="1s"
             repeatCount="indefinite"

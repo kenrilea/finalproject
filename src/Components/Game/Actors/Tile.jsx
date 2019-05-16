@@ -6,6 +6,7 @@ import {
   resetToSelectUnitState,
   updateAnimationPhase
 } from "./../../../Helpers/GameStateHelpers.js";
+import { ACTOR_HIGHLIGHT } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
 class Tile extends Component {
@@ -89,17 +90,25 @@ class Tile extends Component {
 
     const id = "actorId" + this.props.actorData.actorId;
 
-    const animate = this.props.actorData.highlighted ? (
-      <animate
-        xlinkHref={"#" + id}
-        attributeName="fill"
-        from="#000"
-        to="#999"
-        begin="0s"
-        dur="1s"
-        repeatCount="indefinite"
-      />
-    ) : null;
+    const highlighted = this.props.actorData.highlighted;
+    const onTarget = this.props.actorData.onTarget;
+
+    const animate =
+      highlighted || onTarget ? (
+        <animate
+          xlinkHref={"#" + id}
+          attributeName="fill"
+          from={fill}
+          to={
+            onTarget
+              ? ACTOR_HIGHLIGHT.TILE_TARGET
+              : ACTOR_HIGHLIGHT.TILE_ON_PATH
+          }
+          begin="0s"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      ) : null;
 
     return (
       <g>
