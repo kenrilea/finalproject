@@ -53,6 +53,45 @@ export const isTileOccupied = (tileActor, actorList) => {
   return true;
 };
 
+export const radiansToDegrees = rad => {
+  return (rad * 180) / Math.PI;
+};
+
+export const degreesBetweenPoints = (point1, point2) => {
+  return radiansToDegrees(
+    Math.atan2(point2.y, point2.x) - Math.atan2(point1.y, point1.x)
+  );
+};
+
+export const normalizedDirectionBetweenPoints = (start, end) => {
+  let length = Math.sqrt(
+    Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)
+  );
+  return {
+    x: (end.x - start.x) / length,
+    y: (end.y - start.y) / length
+  };
+};
+
+export const multiplyDirectionVector = (vector, mult) => {
+  return {
+    x: vector.x * mult,
+    y: vector.y * mult
+  };
+};
+
+export const multiplyDirectionVectorWithBounds = (
+  vector,
+  mult,
+  max = 0,
+  min = 0
+) => {
+  return {
+    x: Math.max(min, Math.min(vector.x * mult, max)),
+    y: Math.max(min, Math.min(vector.y * mult, max))
+  };
+};
+
 export const getDistance = (origin, dest) => {
   let width = origin.x - dest.x;
   let length = origin.y - dest.y;

@@ -8,6 +8,9 @@ import {
 } from "./../../../Helpers/GameStateHelpers.js";
 import {
   updatePosition,
+  degreesBetweenPoints,
+  normalizedDirectionBetweenPoints,
+  multiplyDirectionVectorWithBounds,
   isInRange,
   lineTarget,
   lineRange,
@@ -31,6 +34,10 @@ class Archer extends Component {
       arrowPos: {
         x: 900,
         y: 900
+      },
+      arrowDest: {
+        x: 100,
+        y: 100
       }
     };
   }
@@ -110,18 +117,40 @@ class Archer extends Component {
   };
 
   updateRangedShot = () => {
-    let dest = { ...this.props.actorData.action.dest };
+    let dest = {};
+    if (this.props.actorData.action.target === undefined) {
+      dest = multiplyDirectionVectorWithBounds(
+        normalizedDirectionBetweenPoints(
+          { x: this.state.x, y: this.state.y },
+          {
+            ...this.props.actorData.action.dest
+          }
+        ),
+        100,
+        120,
+        -20
+      );
+    } else {
+      dest = { ...this.props.actorData.action.target };
+    }
+
     dest.x = dest.x * this.props.gameData.width;
     dest.y = dest.y * this.props.gameData.height;
-
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
 
     let newPos =
       this.state.arrowPos.x === 900
         ? { x: this.state.x, y: this.state.y }
-        : updatePosition(this.state.arrowPos, dest, 0.15);
+        : updatePosition(this.state.arrowPos, dest, 0.0005);
 
-    if (newPos.x === dest.x && newPos.y === dest.y) {
+    console.log("positions: ", newPos, dest);
+
+    if (
+      (newPos.x === dest.x && newPos.y === dest.y) ||
+      newPos.x > 140 ||
+      newPos.x < -40 ||
+      newPos.y > 140 ||
+      newPos.y < -40
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationRangedShot);
@@ -130,6 +159,10 @@ class Archer extends Component {
         arrowPos: {
           x: 900,
           y: 900
+        },
+        arrowDest: {
+          x: 100,
+          y: 100
         }
       });
       return;
@@ -139,6 +172,10 @@ class Archer extends Component {
       arrowPos: {
         x: newPos.x,
         y: newPos.y
+      },
+      arrowDest: {
+        x: dest.x,
+        y: dest.y
       }
     });
 
@@ -306,6 +343,8 @@ class Archer extends Component {
   render = () => {
     const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
     const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
+    const width = this.props.gameData.width;
+    const height = this.props.gameData.height;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -342,8 +381,8 @@ class Archer extends Component {
           fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
         >
           <animate
             xlinkHref={"#rect" + id}
@@ -362,9 +401,19 @@ class Archer extends Component {
         xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
         x={this.state.arrowPos.x}
         y={this.state.arrowPos.y}
-        width={this.props.gameData.width}
-        height={this.props.gameData.height}
-        transform={"rotate(0)"}
+        width={width}
+        height={height}
+        transform={
+          "rotate(" +
+          parseInt(
+            degreesBetweenPoints(this.state.arrowPos, this.state.arrowDest)
+          ) +
+          " " +
+          parseFloat(this.state.arrowPos.x + width / 2) +
+          " " +
+          parseFloat(this.state.arrowPos.y + height / 2) +
+          ")"
+        }
       />
     );
 
@@ -380,12 +429,12 @@ class Archer extends Component {
           }
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
           onClick={this.handleClick}
         />
         {animateUnitInAction}
-        {arrow}
+        {/*arrow*/}
       </g>
     );
   };
