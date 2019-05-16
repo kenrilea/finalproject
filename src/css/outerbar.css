@@ -5,6 +5,16 @@
   z-index: 1;
 }
 
+.outerbar-turn-display {
+}
+
+.outerbar-player-turn {
+  font-size: 20px;
+}
+
+.outerbar-turns-total {
+}
+
 .outerbar-points-section {
 }
 
@@ -36,6 +46,18 @@
     display: flex;
     justify-content: space-evenly;
     flex-flow: column;
+  }
+
+  .outerbar-turn-display {
+  }
+
+  .outerbar-player-turn {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .outerbar-turns-total {
+    text-align: center;
   }
 
   .outerbar-points-section {
@@ -71,6 +93,15 @@
     display: flex;
     justify-content: space-evenly;
     flex-flow: row;
+  }
+
+  .outerbar-turn-display {
+  }
+
+  .outerbar-player-turn {
+  }
+
+  .outerbar-turns-total {
   }
 
   .outerbar-points-section {

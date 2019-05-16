@@ -81,10 +81,10 @@ class Tile extends Component {
       fill: fill,
       //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
       stroke: stroke,
-      strokeWidth: "2",
+      strokeWidth: "0.1",
       strokeLinecap: "square",
-      width: this.props.gameData.width + "%",
-      height: this.props.gameData.height + "%"
+      width: this.props.gameData.width,
+      height: this.props.gameData.height
     };
 
     const id = "actorId" + this.props.actorData.actorId;
@@ -106,8 +106,8 @@ class Tile extends Component {
         <rect
           id={id}
           style={style}
-          x={xFrontend + "%"}
-          y={yFrontend + "%"}
+          x={xFrontend}
+          y={yFrontend}
           onClick={this.handleClick}
         />
         {animate}

@@ -23,6 +23,20 @@ class OuterBar extends Component {
   render = () => {
     console.log(this.props.gameData);
 
+    const outerbarPlayerTurn =
+      this.props.currentTurnPlayer === ""
+        ? null
+        : this.props.currentTurnPlayer + "'s turn";
+
+    const turnsDisplay = (
+      <div className="outerbar-turn-display">
+        <div className="outerbar-player-turn">{outerbarPlayerTurn}</div>
+        <div className="outerbar-turns-total">
+          {"Turn " + (parseInt(this.props.gameData.turn) + 1)}
+        </div>
+      </div>
+    );
+
     const keys = Object.keys(this.props.gameData.points);
     const pointsDisplay = keys.map(key => {
       return (
@@ -41,6 +55,7 @@ class OuterBar extends Component {
 
     return (
       <div className="outerbar">
+        {turnsDisplay}
         <div className="outerbar-points-section">
           <div className="outerbar-point-label">Points</div>
           <div className="outerbar-points-container">{pointsDisplay}</div>

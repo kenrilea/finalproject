@@ -6,11 +6,11 @@ import {
   assignAnimationToActor,
   resetToSelectUnitState
 } from "./../../../Helpers/GameStateHelpers.js";
-import { isInRange } from "./../../../Helpers/calcs.js";
+import { isInRange, lineTarget } from "./../../../Helpers/calcs.js";
 import { ASSET_ACTOR_TYPE, ASSET_TEAM } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
-class Pawn extends Component {
+class Knight extends Component {
   constructor(props) {
     super(props);
 
@@ -21,10 +21,10 @@ class Pawn extends Component {
   }
 
   componentDidMount = () => {
-    console.log("Pawn did mount");
+    console.log("Knight did mount");
   };
 
-  updateMove = () => {
+  updateMove = (speed = 0.05) => {
     let dest = { ...this.props.actorData.action.dest };
     dest.x = dest.x * this.props.gameData.width;
     dest.y = dest.y * this.props.gameData.height;
@@ -34,7 +34,7 @@ class Pawn extends Component {
     let newPos = this.updatePosition(
       { x: this.state.x, y: this.state.y },
       dest,
-      0.05
+      speed
     );
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
@@ -56,7 +56,7 @@ class Pawn extends Component {
 
     cancelAnimationFrame(this.animationMove);
     this.animationMove = requestAnimationFrame(() => {
-      this.updateMove();
+      this.updateMove(speed);
     });
   };
 
@@ -102,11 +102,15 @@ class Pawn extends Component {
     ) {
       if (this.props.actorData.action.type === "move") {
         this.animationMove = requestAnimationFrame(() => {
-          this.updateMove();
+          this.updateMove(0.05);
         });
       } else if (this.props.actorData.action.type === "died") {
         this.animationDied = requestAnimationFrame(() => {
           this.updateDied();
+        });
+      } else if (this.props.actorData.action.type === "charge") {
+        this.animationMove = requestAnimationFrame(() => {
+          this.updateMove(0.2);
         });
       }
     }
@@ -143,9 +147,9 @@ class Pawn extends Component {
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let pawnPos = this.props.actorData.pos;
-                let pawnRange = this.props.actorData.moveSpeed;
-                if (isInRange(pawnRange, pawnPos, actor.pos)) {
+                let knightPos = this.props.actorData.pos;
+                let knightRange = this.props.actorData.moveSpeed;
+                if (isInRange(knightRange, knightPos, actor.pos)) {
                   return {
                     ...actor,
                     highlighted: true
@@ -163,6 +167,33 @@ class Pawn extends Component {
             setGameState(selectTile(this.props.actorData, "move"))
           );
         };
+      case "charge":
+        return () => {
+          this.props.dispatch(
+            // Highlight nearby tiles
+            setGameData({
+              ...this.props.gameData,
+              actors: this.props.gameData.actors.map(actor => {
+                let knightPos = this.props.actorData.pos;
+                let knightRange = this.props.actorData.range;
+                if (lineTarget(knightRange, knightPos, actor.pos)) {
+                  return {
+                    ...actor,
+                    highlighted: true
+                  };
+                }
+
+                return actor;
+              })
+            })
+          );
+
+          // Set state to selectTile
+          console.log("actorData: ", this.props.actorData);
+          this.props.dispatch(
+            setGameState(selectTile(this.props.actorData, "charge"))
+          );
+        };
       default:
         return () => console.log("Unknown action");
     }
@@ -171,7 +202,7 @@ class Pawn extends Component {
   handleClick = () => {
     event.stopPropagation();
     console.log(
-      "Pawn: ",
+      "Knight: ",
       this.props.actorData.actorId,
       " team: " + this.props.actorData.team
     );
@@ -281,8 +312,8 @@ class Pawn extends Component {
           id={id}
           xlinkHref={
             this.props.currentUser === this.props.actorData.team
-              ? ASSET_ACTOR_TYPE.PAWN + ASSET_TEAM.FRIENDLY
-              : ASSET_ACTOR_TYPE.PAWN + ASSET_TEAM.ENEMY
+              ? ASSET_ACTOR_TYPE.KNIGHT + ASSET_TEAM.FRIENDLY
+              : ASSET_ACTOR_TYPE.KNIGHT + ASSET_TEAM.ENEMY
           }
           x={xFrontend}
           y={yFrontend}
@@ -296,7 +327,7 @@ class Pawn extends Component {
   };
 }
 
-const mapStateToProps = state => {
+let mapStateToProps = state => {
   return {
     currentUser: state.currentUser,
     actionMenuVisible: state.actionMenu.visible,
@@ -306,4 +337,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Pawn);
+export default connect(mapStateToProps)(Knight);
