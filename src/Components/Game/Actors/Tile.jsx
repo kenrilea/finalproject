@@ -37,7 +37,7 @@ class Tile extends Component {
         // to that position
 
         socket.emit("game-input", {
-          type: "move",
+          type: this.props.gameState.actionType,
           actorId: this.props.gameState.unitInAction.actorId,
           dest: {
             x: this.props.actorData.pos.x,
