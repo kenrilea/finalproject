@@ -14,7 +14,7 @@ import {
 } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
-class Pawn extends Component {
+class Legionary extends Component {
   constructor(props) {
     super(props);
 
@@ -25,7 +25,7 @@ class Pawn extends Component {
   }
 
   componentDidMount = () => {
-    console.log("Pawn did mount");
+    console.log("Legionary did mount");
   };
 
   updateMove = () => {
@@ -38,7 +38,7 @@ class Pawn extends Component {
     let newPos = updatePosition(
       { x: this.state.x, y: this.state.y },
       dest,
-      0.05
+      0.025
     );
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
@@ -129,9 +129,9 @@ class Pawn extends Component {
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let pawnPos = this.props.actorData.pos;
-                let pawnRange = this.props.actorData.moveSpeed;
-                if (isInRange(pawnRange, pawnPos, actor.pos)) {
+                let legionaryPos = this.props.actorData.pos;
+                let legionaryRange = this.props.actorData.moveSpeed;
+                if (isInRange(legionaryRange, legionaryPos, actor.pos)) {
                   return {
                     ...actor,
                     onTarget: true,
@@ -158,7 +158,7 @@ class Pawn extends Component {
   handleClick = () => {
     event.stopPropagation();
     console.log(
-      "Pawn: ",
+      "Legionary: ",
       this.props.actorData.actorId,
       " team: " + this.props.actorData.team
     );
@@ -269,8 +269,8 @@ class Pawn extends Component {
           id={id}
           xlinkHref={
             this.props.currentUser === this.props.actorData.team
-              ? ASSET_ACTOR_TYPE.PAWN + ASSET_TEAM.FRIENDLY
-              : ASSET_ACTOR_TYPE.PAWN + ASSET_TEAM.ENEMY
+              ? ASSET_ACTOR_TYPE.LEGIONARY + ASSET_TEAM.FRIENDLY
+              : ASSET_ACTOR_TYPE.LEGIONARY + ASSET_TEAM.ENEMY
           }
           x={xFrontend}
           y={yFrontend}
@@ -294,4 +294,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Pawn);
+export default connect(mapStateToProps)(Legionary);

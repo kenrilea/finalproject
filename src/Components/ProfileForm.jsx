@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import "../css/profileForm.css";
+
 class UnconnectedProfileForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       statusMessage: "",
       bio: "",
-      profilePic: "/assets/default-user.png"
+      profilePic: "/assets/default-user.png",
+      showProfilePics: false
     };
   }
   handlerSubmit = event => {
@@ -16,16 +19,34 @@ class UnconnectedProfileForm extends Component {
   handlerInputStatusMessage = event => {
     console.log(event.target.value);
   };
-  handlerOnClick = event => {};
+  handlerOnClick = event => {
+    console.log("click");
+    this.setState({ showProfilePics: !this.state.showProfilePics });
+  };
+  renderProfilePics = () => {
+    if (this.state.showProfilePics) {
+      console.log("test");
+      return (
+        <div>
+          <img src={this.state.profilePic} />
+          <img src={this.state.profilePic} />
+          <img src={this.state.profilePic} />
+        </div>
+      );
+    }
+  };
   render = () => {
     return (
       <div>
+        <div onClick={this.handlerOnClick}>
+          <h4>Select profile picture</h4>
+
+          <img className={"profilePicDiv"} src={this.state.profilePic} />
+        </div>
+
+        {this.renderProfilePics()}
         <form onSubmit={this.handlerSubmit}>
           <div>
-            <h4>Select profile picture</h4>
-            <button onClick={this.handlerOnClick}>
-              <img src={this.state.profilePic} />
-            </button>
             <h4>Status message</h4>
             <input
               type={"text"}

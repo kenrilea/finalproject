@@ -9,9 +9,14 @@ import {
 import {
   updatePosition,
   isInRange,
+  lineRange,
   lineTarget
 } from "./../../../Helpers/calcs.js";
-import { ASSET_ACTOR_TYPE, ASSET_TEAM } from "./../../../AssetConstants";
+import {
+  ASSET_ACTOR_TYPE,
+  ASSET_TEAM,
+  ACTOR_HIGHLIGHT
+} from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
 class Knight extends Component {
@@ -99,7 +104,12 @@ class Knight extends Component {
   };
 
   componentDidUpdate = () => {
-    console.log("state: ", this.props.gameState.type);
+    console.log(
+      "state: ",
+      this.props.gameState.type,
+      " action: ",
+      this.props.actorData.action
+    );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined
@@ -162,7 +172,16 @@ class Knight extends Component {
               actors: this.props.gameData.actors.map(actor => {
                 let knightPos = this.props.actorData.pos;
                 let knightRange = this.props.actorData.range;
+
                 if (lineTarget(knightRange, knightPos, actor.pos)) {
+                  return {
+                    ...actor,
+                    onTarget: true,
+                    highlighted: true
+                  };
+                }
+
+                if (lineRange(knightRange, knightPos, actor.pos)) {
                   return {
                     ...actor,
                     highlighted: true
@@ -275,6 +294,7 @@ class Knight extends Component {
           stroke={"#42f4eb"}
           strokeWidth="0.1"
           strokeLinecap="square"
+          fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
           width={this.props.gameData.width}
@@ -282,9 +302,9 @@ class Knight extends Component {
         >
           <animate
             xlinkHref={"#rect" + id}
-            attributeName="fill"
-            from="#000"
-            to="#f00"
+            attributeName="opacity"
+            from="0"
+            to="1"
             begin="0s"
             dur="1s"
             repeatCount="indefinite"
