@@ -213,7 +213,8 @@ let editGameData = (gameId, mods) => {
               });
             }
             if (stopArrow === false) {
-              changes = changes.concat(mod);
+              let modtemp = { ...mod, target: undefined };
+              changes = changes.concat(modtemp);
             }
           }
         }
