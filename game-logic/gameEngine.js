@@ -57,6 +57,8 @@ let editGameData = (gameId, mods) => {
   ///////////////////////////////////////////////////////////
   //_________________________________________________________
   mods.forEach(mod => {
+    console.log("editing game data with:");
+    console.log(mod);
     if (mod.type === "add-new") {
       gameInstances[gameId]["map"].push(mod.actor);
     }
@@ -219,6 +221,7 @@ let editGameData = (gameId, mods) => {
               utils.teamCollision(mod.dest, char.team, gameInstances[gameId])
                 .length <= 0
             ) {
+              changes.push(mod);
               for (let i = 0; i < char.range; i++) {
                 let stepLine = calcs.lineMove(char.range, char.pos, mod.dest);
                 char.pos.x = char.pos.x + stepLine.x;
@@ -242,7 +245,6 @@ let editGameData = (gameId, mods) => {
                   return true;
                 });
               }
-              changes.push(mod);
             }
           }
         }
@@ -336,6 +338,9 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
+  console.log("user input in game engine");
+  console.log(input);
+
   let changes = [];
   let success = true;
   if (input.action === undefined) {
