@@ -98,10 +98,10 @@ lineMove = (range, origin, dest) => {
       return { x: 0, y: 1 };
     }
     if (origin.x > dest.x) {
-      return { x: 1, y: 1 };
+      return { x: -1, y: 1 };
     }
     if (origin.x < dest.x) {
-      return { x: -1, y: 1 };
+      return { x: 1, y: 1 };
     }
   }
   //____________________
@@ -119,10 +119,10 @@ lineMove = (range, origin, dest) => {
       return { x: 0, y: -1 };
     }
     if (origin.x > dest.x) {
-      return { x: 1, y: -1 };
+      return { x: -1, y: -1 };
     }
     if (origin.x < dest.x) {
-      return { x: -1, y: -1 };
+      return { x: 1, y: -1 };
     }
   }
   return { x: 0, y: 0 };
