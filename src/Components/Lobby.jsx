@@ -183,6 +183,9 @@ class UnconnectedLobby extends Component {
 
       return (
          <div className="lobbies-list-background">
+            <div>
+               Lobby id: {this.props.currentLobbyId}
+            </div>
             <div className={"MainLobbyDiv animated-fade-in lobbies-list-foreground material-shadow"}>
                <div className={"PlayerOneLobbyDiv"}>
                   <img src={this.renderAvatar(this.state.readyPlayerOne, true)} />

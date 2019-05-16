@@ -394,15 +394,30 @@ io.on("connection", socket => {
    socket.on("leave-lobby", data => {
 
       lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+
          //If playerOne is alone in lobby, remove it from db!
          if (result[0].playerOne === data.currentUser && result[0].playerTwo === "") {
             lobbiesCollection.remove({ _id: data.lobbyId })
          }
+
          //If playerTwo is alone in lobby, remove it as well!
          if (result[0].playerTwo === data.currentUser && result[0].playerOne === "") {
             lobbiesCollection.remove({ _id: data.lobbyId })
          }
-         //If playerTwo leaves and is not alone
+
+         //If playerOne leaves and is not alone, update lobby and emit!
+         if (result[0].playerOne === data.currentUser && result[0].playerTwo !== "") {
+            lobbiesCollection.update({ _id: data.lobbyId }, { $set: { playerOne: "" } }, (err, result) => {
+               if (err) throw err;
+               console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
+
+               lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+                  io.in(data.lobbyId).emit("lobby-data", result[0])
+               })
+            })
+         }
+
+         //If playerTwo leaves and is not alone, also update lobby and emit!
          if (result[0].playerTwo === data.currentUser && result[0].playerOne !== "") {
             lobbiesCollection.update({ _id: data.lobbyId }, { $set: { playerTwo: "" } }, (err, result) => {
                if (err) throw err;
@@ -411,13 +426,10 @@ io.on("connection", socket => {
                lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
                   io.in(data.lobbyId).emit("lobby-data", result[0])
                })
-            }
-            );
+            });
          }
 
       })
-
-
    })
 
    //_______________________GAME________________________________________________
