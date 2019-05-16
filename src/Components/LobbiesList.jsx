@@ -109,7 +109,7 @@ class UnconnectedLobbiesList extends Component {
                      return (
                         <LobbiesListElem
                            key={elem._id}
-                           lobbyId={elem._id.slice(-5)}
+                           lobbyId={elem._id}
                            playerOne={elem.playerOne}
                            playerTwo={elem.playerTwo}
                         />

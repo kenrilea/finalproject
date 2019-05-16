@@ -77,23 +77,30 @@ class UnconnectedLobby extends Component {
          })
    };
 
-   renderReadyOne = () => {
-      if (this.state.readyPlayerOne) {
-         return "ready to go";
-      }
-      if (!this.state.readyPlayerOne) {
-         return "not yet ready";
-      }
-   };
+   renderReadyLabel = isFirstPlayer => {
+      if (isFirstPlayer) {
 
-   renderReadyTwo = () => {
-      if (this.state.readyPlayerTwo) {
-         return "ready to go";
+         if (this.state.readyPlayerOne) {
+            return "is ready to go";
+         }
+         if (!this.state.readyPlayerOne) {
+            return "is not yet ready";
+         }
       }
-      if (!this.state.readyPlayerTwo) {
-         return "not yet ready";
+      if (!isFirstPlayer) {
+
+         if (this.state.playerTwo === "") {
+            return "Waiting"
+         }
+
+         if (this.state.readyPlayerTwo) {
+            return "is ready to go";
+         }
+         if (!this.state.readyPlayerTwo) {
+            return "is not yet ready";
+         }
       }
-   };
+   }
 
    renderReadyButtonText = (ready) => {
       if (ready) {
@@ -120,9 +127,6 @@ class UnconnectedLobby extends Component {
             </button>
          );
       }
-      return (
-         <div>BUTTON HIDDEN</div>
-      )
    };
 
    renderReadyButtonTwo = () => {
@@ -141,9 +145,6 @@ class UnconnectedLobby extends Component {
             </button>
          );
       }
-      return (
-         <div>BUTTON HIDDEN</div>
-      )
    };
 
    renderAvatar = (ready, playerOne) => {
@@ -192,14 +193,14 @@ class UnconnectedLobby extends Component {
                <div className={"PlayerOneLobbyDiv"}>
                   <img src={this.renderAvatar(this.state.readyPlayerOne, true)} />
                   <div className={"lobbyCenterContent"}>
-                     <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
+                     <p>{this.state.playerOne + " " + this.renderReadyLabel(true)}</p>
                      {this.renderReadyButtonOne()}
                   </div>
                </div>
                <div className={"PlayerTwoLobbyDiv"}>
                   <img src={this.renderAvatar(this.state.readyPlayerTwo, false)} />
                   <div className={"lobbyCenterContent"}>
-                     <p>{this.state.playerTwo + " is " + this.renderReadyTwo()}</p>
+                     <p>{this.state.playerTwo + " " + this.renderReadyLabel(false)}</p>
                      {this.renderReadyButtonTwo()}
                   </div>
                </div>
