@@ -94,7 +94,7 @@ class UnconnectedLobbiesList extends Component {
 
       return (
          <div className="lobbies-list-background">
-            <div className="lobbies-list-foreground material-shadow animated-fade-in-delay">
+            <div className="lobbies-list-foreground material-shadow animated-fade-in animated-grow">
                <div className="lobbies-list-button-cont">
                   <h3 className="lobbies-label">Lobbies</h3>
                   <button className="ghost-button-dark" onClick={this.createLobby}>
@@ -109,7 +109,7 @@ class UnconnectedLobbiesList extends Component {
                      return (
                         <LobbiesListElem
                            key={elem._id}
-                           lobbyId={elem._id}
+                           lobbyId={elem._id.slice(-5)}
                            playerOne={elem.playerOne}
                            playerTwo={elem.playerTwo}
                         />
