@@ -370,40 +370,24 @@ gameEngine.getGameInst("test").map.forEach(char => {
     return;
   }
   console.log(char.actorId);
+  console.log(char.charType);
   console.log(char.pos);
 });
 let mres = gameEngine.handlerUserInput({
   gameId: "test",
   action: {
     type: "move",
-    actorId: "27",
-    dest: { x: 0, y: 2 }
+    actorId: "29",
+    dest: { x: 3, y: 2 }
   },
   team: "user1"
 });
 console.log(mres);
-mres = gameEngine.handlerUserInput({
-  gameId: "test",
-  action: {
-    type: "move",
-    actorId: "35",
-    dest: { x: 5, y: 2 }
-  },
-  team: "user2"
-});
-console.log(mres);
-mres = gameEngine.handlerUserInput({
-  gameId: "test",
-  action: {
-    type: "ranged-shot",
-    actorId: "27",
-    target: { x: 3, y: 2 }
-  },
-  team: "user1"
-});
+
 console.log("action");
-console.log(mres.changes[0]);
-console.log(mres.changes[1]);
+mres.changes.forEach(change => {
+  console.log(change);
+});
 console.log("______________________");
 gameEngine.getGameInst("test").map.forEach(char => {
   if (char.actorType !== "char") {
@@ -413,9 +397,9 @@ gameEngine.getGameInst("test").map.forEach(char => {
   console.log(char.pos);
 });
 
-console.log(gameEngine.getGameInst("test")["points"]);
-console.log("_______________________________________________________________");
-console.log("_______________________________________________________________");
+//console.log(gameEngine.getGameInst("test")["points"]);
+//console.log("_______________________________________________________________");
+//console.log("_______________________________________________________________");
 //console.log(gameEngine.getGameInst("test"));
 */
 //____________END OF GAME TEST CODE___________________
@@ -454,7 +438,6 @@ io.on("connection", socket => {
       action: input,
       team: "user1"
     });
-    console.log(result["changes"][0]["type"]);
     if (result["changes"][0]["type"] === "game-over") {
       socket.emit("game-over", {
         type: "game-over",

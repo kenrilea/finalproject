@@ -14,6 +14,7 @@ let getDistance = (origin, dest) => {
   distance = Math.round(Math.sqrt(distance));
   return distance;
 };
+//__________________________________________________________________
 let isInRange = (range, origin, dest) => {
   let distance = getDistance(origin, dest);
   if (distance <= range) {
@@ -21,6 +22,9 @@ let isInRange = (range, origin, dest) => {
   }
   return false;
 };
+//__________________________________________________________________
+/////////////////////////////////////////////////////////////////////
+//__________________________________________________________________
 lineRange = (range, origin, dest) => {
   if (
     Math.abs(origin.y - dest.y) > range ||
@@ -39,6 +43,7 @@ lineRange = (range, origin, dest) => {
   }
   return false;
 };
+//__________________________________________________________________
 lineMove = (range, origin, dest) => {
   let check = false;
   if (
@@ -94,6 +99,7 @@ lineMove = (range, origin, dest) => {
   }
   return { x: 0, y: 0 };
 };
+//__________________________________________________________________
 module.exports = {
   getDistance,
   isInRange,

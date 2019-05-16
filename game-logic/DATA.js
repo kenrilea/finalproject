@@ -76,7 +76,7 @@ let unitTypes = {
   },
   archer: {
     charType: "archer",
-    actions: ["move", "ranged-shot"],
+    actions: ["move-passive", "ranged-shot"],
     static: false,
     pos: { x: -1, y: -1 },
     actorType: "char",
@@ -100,16 +100,18 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100
+    points: 100,
+    range: 3
   },
   catapult: {
     charType: "catapult",
-    actions: ["move", "bombard"],
+    actions: ["move-passive", "bombard"],
     static: false,
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100
+    points: 100,
+    range: 3
   }
 };
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };
