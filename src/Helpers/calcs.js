@@ -16,6 +16,43 @@ export const updatePosition = (start, end, mult) => {
   return newPos;
 };
 
+export const wait = ms => {
+  let startTime = new Date() / 1;
+  let currentTime = startTime;
+  while (currentTime < startTime + ms) {
+    currentTime = new Date() / 1;
+  }
+};
+
+// Returns the actorId of the tile which a
+// given 'char' actor stands on.
+export const getOccupiedTile = (charActor, actorList) => {
+  actorList.filter(actor => {
+    return (
+      actor.actorType !== "char" &&
+      actor.pos.x === charActor.pos.x &&
+      actor.pos.y === charActor.pos.y
+    );
+  });
+
+  return actorList[0].actorId;
+};
+
+// Get whether there is a 'char' actor in the
+// same position as a given tile.
+export const isTileOccupied = (tileActor, actorList) => {
+  if (tileActor.actorType === "char") return false;
+  let found = actorList.find(actor => {
+    return (
+      actor.actorType === "char" &&
+      actor.pos.x === tileActor.pos.x &&
+      actor.pos.y === tileActor.pos.y
+    );
+  });
+  if (found === undefined) return false;
+  return true;
+};
+
 export const getDistance = (origin, dest) => {
   let width = origin.x - dest.x;
   let length = origin.y - dest.y;

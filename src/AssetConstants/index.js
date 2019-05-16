@@ -11,6 +11,10 @@ export const ASSET_TEAM = {
   ENEMY: "red.png"
 };
 
+export const ASSET_ITEM = {
+  CANNONBALL: "cannonball.png"
+};
+
 export const ACTOR_HIGHLIGHT = {
   TILE_ON_PATH: "#444",
   TILE_TARGET: "#007",
