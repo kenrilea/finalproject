@@ -1,8 +1,20 @@
 .leader-table {
    border-collapse: collapse;
    width: 100%;
-   margin-left: 5px;
+   /* margin-left: 5px; */
+   /* padding-right: 17px; */
+   overflow-y: scroll;
+   box-sizing: content-box;
  }
+ ::-webkit-scrollbar {
+   width: 0px;  /* Remove scrollbar space */
+   background: transparent;  /* Optional: just make scrollbar invisible */
+}
+::-webkit-scrollbar-thumb {
+   background: red;
+}
+
+ 
  
  .leader-entry {
    border: 1px solid #dddddd;
@@ -20,7 +32,7 @@
  }
 
  .leader-body {
-   overflow: auto;
+   overflow-y: auto;
  }
  
 .leader-row:not(:first-of-type) {
@@ -41,5 +53,5 @@
     text-align: center;
  }
 
-#scrolltable { height: 90vh; overflow: auto; }
+#scrolltable { height: 90vh; width: 100%; overflow: auto; padding-bottom: 35vh; }
 #scrolltable table { border-collapse: collapse; }

@@ -7,7 +7,7 @@
    margin-top: 30px;
    margin-bottom: 10px;
    font-size: 1.3em;
-   color:white;
+   color:black;
 }
 
  
@@ -16,8 +16,8 @@
    font-size: inherit;
    background-color: transparent;
    border: 1px solid transparent;
-   border-bottom-color: white;
-   color: white;
+   border-bottom-color: gray;
+   color: black;
    /* padding-top: 10px; */
  }
  

@@ -26,7 +26,6 @@ class UnconnectedLobbiesList extends Component {
       socket.open()
 
       socket.on("lobby-list-data", data => {
-         console.log("LOBBY LIST RECEIVED")
          console.log("Socket: receiving data from backend: ", data)
          this.setState({
             lobbies: data

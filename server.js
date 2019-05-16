@@ -369,6 +369,7 @@ let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 io.on("connection", socket => {
+
    console.log("Connected to socket");
 
    socket.on("join", currentLobbyId => {
