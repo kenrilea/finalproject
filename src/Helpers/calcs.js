@@ -1,3 +1,21 @@
+export const updatePosition = (start, end, mult) => {
+  let newPos = {};
+
+  /*newPos.x = (1 - mult) * start.x + mult * end.x;
+  newPos.y = (1 - mult) * start.y + mult * end.y;*/
+  newPos.x = start.x + mult * (end.x - start.x);
+  newPos.y = start.y + mult * (end.y - start.y);
+
+  if (Math.abs(newPos.x - end.x) < 0.5) {
+    newPos.x = end.x;
+  }
+  if (Math.abs(newPos.y - end.y) < 0.5) {
+    newPos.y = end.y;
+  }
+
+  return newPos;
+};
+
 export const getDistance = (origin, dest) => {
   let width = origin.x - dest.x;
   let length = origin.y - dest.y;
