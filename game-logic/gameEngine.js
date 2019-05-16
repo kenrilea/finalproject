@@ -2,7 +2,7 @@ let createMap = require(__dirname + "/createMap.js");
 let createArmy = require(__dirname + "/createArmy.js");
 let calcs = require(__dirname + "/calcs.js");
 let data = require(__dirname + "/DATA.js");
-
+let utils = require(__dirname + "/engine-utils.js");
 //________________________________________________________________________________________________
 let gameInstances = {};
 let endGame = (gameId, team) => {
@@ -41,7 +41,7 @@ let editGameData = (gameId, mods) => {
       parseInt(gameInstances[gameId]["turn"]) %
         gameInstances[gameId]["players"].length
     ];
-  console.log(gameTurn);
+  console.log("players turn: " + gameTurn);
   let changes = [];
   if (gameInstances[gameId]["playerWon"] !== undefined) {
     changes = changes.concat([
@@ -70,35 +70,84 @@ let editGameData = (gameId, mods) => {
         return actor.actorId === mod.actorId;
       });
       let char = gameInstances[gameId]["map"][actorIndex];
-      console.log(char.team);
       if (char.team === gameTurn) {
-        if (calcs.isInRange(char.moveSpeed, char.pos, mod.dest)) {
-          let allyTeamCollision = gameInstances[gameId]["map"].filter(actor => {
-            if (actor.team === char.team) {
-              if (actor.pos.x === mod.dest.x && actor.pos.y === mod.dest.y) {
+        if (char.actions.includes("move")) {
+          if (calcs.isInRange(char.moveSpeed, char.pos, mod.dest)) {
+            let allyTeamCollision = gameInstances[gameId]["map"].filter(
+              actor => {
+                if (actor.team === char.team) {
+                  if (
+                    actor.pos.x === mod.dest.x &&
+                    actor.pos.y === mod.dest.y
+                  ) {
+                    return true;
+                  }
+                }
+                return false;
+              }
+            );
+            let collidedWithEnemy = false;
+            gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
+              actor => {
+                if (actor.team !== char.team && actor.team !== "none") {
+                  if (
+                    actor.pos.x === mod.dest.x &&
+                    actor.pos.y === mod.dest.y
+                  ) {
+                    collidedWithEnemy = true;
+                    changes.push({ type: "died", actorId: actor.actorId });
+                    gameInstances[gameId]["points"][char.team] =
+                      gameInstances[gameId]["points"][char.team] + actor.points;
+                    return false;
+                  }
+                }
+
                 return true;
               }
+            );
+            if (allyTeamCollision.length < 1) {
+              changes.push(mod);
+              char.pos.x = mod.dest.x;
+              char.pos.y = mod.dest.y;
             }
-            return false;
-          });
-          gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
-            actor => {
-              if (actor.team !== char.team && actor.team !== "none") {
-                if (actor.pos.x === mod.dest.x && actor.pos.y === mod.dest.y) {
-                  changes.push({ type: "died", actorId: actor.actorId });
-                  gameInstances[gameId]["points"][char.team] =
-                    gameInstances[gameId]["points"][char.team] + actor.points;
-                  return false;
+            if (collidedWithEnemy) {
+              changes.push({ type: "died", actorId: char.actorId });
+              gameInstances[gameId]["map"] = gameInstances[gameId][
+                "map"
+              ].filter(actor => {
+                return actor.actorId !== char.actorId;
+              });
+            }
+          }
+        }
+      }
+    }
+    if (mod.type === "move-passive") {
+      let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
+        return actor.actorId === mod.actorId;
+      });
+      let char = gameInstances[gameId]["map"][actorIndex];
+      if (char.team === gameTurn) {
+        if (char.actions.includes("move-passive")) {
+          if (calcs.isInRange(char.moveSpeed, char.pos, mod.dest)) {
+            let allyTeamCollision = gameInstances[gameId]["map"].filter(
+              actor => {
+                if (actor.team !== "none") {
+                  if (
+                    actor.pos.x === mod.dest.x &&
+                    actor.pos.y === mod.dest.y
+                  ) {
+                    return true;
+                  }
                 }
+                return false;
               }
-
-              return true;
+            );
+            if (allyTeamCollision.length < 1) {
+              changes.push(mod);
+              char.pos.x = mod.dest.x;
+              char.pos.y = mod.dest.y;
             }
-          );
-          if (allyTeamCollision.length < 1) {
-            changes.push(mod);
-            char.pos.x = mod.dest.x;
-            char.pos.y = mod.dest.y;
           }
         }
       }
@@ -113,8 +162,6 @@ let editGameData = (gameId, mods) => {
           if (calcs.lineRange(char.range, char.pos, mod.target)) {
             let arrowPos = { ...char.pos };
             let stopArrow = false;
-            console.log("target");
-            console.log(mod.target);
             for (let i = 0; i < char.range; i++) {
               let stepLine = calcs.lineMove(char.range, char.pos, mod.target);
               arrowPos.x = arrowPos.x + stepLine.x;
@@ -134,7 +181,6 @@ let editGameData = (gameId, mods) => {
                     gameInstances[gameId]["points"][char.team] =
                       gameInstances[gameId]["points"][char.team] + actor.points;
                     stopArrow = true;
-                    console.log("setting end");
                     changes = changes.concat({
                       ...mod,
                       target: { ...arrowPos }
@@ -149,6 +195,74 @@ let editGameData = (gameId, mods) => {
             if (stopArrow === false) {
               changes = changes.concat(mod);
             }
+          }
+        }
+      }
+    }
+    if (mod.type === "charge") {
+      let char = utils.findActor(mod.actorId, gameInstances[gameId]);
+      if (char.team === gameTurn) {
+        if (char.actions.includes("charge")) {
+          if (calcs.lineRange(char.range, char.pos, mod.dest)) {
+            if (
+              utils.teamCollision(mod.dest, char.team, gameInstances[gameId])
+                .length <= 0
+            ) {
+              for (let i = 0; i < char.range; i++) {
+                let stepLine = calcs.lineMove(char.range, char.pos, mod.dest);
+                char.pos.x = char.pos.x + stepLine.x;
+                char.pos.y = char.pos.y + stepLine.y;
+
+                gameInstances[gameId]["map"] = gameInstances[gameId][
+                  "map"
+                ].filter(actor => {
+                  if (actor.team !== char.team && actor.team !== "none") {
+                    if (
+                      actor.pos.x === char.pos.x &&
+                      actor.pos.y === char.pos.y
+                    ) {
+                      gameInstances[gameId]["points"][char.team] =
+                        gameInstances[gameId]["points"][char.team] +
+                        actor.points;
+                      changes.push({ type: "died", actorId: actor.actorId });
+                      return false;
+                    }
+                  }
+                  return true;
+                });
+              }
+              changes.push(mod);
+            }
+          }
+        }
+      }
+    }
+    if (mod.type === "bombard") {
+      let char = utils.findActor(mod.actorId, gameInstances[gameId]);
+      if (char.team === gameTurn) {
+        if (char.actions.includes("bombard")) {
+          if (
+            calcs.isInRange(char.range, char.pos, mod.target) &&
+            !calcs.isInRange(1, char.pos, mod.target)
+          ) {
+            changes.push(mod);
+            gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
+              actor => {
+                if (actor.team !== char.team && actor.team !== "none") {
+                  if (
+                    actor.pos.x === mod.target.x &&
+                    actor.pos.y === mod.target.y
+                  ) {
+                    changes.push({ type: "died", actorId: actor.actorId });
+                    gameInstances[gameId]["points"][char.team] =
+                      gameInstances[gameId]["points"][char.team] + actor.points;
+                    return false;
+                  }
+                }
+
+                return true;
+              }
+            );
           }
         }
       }
@@ -226,7 +340,22 @@ let handlerUserInput = input => {
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
+  if (input.action.type === "move-passive") {
+    if (gameTurn === input.team) {
+      changes = changes.concat(editGameData(input.gameId, [input.action]));
+    }
+  }
   if (input.action.type === "ranged-shot") {
+    if (gameTurn === input.team) {
+      changes = changes.concat(editGameData(input.gameId, [input.action]));
+    }
+  }
+  if (input.action.type === "charge") {
+    if (gameTurn === input.team) {
+      changes = changes.concat(editGameData(input.gameId, [input.action]));
+    }
+  }
+  if (input.action.type === "bombard") {
     if (gameTurn === input.team) {
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
