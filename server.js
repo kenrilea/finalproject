@@ -371,34 +371,23 @@ let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 io.on("connection", socket => {
    console.log("Connected to socket");
 
-   socket.on("playerOneReady", () => {
-      console.log("Socket: Player one is ready!");
-      socket.emit("setStatePlayerOneReady");
-   });
-
-   socket.on("playerTwoReady", () => {
-      console.log("Socket: Player two is ready!");
-      socket.emit("setStatePlayerTwoReady");
-   });
-
-   socket.on("login", () => {
-      console.log("Socket: Logging in");
-   });
-
-   socket.on("lobby-update", () => {
-      //Refreshes lobby page for both users
-      io.emit("refresh-lobby");
-   });
+   socket.on("join", currentLobbyId => {
+      //After receiving join event with lobbyId, set the room for the client
+      console.log("Connecting client to socket room: ", currentLobbyId)
+      socket.join(currentLobbyId)
+   })
 
    socket.on("refresh-lobby", currentLobbyId => {
+
       console.log("Socket: Refresh lobby listener called");
+
       lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
          if (err) throw err;
          if (result[0] === undefined) {
             return;
          }
          //Send back lobby object in socket
-         io.emit("lobby-data", result[0]);
+         io.in(currentLobbyId).emit("lobby-data", result[0]);
       });
    });
 

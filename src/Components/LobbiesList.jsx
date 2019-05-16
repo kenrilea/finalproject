@@ -96,7 +96,7 @@ class UnconnectedLobbiesList extends Component {
       }
 
       if (this.props.inLobby) {
-         return <Redirect to={"lobby/:" + this.props.lobbyToJoinId} />;
+         return <Redirect to={"lobby/" + this.props.lobbyToJoinId} />;
       }
 
       return (
