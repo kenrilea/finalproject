@@ -6,7 +6,10 @@ import "./../../css/outerbar.css";
 class OuterBar extends Component {
   componentDidMount = () => {
     socket.on("game-over", data => {
-      console.log("data: ", data);
+      console.log("game-over data: ", data);
+      socket.emit("get-game-data", {
+        gameId: "test"
+      });
     });
   };
 
@@ -32,13 +35,17 @@ class OuterBar extends Component {
       );
     });
 
+    const surrenderButton = this.props.gameOver ? null : (
+      <button onClick={this.handleSurrender}>Surrender</button>
+    );
+
     return (
       <div className="outerbar">
         <div className="outerbar-points-section">
           <div className="outerbar-point-label">Points</div>
           <div className="outerbar-points-container">{pointsDisplay}</div>
         </div>
-        <button onClick={this.handleSurrender}>Surrender</button>
+        {surrenderButton}
       </div>
     );
   };
