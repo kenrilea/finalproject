@@ -14,16 +14,15 @@ export const wait = ms => {
 export const resetToSelectUnitState = () => {
   store.dispatch(setGameState(selectUnit()));
   store.dispatch(
-    setGameData(
-      store.getState().gameData.actors.map(actor => {
+    setGameData({
+      ...store.getState().gameData,
+      actors: store.getState().gameData.actors.map(actor => {
         return {
           ...actor,
           highlighted: false
         };
-      }),
-      store.getState().gameData.width,
-      store.getState().gameData.height
-    )
+      })
+    })
   );
 };
 
@@ -31,8 +30,9 @@ export const updateAnimationPhase = actionList => {
   let action = actionList[0];
 
   store.dispatch(
-    setGameData(
-      store.getState().gameData.actors.map(actor => {
+    setGameData({
+      ...store.getState().gameData,
+      actors: store.getState().gameData.actors.map(actor => {
         if (action.actorId === actor.actorId) {
           return {
             ...actor,
@@ -41,10 +41,8 @@ export const updateAnimationPhase = actionList => {
         }
 
         return actor;
-      }),
-      store.getState().gameData.width,
-      store.getState().gameData.height
-    )
+      })
+    })
   );
 
   console.log("change state", actionList);
@@ -79,8 +77,9 @@ export const assignAnimationToActor = () => {
   console.log("action: ", action);
 
   store.dispatch(
-    setGameData(
-      store.getState().gameData.actors.map(actor => {
+    setGameData({
+      ...store.getState().gameData,
+      actors: store.getState().gameData.actors.map(actor => {
         if (action.actorId === actor.actorId) {
           return {
             ...actor,
@@ -89,9 +88,10 @@ export const assignAnimationToActor = () => {
         }
 
         return actor;
-      }),
-      store.getState().gameData.width,
-      store.getState().gameData.height
-    )
+      })
+    })
   );
+
+  let actionList = store.getState().gameState.actionList;
+  store.dispatch(setGameState(updateAnimations(actionList.slice(1))));
 };

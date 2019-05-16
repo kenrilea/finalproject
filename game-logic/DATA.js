@@ -76,12 +76,13 @@ let unitTypes = {
   },
   archer: {
     charType: "archer",
-    actions: ["move", "shoot"],
+    actions: ["move", "ranged-shot"],
     static: false,
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100
+    points: 100,
+    range: 3
   },
   legionary: {
     charType: "legionary",
@@ -93,7 +94,7 @@ let unitTypes = {
     points: 100
   },
   knight: {
-    charType: "legionary",
+    charType: "knight",
     actions: ["move", "charge"],
     static: false,
     pos: { x: -1, y: -1 },

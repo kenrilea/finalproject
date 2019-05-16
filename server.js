@@ -9,6 +9,9 @@ const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
+const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
+const gameData = require(__dirname + "/game-logic/DATA.js");
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ PATHS ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +32,7 @@ let usersCollection;
 let sessionsCollection;
 let lobbiesCollection;
 let gamesCollection;
+let gameIdAssociation; // in database as collection "GameIdAssociation"
 
 //Connection to DB, do not close!
 (async function initDB() {
@@ -358,8 +362,12 @@ app.post("/get-current-lobby", upload.none(), function (req, res) {
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-io.on("connection", socket => {
+//_____________GAME TEST CODE____________________-
+let army = ["pawn"];
+let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
+//____________END OF GAME TEST CODE___________________
 
+io.on("connection", socket => {
    console.log("Connected to socket");
 
    socket.on("playerOneReady", () => {
@@ -369,7 +377,6 @@ io.on("connection", socket => {
 
    socket.on("playerTwoReady", () => {
       console.log("Socket: Player two is ready!");
-      //
       socket.emit("setStatePlayerTwoReady");
    });
 
@@ -377,22 +384,111 @@ io.on("connection", socket => {
       console.log("Socket: Logging in");
    });
 
+   socket.on("lobby-update", () => {
+      //Refreshes lobby page for both users
+      socket.emit("refresh-lobby");
+   });
+
    socket.on("refresh-lobby", currentLobbyId => {
-      console.log("Current lobby id passed by socket: ", currentLobbyId)
+
       lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
          if (err) throw err;
          if (result[0] === undefined) {
-            console.log("DB: Lobby not found")
             return;
          }
-         //Send back lobby object through socket
-         socket.emit("lobby-data", result[0]);
+         //Send back lobby object in socket
+         io.emit("lobby-data", result[0])
       });
+   })
 
+   //_______________________GAME________________________________________________
+   socket.on("get-game-data", message => {
+      //-- add gameIdFromUsernameCollection("username") to get gameId when its implemented
+      let gameData = gameEngine.getGameInst(gameId); //temporary gameId for testing, use collection later...
+      socket.emit("game-data", gameData);
    });
 
+   socket.on("game-input", input => {
+      console.log("here");
+      let result = gameEngine.handlerUserInput({
+         gameId: "test",
+         action: input,
+         team: "user1"
+      });
+      socket.emit("game-state-change", {
+         success: result.success,
+         changes: result.changes
+      });
+   });
 
+   //_______________________DANIELSPERIMENTATION________________________________________________
+   //************ USER READY ************//
+   // socket.on("user-ready"),
+   //    ({ room, currentUser }) => {
+   //       let lobbyId = room;
+   //       console.log(
+   //          `|Ready| button pressed by "` + currentUser + `" for lobby with id`,
+   //          lobbyId
+   //       );
+   //       lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+   //          if (
+   //             result[0].playerTwo !== currentUser &&
+   //             result[0].playerOne !== currentUser
+   //          ) {
+   //             console.log(
+   //                `Error, "` +
+   //                currentUser +
+   //                `" is not registered as playerOne or playerTwo`
+   //             );
+   //             return;
+   //          }
+
+   //          let roomDataToBePassed = results[0];
+   //          let ready;
+   //          switch (currentUser) {
+   //             case result[0].playerOne:
+   //                console.log(
+   //                   `User "` + currentUser + `" is registered as playerOne`
+   //                );
+   //                ready = !result[0].readyPlayerOne;
+   //                lobbiesCollection.update(
+   //                   { _id: lobbyId },
+   //                   { $set: { readyPlayerOne: ready } },
+   //                   (err, result) => {
+   //                      if (err) throw err;
+   //                      console.log(`DB: Updating playerOne ready to ${ready}`);
+   //                      roomDataToBePassed.readyPlayerOne = ready;
+   //                   }
+   //                );
+   //                break;
+   //             case result[0].playerTwo:
+   //                console.log(
+   //                   `User "` + currentUser + `" is registered as playerTwo`
+   //                );
+   //                ready = !result[0].readyPlayerTwo;
+   //                lobbiesCollection.updateOne(
+   //                   { _id: lobbyId },
+   //                   { $set: { readyPlayerTwo: ready } },
+   //                   (err, result) => {
+   //                      if (err) throw err;
+   //                      console.log(`DB: Updating playerTwo ready to ${ready}`);
+   //                      roomDataToBePassed.readyPlayerTwo = ready;
+   //                   }
+   //                );
+   //                break;
+   //             default:
+   //                console.log(
+   //                   "Error, current user is not registered as playerOne or playerTwo"
+   //                );
+   //          }
+   //       });
+
+   //       socket.in(room).emit("ready", roomDataToBePassed);
+   //    };
+
+   ////////////////////////////////
 });
+//_______________________END OF GAME________________________________________________
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//

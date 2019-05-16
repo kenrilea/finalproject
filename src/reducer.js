@@ -26,9 +26,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         gameData: {
-          actors: action.actors,
-          width: action.width,
-          height: action.height
+          ...action.data
         }
       };
     case "set-game-state":

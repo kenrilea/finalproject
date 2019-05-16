@@ -8,12 +8,10 @@ export const setActionMenu = (visible, xPos, yPos, options) => {
   };
 };
 
-export const setGameData = (actors, width, height) => {
+export const setGameData = data => {
   return {
     type: "set-game-data",
-    actors,
-    width,
-    height
+    data
   };
 };
 

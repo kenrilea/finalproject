@@ -38,34 +38,34 @@ class UnconnectedLobby extends Component {
    }
 
 
-   getCurrentLobby = () => {
+   // getCurrentLobby = () => {
 
-      let data = new FormData()
-      data.append("currentLobbyId", this.props.currentLobbyId)
+   //    let data = new FormData()
+   //    data.append("currentLobbyId", this.props.currentLobbyId)
 
-      fetch("/get-current-lobby", {
-         method: "POST",
-         body: data,
-      })
-         .then(resHead => {
-            return resHead.text()
-         })
-         .then(resBody => {
+   //    fetch("/get-current-lobby", {
+   //       method: "POST",
+   //       body: data,
+   //    })
+   //       .then(resHead => {
+   //          return resHead.text()
+   //       })
+   //       .then(resBody => {
 
-            let parsed = JSON.parse(resBody)
+   //          let parsed = JSON.parse(resBody)
 
-            console.log("Parsed body: ", parsed)
+   //          console.log("Parsed body: ", parsed)
 
-            this.setState({
-               playerOne: parsed.playerOne,
-               playerTwo: parsed.playerTwo,
-               readyOne: parsed.readyOne,
-               readyTwo: parsed.readyTwo
-            })
+   //          this.setState({
+   //             playerOne: parsed.playerOne,
+   //             playerTwo: parsed.playerTwo,
+   //             readyOne: parsed.readyOne,
+   //             readyTwo: parsed.readyTwo
+   //          })
 
-            socket.emit("lobby-update")
-         })
-   }
+   //          socket.emit("lobby-update")
+   //       })
+   // }
 
    renderReadyOne = () => {
       if (this.state.readyOne === false) {

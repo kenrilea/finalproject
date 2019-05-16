@@ -21,8 +21,82 @@ let isInRange = (range, origin, dest) => {
   }
   return false;
 };
-
+lineRange = (range, origin, dest) => {
+  if (
+    Math.abs(origin.y - dest.y) > range ||
+    Math.abs(origin.x - dest.x) > range
+  ) {
+    return false;
+  }
+  if (origin.x === dest.x) {
+    return true;
+  }
+  if (origin.y === dest.y) {
+    return true;
+  }
+  if (Math.abs(origin.y - dest.y) === Math.abs(origin.x - dest.x)) {
+    return true;
+  }
+  return false;
+};
+lineMove = (range, origin, dest) => {
+  let check = false;
+  if (
+    Math.abs(origin.y - dest.y) > range ||
+    Math.abs(origin.x - dest.x) > range
+  ) {
+    check = false;
+  }
+  if (origin.x === dest.x) {
+    check = true;
+  }
+  if (origin.y === dest.y) {
+    check = true;
+  }
+  if (Math.abs(origin.y - dest.y) === Math.abs(origin.x - dest.x)) {
+    check = true;
+  }
+  if (!check) {
+    return { x: 0, y: 0 };
+  }
+  //____________________
+  if (origin.y < dest.y) {
+    if (origin.x === dest.x) {
+      return { x: 0, y: 1 };
+    }
+    if (origin.x > dest.x) {
+      return { x: 1, y: 1 };
+    }
+    if (origin.x < dest.x) {
+      return { x: -1, y: 1 };
+    }
+  }
+  //____________________
+  if (origin.y === dest.y) {
+    if (origin.x > dest.x) {
+      return { x: 1, y: 0 };
+    }
+    if (origin.x < dest.x) {
+      return { x: 1, y: 0 };
+    }
+  }
+  //____________________
+  if (origin.y > dest.y) {
+    if (origin.x === dest.x) {
+      return { x: 0, y: -1 };
+    }
+    if (origin.x > dest.x) {
+      return { x: 1, y: -1 };
+    }
+    if (origin.x < dest.x) {
+      return { x: -1, y: -1 };
+    }
+  }
+  return { x: 0, y: 0 };
+};
 module.exports = {
   getDistance,
-  isInRange
+  isInRange,
+  lineRange,
+  lineMove
 };

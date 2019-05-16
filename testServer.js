@@ -6,8 +6,8 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
-const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 
+const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 const gameData = require(__dirname + "/game-logic/DATA.js");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ console.log(
 );*/
 ///____________END OF GAME TESTING CODE________________////
 io.on("connection", socket => {
-  console.log("connected");
+  //_______________________GAME________________________________________________
   socket.on("get-game-data", message => {
     socket.emit("game-data", gameEngine.getGameInst("test"));
   });
