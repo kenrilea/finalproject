@@ -11,10 +11,11 @@ export const selectUnit = () => {
   };
 };
 
-export const selectTile = unitInAction => {
+export const selectTile = (unitInAction, actionType) => {
   return {
     type: STATES.SELECT_TILE,
-    unitInAction
+    unitInAction,
+    actionType
   };
 };
 

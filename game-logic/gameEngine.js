@@ -291,8 +291,8 @@ let addMessage = (gameId, message) => {
 //________________________________________________________________________________________________
 
 let createGameInst = (teamA, teamB, armyA, armyB, gameId) => {
-  let width = 5;
-  let height = 5;
+  let width = 8;
+  let height = 8;
   let points = {};
   points[teamA] = 0;
   points[teamB] = 0;
@@ -313,8 +313,8 @@ let createGameInst = (teamA, teamB, armyA, armyB, gameId) => {
   return gameId;
 };
 let createTestGameInst = (teamA, teamB, armyA, armyB) => {
-  let width = 5;
-  let height = 5;
+  let width = 8;
+  let height = 8;
   let gameId = "test";
   let points = {};
   points[teamA] = 0;
@@ -358,6 +358,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "ranged-shot") {
     if (gameTurn === input.team) {
+      action.target = action.dest;
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
@@ -368,6 +369,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "bombard") {
     if (gameTurn === input.team) {
+      action.target = action.dest;
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }

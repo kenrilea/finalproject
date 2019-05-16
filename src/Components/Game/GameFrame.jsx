@@ -6,6 +6,7 @@ import OuterBar from "./OuterBar.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
+import Knight from "./Actors/Knight.jsx";
 import Pawn from "./Actors/Pawn.jsx";
 import Menu from "./Menu/Menu.jsx";
 import { setGameData } from "./../../Actions";
@@ -22,6 +23,7 @@ class GameFrame extends Component {
     super(props);
     this.state = {
       loaded: false,
+      currentTurnPlayer: "",
       gameOver: false,
       winner: ""
     };
@@ -50,6 +52,7 @@ class GameFrame extends Component {
         );
         this.setState({
           gameOver: true,
+          currentTurnPlayer: "",
           winner: data.playerWon
         });
         return;
@@ -66,7 +69,8 @@ class GameFrame extends Component {
       console.log("Player turn: ", player);
 
       this.setState({
-        loaded: true
+        loaded: true,
+        currentTurnPlayer: player
       });
     });
 
@@ -91,6 +95,8 @@ class GameFrame extends Component {
         return <Tile key={actor.actorId} actorData={actor} />;
       } else if (actor.charType === "pawn") {
         return <Pawn key={actor.actorId} actorData={actor} />;
+      } else if (actor.charType === "knight") {
+        return <Knight key={actor.actorId} actorData={actor} />;
       }
     });
   };
@@ -108,15 +114,18 @@ class GameFrame extends Component {
           <svg
             className="svg-canvas"
             id="chess-2-canvas"
-            /*preserveAspectRatio="xMaxYMax none"
-          viewBox="0 0 100 100"*/
+            /*preserveAspectRatio="xMaxYMax none"*/
+            viewBox="0 0 100 100"
           >
             {this.getActorElements()}
           </svg>
           <Menu options={this.props.actionMenuOptions} />
           {gameOverContent}
         </div>
-        <OuterBar gameOver={this.state.gameOver} />
+        <OuterBar
+          gameOver={this.state.gameOver}
+          currentTurnPlayer={this.state.currentTurnPlayer}
+        />
       </div>
     );
   };
