@@ -3,14 +3,6 @@ import { setGameData, setGameState } from "./../Actions";
 import { selectUnit, updateAnimations } from "./../GameStates";
 import socket from "./../Components/SocketSettings.jsx";
 
-export const wait = ms => {
-  let startTime = new Date() / 1;
-  let currentTime = startTime;
-  while (currentTime < startTime + ms) {
-    currentTime = new Date() / 1;
-  }
-};
-
 export const resetToSelectUnitState = () => {
   store.dispatch(setGameState(selectUnit()));
   store.dispatch(
@@ -19,6 +11,7 @@ export const resetToSelectUnitState = () => {
       actors: store.getState().gameData.actors.map(actor => {
         return {
           ...actor,
+          onTarget: false,
           highlighted: false
         };
       })

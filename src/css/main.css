@@ -98,12 +98,18 @@ div {
  }
 
  .animated-fade-in{
-    animation:opac 0.8s
+    animation:opac 0.8s;
    }
 
  .animated-fade-in-delay{
     animation:opac 0.8s;
    }
+
+.animated-grow {
+   animation: expand 0.8s;
+}
+
+@keyframes expand {from{transform: scale(0)} to{transform: scale(1)}}
  
  @keyframes opac{from{opacity:0} to{opacity:1}}
 

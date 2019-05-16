@@ -6,7 +6,9 @@ import OuterBar from "./OuterBar.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
+import Catapult from "./Actors/Catapult.jsx";
 import Knight from "./Actors/Knight.jsx";
+import Legionary from "./Actors/Legionary.jsx";
 import Pawn from "./Actors/Pawn.jsx";
 import Menu from "./Menu/Menu.jsx";
 import { setGameData } from "./../../Actions";
@@ -97,6 +99,10 @@ class GameFrame extends Component {
         return <Pawn key={actor.actorId} actorData={actor} />;
       } else if (actor.charType === "knight") {
         return <Knight key={actor.actorId} actorData={actor} />;
+      } else if (actor.charType === "legionary") {
+        return <Legionary key={actor.actorId} actorData={actor} />;
+      } else if (actor.charType === "catapult") {
+        return <Catapult key={actor.actorId} actorData={actor} />;
       }
     });
   };

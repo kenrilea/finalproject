@@ -391,6 +391,14 @@ io.on("connection", socket => {
       });
    });
 
+   socket.on("refresh-lobby-list", () => {
+      lobbiesCollection.find().toArray((err, result) => {
+         console.log("Lobbies from socket: ", result)
+         io.emit("lobby-list-data", result)
+      })
+   })
+
+
    socket.on("leave-lobby", data => {
 
       lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {

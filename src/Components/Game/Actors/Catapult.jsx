@@ -6,29 +6,42 @@ import {
   assignAnimationToActor,
   resetToSelectUnitState
 } from "./../../../Helpers/GameStateHelpers.js";
-import { updatePosition, isInRange } from "./../../../Helpers/calcs.js";
+import {
+  updatePosition,
+  isInRange,
+  isTileOccupied
+} from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
   ASSET_TEAM,
+  ASSET_ITEM,
   ACTOR_HIGHLIGHT
 } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
-class Pawn extends Component {
+class Catapult extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       x: this.props.actorData.pos.x * this.props.gameData.width,
-      y: this.props.actorData.pos.y * this.props.gameData.height
+      y: this.props.actorData.pos.y * this.props.gameData.height,
+      cannonballPos: {
+        x: 900,
+        y: 900
+      },
+      cannonballDimensions: {
+        width: this.props.gameData.width,
+        height: this.props.gameData.height
+      }
     };
   }
 
   componentDidMount = () => {
-    console.log("Pawn did mount");
+    console.log("Catapult did mount");
   };
 
-  updateMove = () => {
+  updateMove = (speed = 0.05) => {
     let dest = { ...this.props.actorData.action.dest };
     dest.x = dest.x * this.props.gameData.width;
     dest.y = dest.y * this.props.gameData.height;
@@ -38,7 +51,7 @@ class Pawn extends Component {
     let newPos = updatePosition(
       { x: this.state.x, y: this.state.y },
       dest,
-      0.05
+      speed
     );
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
@@ -60,7 +73,7 @@ class Pawn extends Component {
 
     cancelAnimationFrame(this.animationMove);
     this.animationMove = requestAnimationFrame(() => {
-      this.updateMove();
+      this.updateMove(speed);
     });
   };
 
@@ -98,19 +111,67 @@ class Pawn extends Component {
     });
   };
 
+  updateBombard = () => {
+    let dest = { ...this.props.actorData.action.dest };
+    dest.x = dest.x * this.props.gameData.width;
+    dest.y = dest.y * this.props.gameData.height;
+
+    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+
+    let newPos =
+      this.state.cannonballPos.x === 900
+        ? { x: this.state.x, y: this.state.y }
+        : updatePosition(this.state.cannonballPos, dest, 0.15);
+
+    if (newPos.x === dest.x && newPos.y === dest.y) {
+      console.log("cancelled anim");
+      this.props.actorData.action = undefined;
+      cancelAnimationFrame(this.animationBombard);
+      assignAnimationToActor();
+      this.setState({
+        cannonballPos: {
+          x: 900,
+          y: 900
+        }
+      });
+      return;
+    }
+
+    this.setState({
+      cannonballPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
+    });
+
+    cancelAnimationFrame(this.animationBombard);
+    this.animationBombard = requestAnimationFrame(() => {
+      this.updateBombard();
+    });
+  };
+
   componentDidUpdate = () => {
-    console.log("state: ", this.props.gameState.type);
+    console.log(
+      "state: ",
+      this.props.gameState.type,
+      " action: ",
+      this.props.actorData.action
+    );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined
     ) {
-      if (this.props.actorData.action.type === "move") {
+      if (this.props.actorData.action.type === "move-passive") {
         this.animationMove = requestAnimationFrame(() => {
-          this.updateMove();
+          this.updateMove(0.05);
         });
       } else if (this.props.actorData.action.type === "died") {
         this.animationDied = requestAnimationFrame(() => {
           this.updateDied();
+        });
+      } else if (this.props.actorData.action.type === "bombard") {
+        this.animationBombard = requestAnimationFrame(() => {
+          this.updateBombard();
         });
       }
     }
@@ -122,16 +183,51 @@ class Pawn extends Component {
 
   getCallbackFunc = action => {
     switch (action) {
-      case "move":
+      case "move-passive":
         return () => {
           this.props.dispatch(
             // Highlight nearby tiles
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let pawnPos = this.props.actorData.pos;
-                let pawnRange = this.props.actorData.moveSpeed;
-                if (isInRange(pawnRange, pawnPos, actor.pos)) {
+                let cannonballPos = this.props.actorData.pos;
+                let CatapultRange = this.props.actorData.moveSpeed;
+                if (
+                  actor.actorType !== "char" &&
+                  isInRange(CatapultRange, cannonballPos, actor.pos) &&
+                  !isTileOccupied(actor, this.props.gameData.actors)
+                ) {
+                  return {
+                    ...actor,
+                    highlighted: true
+                  };
+                }
+
+                return actor;
+              })
+            })
+          );
+
+          // Set state to selectTile
+          console.log("actorData: ", this.props.actorData);
+          this.props.dispatch(
+            setGameState(selectTile(this.props.actorData, "move-passive"))
+          );
+        };
+      case "bombard":
+        return () => {
+          this.props.dispatch(
+            // Highlight nearby tiles
+            setGameData({
+              ...this.props.gameData,
+              actors: this.props.gameData.actors.map(actor => {
+                let cannonballPos = this.props.actorData.pos;
+                let catapultRange = this.props.actorData.range;
+
+                if (
+                  isInRange(catapultRange, cannonballPos, actor.pos) &&
+                  !isInRange(1, cannonballPos, actor.pos)
+                ) {
                   return {
                     ...actor,
                     onTarget: true,
@@ -147,7 +243,7 @@ class Pawn extends Component {
           // Set state to selectTile
           console.log("actorData: ", this.props.actorData);
           this.props.dispatch(
-            setGameState(selectTile(this.props.actorData, "move"))
+            setGameState(selectTile(this.props.actorData, "bombard"))
           );
         };
       default:
@@ -158,7 +254,7 @@ class Pawn extends Component {
   handleClick = () => {
     event.stopPropagation();
     console.log(
-      "Pawn: ",
+      "Catapult: ",
       this.props.actorData.actorId,
       " team: " + this.props.actorData.team
     );
@@ -262,6 +358,17 @@ class Pawn extends Component {
           />
         </rect>
       ) : null;
+
+    const cannonball = (
+      <image
+        xlinkHref={ASSET_ACTOR_TYPE.CATAPULT + ASSET_ITEM.CANNONBALL}
+        x={this.state.cannonballPos.x}
+        y={this.state.cannonballPos.y}
+        width={this.state.cannonballDimensions.width}
+        height={this.state.cannonballDimensions.height}
+      />
+    );
+
     return (
       <g>
         {animateOtherUnits}
@@ -269,8 +376,8 @@ class Pawn extends Component {
           id={id}
           xlinkHref={
             this.props.currentUser === this.props.actorData.team
-              ? ASSET_ACTOR_TYPE.PAWN + ASSET_TEAM.FRIENDLY
-              : ASSET_ACTOR_TYPE.PAWN + ASSET_TEAM.ENEMY
+              ? ASSET_ACTOR_TYPE.CATAPULT + ASSET_TEAM.FRIENDLY
+              : ASSET_ACTOR_TYPE.CATAPULT + ASSET_TEAM.ENEMY
           }
           x={xFrontend}
           y={yFrontend}
@@ -279,12 +386,13 @@ class Pawn extends Component {
           onClick={this.handleClick}
         />
         {animateUnitInAction}
+        {cannonball}
       </g>
     );
   };
 }
 
-const mapStateToProps = state => {
+let mapStateToProps = state => {
   return {
     currentUser: state.currentUser,
     actionMenuVisible: state.actionMenu.visible,
@@ -294,4 +402,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Pawn);
+export default connect(mapStateToProps)(Catapult);
