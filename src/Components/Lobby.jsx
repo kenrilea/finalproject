@@ -22,20 +22,19 @@ class UnconnectedLobby extends Component {
 
       socket.open()
 
-      socket.on("setStatePlayerOneReady", () => {
-         console.log("Setting state for readyOne to true !!!")
-         this.setState({ readyOne: true })
-      })
-      socket.on("setStatePlayerTwoReady", () => {
-         console.log("Setting state for readyTwo to true !!!")
-         this.setState({ readyTwo: true })
-      })
-
-      socket.on("refresh-lobby", () => {
-         this.getCurrentLobby()
+      socket.on("lobby-data", lobby => {
+         console.log("Lobby from socket: ", lobby)
+         this.setState({
+            playerOne: lobby.playerOne,
+            playerTwo: lobby.playerTwo,
+            readyOne: lobby.readyOne,
+            readyTwo: lobby.readyTwo
+         })
       })
 
-      this.getCurrentLobby()
+      socket.emit("refresh-lobby", this.props.currentLobbyId)
+
+      // this.getCurrentLobby()
    }
 
 
@@ -55,13 +54,13 @@ class UnconnectedLobby extends Component {
 
             let parsed = JSON.parse(resBody)
 
-            console.log("Parsed data : ", parsed)
-
-            console.log("playerOne returned from collection ", parsed.playerOne)
+            console.log("Parsed body: ", parsed)
 
             this.setState({
                playerOne: parsed.playerOne,
                playerTwo: parsed.playerTwo,
+               readyOne: parsed.readyOne,
+               readyTwo: parsed.readyTwo
             })
 
             socket.emit("lobby-update")
@@ -74,23 +73,52 @@ class UnconnectedLobby extends Component {
       }
       return "ready";
    };
+
    renderReadyTwo = () => {
       if (this.state.readyTwo === false) {
          return "not ready";
       }
       return "ready";
    };
-   handlerReadyButtonOne = () => {
-      // this.setState({ readyOne: !this.state.readyOne });
-      socket.emit("playerOneReady")
+
+   handlerReadyButton = () => {
+
+      let data = new FormData()
+      data.append("lobbyId", this.props.currentLobbyId)
+      data.append("currentUser", this.props.currentUser)
+
+      fetch("/user-ready", {
+         method: "POST",
+         body: data
+      })
+         .then(resHead => {
+            return resHead.text()
+         })
+         .then(resBody => {
+
+            let parsed = JSON.parse(resBody)
+
+            if (!parsed.success) {
+               console.log("Error received from /user-ready endpoint")
+               return
+            }
+
+            if (parsed.user === 1) {
+               this.setState({ readyOne: true })
+            }
+            if (parsed.user === 2) {
+               this.setState({ readyTwo: true })
+            }
+
+            socket.emit("lobby-update")
+
+         })
    };
-   handlerReadyButtonTwo = () => {
-      // this.setState({ readyTwo: !this.state.readyTwo });
-      socket.emit("playerTwoReady")
-   };
+
+
    renderReadyButtonOne = () => {
       let buttonClass = "lobbyButtonNotReady";
-      if (this.props.username === this.state.playerOne) {
+      if (this.props.currentUser === this.state.playerOne) {
          if (this.state.readyOne === true) {
             buttonClass = "lobbyButtonReady";
          }
@@ -98,15 +126,20 @@ class UnconnectedLobby extends Component {
             buttonClass = "lobbyButtonNotReady";
          }
          return (
-            <button className={buttonClass} onClick={this.handlerReadyButtonOne}>
+            <button className={buttonClass} onClick={this.handlerReadyButton}>
                Ready
             </button>
          );
       }
+      return (
+         <div>BUTTON HIDDEN</div>
+      )
    };
+
    renderReadyButtonTwo = () => {
       let buttonClass = "lobbyButtonNotReady";
-      if (this.props.username === this.state.playerTwo) {
+      if (this.props.currentUser === this.state.playerTwo) {
+
          if (this.state.readyTwo === true) {
             buttonClass = "lobbyButtonReady";
          }
@@ -114,12 +147,16 @@ class UnconnectedLobby extends Component {
             buttonClass = "lobbyButtonNotReady";
          }
          return (
-            <button className={buttonClass} onClick={this.handlerReadyButtonTwo}>
+            <button className={buttonClass} onClick={this.handlerReadyButton}>
                Ready
-        </button>
+            </button>
          );
       }
+      return (
+         <div>BUTTON HIDDEN</div>
+      )
    };
+
    render = () => {
 
       //Redirect to lobby list if !props.inLobby
