@@ -94,6 +94,7 @@ let editGameData = (gameId, mods) => {
               }
             );
             let collidedWithEnemy = false;
+            let diedChanges = [];
             gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
               actor => {
                 if (actor.team !== char.team && actor.team !== "none") {
@@ -104,8 +105,7 @@ let editGameData = (gameId, mods) => {
                     if (char.charType === "legionary") {
                       collidedWithEnemy = true;
                     }
-
-                    changes.push({ type: "died", actorId: actor.actorId });
+                    diedChanges.push({ type: "died", actorId: actor.actorId });
                     gameInstances[gameId]["points"][char.team] =
                       gameInstances[gameId]["points"][char.team] + actor.points;
                     return false;
@@ -128,6 +128,7 @@ let editGameData = (gameId, mods) => {
                 return actor.actorId !== char.actorId;
               });
             }
+            changes = changes.concat(diedChanges);
           }
         }
       }
@@ -197,6 +198,13 @@ let editGameData = (gameId, mods) => {
                       ...mod,
                       target: { ...arrowPos }
                     });
+                    if (actor.charType === "legionary") {
+                      changes = changes.concat({
+                        type: "block-arrow",
+                        actorId: actor.actorId
+                      });
+                      return true;
+                    }
                     changes.push({ type: "died", actorId: actor.actorId });
                     return false;
                   }
@@ -365,7 +373,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "ranged-shot") {
     if (gameTurn === input.team) {
-      action.target = action.dest;
+      input.action.target = input.action.dest;
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
@@ -376,7 +384,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "bombard") {
     if (gameTurn === input.team) {
-      action.target = action.dest;
+      input.action.target = input.action.dest;
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
