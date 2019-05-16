@@ -280,8 +280,6 @@ app.post("/join-lobby", upload.none(), function (req, res) {
             if (err) throw err;
             console.log(`DB: Adding user to lobbyId: ${lobbyId}`);
             res.send(JSON.stringify({ success: true }));
-
-
          }
       );
    });
@@ -289,10 +287,11 @@ app.post("/join-lobby", upload.none(), function (req, res) {
 
 //************ USER READY ************//
 app.post("/user-ready", upload.none(), function (req, res) {
-
    const { lobbyId, currentUser } = req.body;
 
-   console.log(`|Ready| button pressed by "${currentUser}" for lobby with id ${lobbyId}`);
+   console.log(
+      `|Ready| button pressed by "${currentUser}" for lobby with id ${lobbyId}`
+   );
 
    lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
       if (
@@ -300,14 +299,14 @@ app.post("/user-ready", upload.none(), function (req, res) {
          result[0].playerOne !== currentUser
       ) {
          console.log(
-            `Error: "${currentUser}" is not registered as playerOne or playerTwo`);
+            `Error: "${currentUser}" is not registered as playerOne or playerTwo`
+         );
          res.send(JSON.stringify({ success: false }));
          return;
       }
 
       // let ready;
       switch (currentUser) {
-
          case result[0].playerOne:
             console.log(`User "${currentUser}" is registered as playerOne`);
             // ready = !result[0].readyPlayerOne;
@@ -337,7 +336,9 @@ app.post("/user-ready", upload.none(), function (req, res) {
             break;
 
          default:
-            console.log("Error, current user is not registered as playerOne or playerTwo");
+            console.log(
+               "Error, current user is not registered as playerOne or playerTwo"
+            );
             res.send(JSON.stringify({ success: false }));
       }
    });
@@ -363,7 +364,6 @@ let army = ["pawn"];
 let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 //____________END OF GAME TEST CODE___________________
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,6 +371,19 @@ let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 io.on("connection", socket => {
    console.log("Connected to socket");
 
+   socket.on("playerOneReady", () => {
+      console.log("Socket: Player one is ready!");
+      socket.emit("setStatePlayerOneReady");
+   });
+
+   socket.on("playerTwoReady", () => {
+      console.log("Socket: Player two is ready!");
+      socket.emit("setStatePlayerTwoReady");
+   });
+
+   socket.on("login", () => {
+      console.log("Socket: Logging in");
+   });
 
    socket.on("lobby-update", () => {
       //Refreshes lobby page for both users
@@ -378,18 +391,16 @@ io.on("connection", socket => {
    });
 
    socket.on("refresh-lobby", currentLobbyId => {
-      console.log("Socket: Refresh lobby listener called")
+      console.log("Socket: Refresh lobby listener called");
       lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
          if (err) throw err;
          if (result[0] === undefined) {
             return;
          }
          //Send back lobby object in socket
-         io.emit("lobby-data", result[0])
+         io.emit("lobby-data", result[0]);
       });
-   })
-
-
+   });
 
    //_______________________GAME________________________________________________
 
@@ -414,73 +425,66 @@ io.on("connection", socket => {
 
    //_______________________DANIELSPERIMENTATION________________________________________________
    //************ USER READY ************//
-   // socket.on("user-ready"),
-   //    ({ room, currentUser }) => {
-   //       let lobbyId = room;
-   //       console.log(
-   //          `|Ready| button pressed by "` + currentUser + `" for lobby with id`,
-   //          lobbyId
-   //       );
-   //       lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
-   //          if (
-   //             result[0].playerTwo !== currentUser &&
-   //             result[0].playerOne !== currentUser
-   //          ) {
-   //             console.log(
-   //                `Error, "` +
-   //                currentUser +
-   //                `" is not registered as playerOne or playerTwo`
-   //             );
-   //             return;
-   //          }
+   socket.on("user-ready", ({ room, currentUser }) => {
+      let lobbyId = room;
+      console.log(
+         `|Ready| button pressed by "` + currentUser + `" for lobby with id`,
+         lobbyId
+      );
+      lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+         if (
+            result[0].playerTwo !== currentUser &&
+            result[0].playerOne !== currentUser
+         ) {
+            console.log(
+               `Error, "` +
+               currentUser +
+               `" is not registered as playerOne or playerTwo`
+            );
+            return;
+         }
 
-   //          let roomDataToBePassed = results[0];
-   //          let ready;
-   //          switch (currentUser) {
-   //             case result[0].playerOne:
-   //                console.log(
-   //                   `User "` + currentUser + `" is registered as playerOne`
-   //                );
-   //                ready = !result[0].readyPlayerOne;
-   //                lobbiesCollection.update(
-   //                   { _id: lobbyId },
-   //                   { $set: { readyPlayerOne: ready } },
-   //                   (err, result) => {
-   //                      if (err) throw err;
-   //                      console.log(`DB: Updating playerOne ready to ${ready}`);
-   //                      roomDataToBePassed.readyPlayerOne = ready;
-   //                   }
-   //                );
-   //                break;
-   //             case result[0].playerTwo:
-   //                console.log(
-   //                   `User "` + currentUser + `" is registered as playerTwo`
-   //                );
-   //                ready = !result[0].readyPlayerTwo;
-   //                lobbiesCollection.updateOne(
-   //                   { _id: lobbyId },
-   //                   { $set: { readyPlayerTwo: ready } },
-   //                   (err, result) => {
-   //                      if (err) throw err;
-   //                      console.log(`DB: Updating playerTwo ready to ${ready}`);
-   //                      roomDataToBePassed.readyPlayerTwo = ready;
-   //                   }
-   //                );
-   //                break;
-   //             default:
-   //                console.log(
-   //                   "Error, current user is not registered as playerOne or playerTwo"
-   //                );
-   //          }
-   //       });
+         let roomDataToBePassed = results[0];
+         let ready;
+         switch (currentUser) {
+            case result[0].playerOne:
+               console.log(`User "` + currentUser + `" is registered as playerOne`);
+               ready = !result[0].readyPlayerOne;
+               lobbiesCollection.update(
+                  { _id: lobbyId },
+                  { $set: { readyPlayerOne: ready } },
+                  (err, result) => {
+                     if (err) throw err;
+                     console.log(`DB: Updating playerOne ready to ${ready}`);
+                     roomDataToBePassed.readyPlayerOne = ready;
+                  }
+               );
+               break;
+            case result[0].playerTwo:
+               console.log(`User "` + currentUser + `" is registered as playerTwo`);
+               ready = !result[0].readyPlayerTwo;
+               lobbiesCollection.updateOne(
+                  { _id: lobbyId },
+                  { $set: { readyPlayerTwo: ready } },
+                  (err, result) => {
+                     if (err) throw err;
+                     console.log(`DB: Updating playerTwo ready to ${ready}`);
+                     roomDataToBePassed.readyPlayerTwo = ready;
+                  }
+               );
+               break;
+            default:
+               console.log(
+                  "Error, current user is not registered as playerOne or playerTwo"
+               );
+         }
+      });
 
-   //       socket.in(room).emit("ready", roomDataToBePassed);
-   //    };
+      socket.in(room).emit("ready", roomDataToBePassed);
+   });
 
    ////////////////////////////////
-
 });
-
 
 //_______________________END OF GAME________________________________________________
 
