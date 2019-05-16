@@ -66,30 +66,43 @@ class UnconnectedLobby extends Component {
                return
             }
 
-            if (parsed.user === 1) {
-               this.setState({ readyOne: true })
-            }
-            if (parsed.user === 2) {
-               this.setState({ readyTwo: true })
-            }
+            // if (parsed.user === 1) {
+            //    this.setState({ readyOne: true })
+            // }
+            // if (parsed.user === 2) {
+            //    this.setState({ readyTwo: true })
+            // }
 
             socket.emit("refresh-lobby", this.props.currentLobbyId)
          })
    };
 
    renderReadyOne = () => {
-      if (this.state.readyPlayerOne === true) {
+      if (this.state.readyPlayerOne) {
          return "ready to go";
       }
-      return "not yet ready";
+      if (!this.state.readyPlayerOne) {
+         return "not yet ready";
+      }
    };
 
    renderReadyTwo = () => {
-      if (this.state.readyPlayerTwo === true) {
+      if (this.state.readyPlayerTwo) {
          return "ready to go";
       }
-      return "not yet ready";
+      if (!this.state.readyPlayerTwo) {
+         return "not yet ready";
+      }
    };
+
+   renderReadyButtonText = (ready) => {
+      if (ready) {
+         return "Not ready!"
+      }
+      if (!ready) {
+         return "Ready"
+      }
+   }
 
 
    renderReadyButtonOne = () => {
@@ -103,7 +116,7 @@ class UnconnectedLobby extends Component {
          }
          return (
             <button className={buttonClass} onClick={this.handlerReadyButton}>
-               Ready
+               {this.renderReadyButtonText(this.state.readyPlayerOne)}
             </button>
          );
       }
@@ -124,7 +137,7 @@ class UnconnectedLobby extends Component {
          }
          return (
             <button className={buttonClass} onClick={this.handlerReadyButton}>
-               Ready
+               {this.renderReadyButtonText(this.state.readyPlayerTwo)}
             </button>
          );
       }
@@ -133,11 +146,34 @@ class UnconnectedLobby extends Component {
       )
    };
 
+   renderAvatar = (ready, playerOne) => {
+
+      if (ready && playerOne) {
+         return "/assets/char-pawn-blue-ready.png"
+      }
+      if (!ready && playerOne) {
+         return "/assets/char-pawn-blue.png"
+      }
+      if (ready && !playerOne) {
+         return "/assets/char-pawn-red-ready.png"
+      }
+      if (!ready && !playerOne) {
+         return "/assets/char-pawn-red-not-ready.png"
+      }
+   }
+
+   leaveLobby = () => {
+      this.props.dispatch({
+         type: "LEAVE-LOBBY"
+      })
+      socket.emit("leave-lobby", { lobbyId: this.props.currentLobbyId, currentUser: this.props.currentUser })
+   }
+
    render = () => {
 
       //Redirect to lobby list if !props.inLobby
       if (!this.props.inLobby) {
-         return <Redirect to={"lobbies_list"} />
+         return <Redirect to={"/lobbies_list"} />
       }
 
       //If both players have pressed ready, redirect to the appropriate game page
@@ -147,20 +183,26 @@ class UnconnectedLobby extends Component {
 
       return (
          <div className="lobbies-list-background">
+            <div>
+               Lobby id: {this.props.currentLobbyId}
+            </div>
             <div className={"MainLobbyDiv animated-fade-in lobbies-list-foreground material-shadow"}>
                <div className={"PlayerOneLobbyDiv"}>
-                  <img src="/assets/char-pawn-blue.png" />
+                  <img src={this.renderAvatar(this.state.readyPlayerOne, true)} />
                   <div className={"lobbyCenterContent"}>
                      <p>{this.state.playerOne + " is " + this.renderReadyOne()}</p>
                      {this.renderReadyButtonOne()}
                   </div>
                </div>
                <div className={"PlayerTwoLobbyDiv"}>
-                  <img src="/assets/char-pawn-red.png" />
+                  <img src={this.renderAvatar(this.state.readyPlayerTwo, false)} />
                   <div className={"lobbyCenterContent"}>
                      <p>{this.state.playerTwo + " is " + this.renderReadyTwo()}</p>
                      {this.renderReadyButtonTwo()}
                   </div>
+               </div>
+               <div>
+                  <button className="lobbyButtonNotReady" onClick={this.leaveLobby}>Leave lobby</button>
                </div>
             </div>
          </div>
@@ -171,7 +213,7 @@ class UnconnectedLobby extends Component {
 let mapStateToProps = state => {
    return {
       currentUser: state.currentUser,
-      currentLobbyId: state.currentLobby,
+      currentLobbyId: state.currentLobbyId,
       inLobby: state.inLobby
    }
 };

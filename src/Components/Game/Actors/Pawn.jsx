@@ -6,7 +6,7 @@ import {
   assignAnimationToActor,
   resetToSelectUnitState
 } from "./../../../Helpers/GameStateHelpers.js";
-import { isInRange } from "./../../../Helpers/calcs.js";
+import { updatePosition, isInRange } from "./../../../Helpers/calcs.js";
 import { ASSET_ACTOR_TYPE, ASSET_TEAM } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
@@ -31,7 +31,7 @@ class Pawn extends Component {
 
     //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
 
-    let newPos = this.updatePosition(
+    let newPos = updatePosition(
       { x: this.state.x, y: this.state.y },
       dest,
       0.05
@@ -61,11 +61,11 @@ class Pawn extends Component {
   };
 
   updateDied = () => {
-    let dest = { ...this.props.actorData.action.dest, y: 110 };
+    let dest = { x: this.state.x, y: 110 };
 
     //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
 
-    let newPos = this.updatePosition(
+    let newPos = updatePosition(
       { x: this.state.x, y: this.state.y },
       dest,
       0.05
@@ -114,24 +114,6 @@ class Pawn extends Component {
 
   isGameState = state => {
     return state === this.props.gameState.type;
-  };
-
-  updatePosition = (start, end, mult) => {
-    let newPos = {};
-
-    /*newPos.x = (1 - mult) * start.x + mult * end.x;
-    newPos.y = (1 - mult) * start.y + mult * end.y;*/
-    newPos.x = start.x + mult * (end.x - start.x);
-    newPos.y = start.y + mult * (end.y - start.y);
-
-    if (Math.abs(newPos.x - end.x) < 0.5) {
-      newPos.x = end.x;
-    }
-    if (Math.abs(newPos.y - end.y) < 0.5) {
-      newPos.y = end.y;
-    }
-
-    return newPos;
   };
 
   getCallbackFunc = action => {

@@ -305,17 +305,17 @@ app.post("/user-ready", upload.none(), function (req, res) {
          return;
       }
 
-      // let ready;
+      let ready;
       switch (currentUser) {
          case result[0].playerOne:
             console.log(`User "${currentUser}" is registered as playerOne`);
-            // ready = !result[0].readyPlayerOne;
+            ready = !result[0].readyPlayerOne;
             lobbiesCollection.update(
                { _id: lobbyId },
-               { $set: { readyPlayerOne: true } },
+               { $set: { readyPlayerOne: ready } },
                (err, result) => {
                   if (err) throw err;
-                  // console.log(`DB: Updating playerOne ready to ${ready}`);
+                  console.log(`DB: Updating playerOne ready to ${ready}`);
                   res.send(JSON.stringify({ success: true, user: 1 }));
                }
             );
@@ -323,13 +323,13 @@ app.post("/user-ready", upload.none(), function (req, res) {
 
          case result[0].playerTwo:
             console.log(`User "` + currentUser + `" is registered as playerTwo`);
-            // ready = !result[0].readyPlayerTwo;
+            ready = !result[0].readyPlayerTwo;
             lobbiesCollection.updateOne(
                { _id: lobbyId },
-               { $set: { readyPlayerTwo: true } },
+               { $set: { readyPlayerTwo: ready } },
                (err, result) => {
                   if (err) throw err;
-                  // console.log(`DB: Updating playerTwo ready to ${ready}`);
+                  console.log(`DB: Updating playerTwo ready to ${ready}`);
                   res.send(JSON.stringify({ success: true, user: 2 }));
                }
             );
@@ -390,6 +390,47 @@ io.on("connection", socket => {
          io.in(currentLobbyId).emit("lobby-data", result[0]);
       });
    });
+
+   socket.on("leave-lobby", data => {
+
+      lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+
+         //If playerOne is alone in lobby, remove it from db!
+         if (result[0].playerOne === data.currentUser && result[0].playerTwo === "") {
+            lobbiesCollection.remove({ _id: data.lobbyId })
+         }
+
+         //If playerTwo is alone in lobby, remove it as well!
+         if (result[0].playerTwo === data.currentUser && result[0].playerOne === "") {
+            lobbiesCollection.remove({ _id: data.lobbyId })
+         }
+
+         //If playerOne leaves and is not alone, update lobby and emit!
+         if (result[0].playerOne === data.currentUser && result[0].playerTwo !== "") {
+            lobbiesCollection.update({ _id: data.lobbyId }, { $set: { playerOne: "" } }, (err, result) => {
+               if (err) throw err;
+               console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
+
+               lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+                  io.in(data.lobbyId).emit("lobby-data", result[0])
+               })
+            })
+         }
+
+         //If playerTwo leaves and is not alone, also update lobby and emit!
+         if (result[0].playerTwo === data.currentUser && result[0].playerOne !== "") {
+            lobbiesCollection.update({ _id: data.lobbyId }, { $set: { playerTwo: "" } }, (err, result) => {
+               if (err) throw err;
+               console.log(`DB: Removing player2 from lobbyId: ${data.lobbyId}`);
+
+               lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+                  io.in(data.lobbyId).emit("lobby-data", result[0])
+               })
+            });
+         }
+
+      })
+   })
 
    //_______________________GAME________________________________________________
 
