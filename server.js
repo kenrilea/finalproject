@@ -369,17 +369,15 @@ let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 io.on("connection", socket => {
-
    console.log("Connected to socket");
 
    socket.on("join", currentLobbyId => {
       //After receiving join event with lobbyId, set the room for the client
-      console.log("Connecting client to socket room: ", currentLobbyId)
-      socket.join(currentLobbyId)
-   })
+      console.log("Connecting client to socket room: ", currentLobbyId);
+      socket.join(currentLobbyId);
+   });
 
    socket.on("refresh-lobby", currentLobbyId => {
-
       console.log("Socket: Refresh lobby listener called");
 
       lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
@@ -393,67 +391,86 @@ io.on("connection", socket => {
    });
 
    socket.on("refresh-lobby-list", () => {
-      console.log("REFRESHING  LOBBY LIST")
+      console.log("REFRESHING  LOBBY LIST");
       lobbiesCollection.find().toArray((err, result) => {
-
          // console.log("Lobbies from socket: ", result)
-         io.emit("lobby-list-data", result)
-      })
-   })
-
+         io.emit("lobby-list-data", result);
+      });
+   });
 
    socket.on("leave-lobby", data => {
-
       lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-
          //If playerOne is alone in lobby, remove it from db!
-         if (result[0].playerOne === data.currentUser && result[0].playerTwo === "") {
-            lobbiesCollection.remove({ _id: data.lobbyId })
+         if (
+            result[0].playerOne === data.currentUser &&
+            result[0].playerTwo === ""
+         ) {
+            lobbiesCollection.remove({ _id: data.lobbyId });
             lobbiesCollection.find().toArray((err, result) => {
-               io.emit("lobby-list-data", result)
-            })
-         }
-
-         //If playerTwo is alone in lobby, remove it as well!
-         if (result[0].playerTwo === data.currentUser && result[0].playerOne === "") {
-            lobbiesCollection.remove({ _id: data.lobbyId })
-            lobbiesCollection.find().toArray((err, result) => {
-               io.emit("lobby-list-data", result)
-            })
-         }
-
-         //If playerOne leaves and is not alone, update lobby and emit!
-         if (result[0].playerOne === data.currentUser && result[0].playerTwo !== "") {
-            lobbiesCollection.update({ _id: data.lobbyId }, { $set: { playerOne: "" } }, (err, result) => {
-               if (err) throw err;
-               console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
-
-               lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-                  io.in(data.lobbyId).emit("lobby-data", result[0])
-                  lobbiesCollection.find().toArray((err, result) => {
-                     io.emit("lobby-list-data", result)
-                  })
-               })
-            })
-         }
-
-         //If playerTwo leaves and is not alone, also update lobby and emit!
-         if (result[0].playerTwo === data.currentUser && result[0].playerOne !== "") {
-            lobbiesCollection.update({ _id: data.lobbyId }, { $set: { playerTwo: "" } }, (err, result) => {
-               if (err) throw err;
-               console.log(`DB: Removing player2 from lobbyId: ${data.lobbyId}`);
-
-               lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-                  io.in(data.lobbyId).emit("lobby-data", result[0])
-                  lobbiesCollection.find().toArray((err, result) => {
-                     io.emit("lobby-list-data", result)
-                  })
-               })
+               io.emit("lobby-list-data", result);
             });
          }
 
-      })
-   })
+         //If playerTwo is alone in lobby, remove it as well!
+         if (
+            result[0].playerTwo === data.currentUser &&
+            result[0].playerOne === ""
+         ) {
+            lobbiesCollection.remove({ _id: data.lobbyId });
+            lobbiesCollection.find().toArray((err, result) => {
+               io.emit("lobby-list-data", result);
+            });
+         }
+
+         //If playerOne leaves and is not alone, update lobby and emit!
+         if (
+            result[0].playerOne === data.currentUser &&
+            result[0].playerTwo !== ""
+         ) {
+            lobbiesCollection.update(
+               { _id: data.lobbyId },
+               { $set: { playerOne: "" } },
+               (err, result) => {
+                  if (err) throw err;
+                  console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
+
+                  lobbiesCollection
+                     .find({ _id: data.lobbyId })
+                     .toArray((err, result) => {
+                        io.in(data.lobbyId).emit("lobby-data", result[0]);
+                        lobbiesCollection.find().toArray((err, result) => {
+                           io.emit("lobby-list-data", result);
+                        });
+                     });
+               }
+            );
+         }
+
+         //If playerTwo leaves and is not alone, also update lobby and emit!
+         if (
+            result[0].playerTwo === data.currentUser &&
+            result[0].playerOne !== ""
+         ) {
+            lobbiesCollection.update(
+               { _id: data.lobbyId },
+               { $set: { playerTwo: "" } },
+               (err, result) => {
+                  if (err) throw err;
+                  console.log(`DB: Removing player2 from lobbyId: ${data.lobbyId}`);
+
+                  lobbiesCollection
+                     .find({ _id: data.lobbyId })
+                     .toArray((err, result) => {
+                        io.in(data.lobbyId).emit("lobby-data", result[0]);
+                        lobbiesCollection.find().toArray((err, result) => {
+                           io.emit("lobby-list-data", result);
+                        });
+                     });
+               }
+            );
+         }
+      });
+   });
 
    //_______________________GAME________________________________________________
 
@@ -475,6 +492,7 @@ io.on("connection", socket => {
          changes: result.changes
       });
    });
+   //_______________________END OF GAME________________________________________________
 
    //_______________________DANIELSPERIMENTATION________________________________________________
    //************ USER READY ************//
@@ -538,8 +556,6 @@ io.on("connection", socket => {
 
    ////////////////////////////////
 });
-
-//_______________________END OF GAME________________________________________________
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//

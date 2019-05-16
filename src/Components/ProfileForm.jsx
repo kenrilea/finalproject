@@ -10,62 +10,159 @@ class UnconnectedProfileForm extends Component {
       statusMessage: "",
       bio: "",
       profilePic: "/assets/default-user.png",
-      showProfilePics: false
+      editField: { profilePic: false, statusMessage: false, bio: false }
     };
   }
+
   handlerSubmit = event => {
     console.log("submitted");
   };
   handlerInputStatusMessage = event => {
-    console.log(event.target.value);
+    this.setState({ statusMessage: event.target.value });
   };
-  handlerOnClick = event => {
-    console.log("click");
-    this.setState({ showProfilePics: !this.state.showProfilePics });
+  handlerInputBio = event => {
+    this.setState({ bio: event.target.value });
   };
-  renderProfilePics = () => {
-    if (this.state.showProfilePics) {
-      console.log("test");
+  handlerOnClickCurrentPic = event => {
+    this.setState({
+      editField: {
+        ...this.state.editField,
+        profilePic: !this.state.editField.profilePic
+      }
+    });
+  };
+  handlerOnCLickPicOption = action => {
+    this.setState({ profilePic: action.target.src });
+  };
+  handlerEditStatus = event => {
+    event.preventDefault();
+    this.setState({
+      editField: {
+        ...this.state.editField,
+        statusMessage: !this.state.editField.statusMessage
+      }
+    });
+  };
+  renderstatusMessage = () => {
+    if (this.state.editField.statusMessage) {
       return (
         <div>
-          <img src={this.state.profilePic} />
-          <img src={this.state.profilePic} />
-          <img src={this.state.profilePic} />
+          <form onSubmit={this.handlerEditStatus}>
+            <input
+              onBlur={this.handlerEditStatus}
+              type={"text"}
+              onChange={this.handlerInputStatusMessage}
+              value={this.state.statusMessage}
+            />
+          </form>
+        </div>
+      );
+    }
+    return (
+      <p>
+        {this.state.statusMessage}
+
+        <img
+          onClick={this.handlerEditStatus}
+          className={"profileFormEditButtonImg"}
+          src={"/assets/edit.jpg"}
+        />
+      </p>
+    );
+  };
+  handlerEditBio = event => {
+    event.preventDefault();
+    this.setState({
+      editField: {
+        ...this.state.editField,
+        bio: !this.state.editField.bio
+      }
+    });
+  };
+  renderBio = () => {
+    if (this.state.editField.bio) {
+      return (
+        <div>
+          <form onSubmit={this.handlerEditBio}>
+            <input
+              onBlur={this.handlerEditBio}
+              type={"text"}
+              onChange={this.handlerInputBio}
+              value={this.state.bio}
+            />
+          </form>
+        </div>
+      );
+    }
+    return (
+      <p>
+        {this.state.bio}
+
+        <img
+          onClick={this.handlerEditBio}
+          className={"profileFormEditButtonImg"}
+          src={"/assets/edit.jpg"}
+        />
+      </p>
+    );
+  };
+  renderProfilePics = () => {
+    if (this.state.editField.profilePic) {
+      return (
+        <div className={"profilePicOptionsDiv"}>
+          <img
+            onClick={this.handlerOnCLickPicOption}
+            className={"profileFormMiniPic"}
+            src={"/assets/profilePicA.png"}
+          />
+          <img
+            onClick={this.handlerOnCLickPicOption}
+            className={"profileFormMiniPic"}
+            src={"/assets/profilePicB.png"}
+          />
+          <img
+            onClick={this.handlerOnCLickPicOption}
+            className={"profileFormMiniPic"}
+            src={"/assets/profilePicC.png"}
+          />
+          <img
+            onClick={this.handlerOnCLickPicOption}
+            className={"profileFormMiniPic"}
+            src={"/assets/profilePicD.png"}
+          />
         </div>
       );
     }
   };
   render = () => {
     return (
-      <div>
-        <div onClick={this.handlerOnClick}>
-          <h4>Select profile picture</h4>
-
-          <img className={"profilePicDiv"} src={this.state.profilePic} />
+      <div className={"profileFormDiv"}>
+        <div onClick={this.handlerOnClickCurrentPic}>
+          <h4>{this.props.username}</h4>
+          <img
+            className={"ProfileFormCurrentPic"}
+            src={this.state.profilePic}
+          />
         </div>
 
         {this.renderProfilePics()}
-        <form onSubmit={this.handlerSubmit}>
+        <div>
           <div>
             <h4>Status message</h4>
-            <input
-              type={"text"}
-              onChange={this.handlerInputStatusMessage}
-              value={this.state.statusMessage}
-            />
+            {this.renderstatusMessage()}
           </div>
           <div>
             <h4>User bio</h4>
-            <input
-              type={"text"}
-              onChange={this.handlerInputBio}
-              value={this.state.bio}
-            />
+            {this.renderBio()}
           </div>
-        </form>
+        </div>
       </div>
     );
   };
 }
-let ProfileForm = connect()(UnconnectedProfileForm);
+let mapStateToProps = state => {
+  return { username: state.currentUser };
+};
+
+let ProfileForm = connect(mapStateToProps)(UnconnectedProfileForm);
 export default ProfileForm;

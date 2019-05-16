@@ -1,2 +1,18 @@
-.profilePicDiv {
+.profilePicOptionsDiv {
+  text-align: center;
+}
+.profileFormDiv {
+  text-align: center;
+}
+.profileFormMiniPic {
+  height: 50px;
+}
+.ProfileFormCurrentPic {
+  height: 100px;
+}
+.profileFormEditButtonImg {
+  height: 20px;
+}
+.profileFormEditButton {
+  padding: 0;
 }

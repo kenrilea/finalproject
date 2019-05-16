@@ -8,7 +8,12 @@ import {
 } from "./../../../Helpers/GameStateHelpers.js";
 import {
   updatePosition,
+  degreesBetweenPoints,
+  normalizedDirectionBetweenPoints,
+  multiplyDirectionVectorWithBounds,
   isInRange,
+  lineTarget,
+  lineRange,
   isTileOccupied
 } from "./../../../Helpers/calcs.js";
 import {
@@ -19,26 +24,26 @@ import {
 } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
-class Catapult extends Component {
+class Archer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       x: this.props.actorData.pos.x * this.props.gameData.width,
       y: this.props.actorData.pos.y * this.props.gameData.height,
-      cannonballPos: {
+      arrowPos: {
         x: 900,
         y: 900
       },
-      cannonballDimensions: {
-        width: this.props.gameData.width,
-        height: this.props.gameData.height
+      arrowDest: {
+        x: 100,
+        y: 100
       }
     };
   }
 
   componentDidMount = () => {
-    console.log("Catapult did mount");
+    console.log("Archer did mount");
   };
 
   updateMove = (speed = 0.05) => {
@@ -111,42 +116,72 @@ class Catapult extends Component {
     });
   };
 
-  updateBombard = () => {
-    let dest = { ...this.props.actorData.action.dest };
+  updateRangedShot = () => {
+    let dest = {};
+    if (this.props.actorData.action.target === undefined) {
+      dest = multiplyDirectionVectorWithBounds(
+        normalizedDirectionBetweenPoints(
+          { x: this.state.x, y: this.state.y },
+          {
+            ...this.props.actorData.action.dest
+          }
+        ),
+        100,
+        120,
+        -20
+      );
+    } else {
+      dest = { ...this.props.actorData.action.target };
+    }
+
     dest.x = dest.x * this.props.gameData.width;
     dest.y = dest.y * this.props.gameData.height;
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
-
     let newPos =
-      this.state.cannonballPos.x === 900
+      this.state.arrowPos.x === 900
         ? { x: this.state.x, y: this.state.y }
-        : updatePosition(this.state.cannonballPos, dest, 0.15);
+        : updatePosition(this.state.arrowPos, dest, 0.0005);
 
-    if (newPos.x === dest.x && newPos.y === dest.y) {
+    console.log("positions: ", newPos, dest);
+
+    if (
+      (newPos.x === dest.x && newPos.y === dest.y) ||
+      newPos.x > 140 ||
+      newPos.x < -40 ||
+      newPos.y > 140 ||
+      newPos.y < -40
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
-      cancelAnimationFrame(this.animationBombard);
+      cancelAnimationFrame(this.animationRangedShot);
       assignAnimationToActor();
       this.setState({
-        cannonballPos: {
+        arrowPos: {
           x: 900,
           y: 900
+        },
+        arrowDest: {
+          x: 100,
+          y: 100
         }
       });
       return;
     }
 
     this.setState({
-      cannonballPos: {
+      arrowPos: {
         x: newPos.x,
         y: newPos.y
+      },
+      arrowDest: {
+        x: dest.x,
+        y: dest.y
       }
     });
 
-    cancelAnimationFrame(this.animationBombard);
-    this.animationBombard = requestAnimationFrame(() => {
-      this.updateBombard();
+    cancelAnimationFrame(this.animationRangedShot);
+    this.animationRangedShot = requestAnimationFrame(() => {
+      this.updateRangedShot();
     });
   };
 
@@ -169,9 +204,9 @@ class Catapult extends Component {
         this.animationDied = requestAnimationFrame(() => {
           this.updateDied();
         });
-      } else if (this.props.actorData.action.type === "bombard") {
-        this.animationBombard = requestAnimationFrame(() => {
-          this.updateBombard();
+      } else if (this.props.actorData.action.type === "ranged-shot") {
+        this.animationRangedShot = requestAnimationFrame(() => {
+          this.updateRangedShot();
         });
       }
     }
@@ -190,11 +225,11 @@ class Catapult extends Component {
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let catapultPos = this.props.actorData.pos;
-                let catapultRange = this.props.actorData.moveSpeed;
+                let archerPos = this.props.actorData.pos;
+                let archerRange = this.props.actorData.moveSpeed;
                 if (
                   actor.actorType !== "char" &&
-                  isInRange(catapultRange, catapultPos, actor.pos) &&
+                  isInRange(archerRange, archerPos, actor.pos) &&
                   !isTileOccupied(actor, this.props.gameData.actors)
                 ) {
                   return {
@@ -214,19 +249,19 @@ class Catapult extends Component {
             setGameState(selectTile(this.props.actorData, "move-passive"))
           );
         };
-      case "bombard":
+      case "ranged-shot":
         return () => {
           this.props.dispatch(
             // Highlight nearby tiles
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let catapultPos = this.props.actorData.pos;
-                let catapultRange = this.props.actorData.range;
+                let archerPos = this.props.actorData.pos;
+                let archerRange = this.props.actorData.range;
 
                 if (
-                  isInRange(catapultRange, catapultPos, actor.pos) &&
-                  !isInRange(1, catapultPos, actor.pos)
+                  lineTarget(archerRange, archerPos, actor.pos) ||
+                  lineRange(archerRange, archerPos, actor.pos)
                 ) {
                   return {
                     ...actor,
@@ -243,7 +278,7 @@ class Catapult extends Component {
           // Set state to selectTile
           console.log("actorData: ", this.props.actorData);
           this.props.dispatch(
-            setGameState(selectTile(this.props.actorData, "bombard"))
+            setGameState(selectTile(this.props.actorData, "ranged-shot"))
           );
         };
       default:
@@ -254,7 +289,7 @@ class Catapult extends Component {
   handleClick = () => {
     event.stopPropagation();
     console.log(
-      "Catapult: ",
+      "Archer: ",
       this.props.actorData.actorId,
       " team: " + this.props.actorData.team
     );
@@ -308,6 +343,8 @@ class Catapult extends Component {
   render = () => {
     const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
     const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
+    const width = this.props.gameData.width;
+    const height = this.props.gameData.height;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -344,8 +381,8 @@ class Catapult extends Component {
           fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
         >
           <animate
             xlinkHref={"#rect" + id}
@@ -359,13 +396,24 @@ class Catapult extends Component {
         </rect>
       ) : null;
 
-    const cannonball = (
+    const arrow = (
       <image
-        xlinkHref={ASSET_ACTOR_TYPE.CATAPULT + ASSET_ITEM.CANNONBALL}
-        x={this.state.cannonballPos.x}
-        y={this.state.cannonballPos.y}
-        width={this.state.cannonballDimensions.width}
-        height={this.state.cannonballDimensions.height}
+        xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
+        x={this.state.arrowPos.x}
+        y={this.state.arrowPos.y}
+        width={width}
+        height={height}
+        transform={
+          "rotate(" +
+          parseInt(
+            degreesBetweenPoints(this.state.arrowPos, this.state.arrowDest)
+          ) +
+          " " +
+          parseFloat(this.state.arrowPos.x + width / 2) +
+          " " +
+          parseFloat(this.state.arrowPos.y + height / 2) +
+          ")"
+        }
       />
     );
 
@@ -376,17 +424,17 @@ class Catapult extends Component {
           id={id}
           xlinkHref={
             this.props.currentUser === this.props.actorData.team
-              ? ASSET_ACTOR_TYPE.CATAPULT + ASSET_TEAM.FRIENDLY
-              : ASSET_ACTOR_TYPE.CATAPULT + ASSET_TEAM.ENEMY
+              ? ASSET_ACTOR_TYPE.ARCHER + ASSET_TEAM.FRIENDLY
+              : ASSET_ACTOR_TYPE.ARCHER + ASSET_TEAM.ENEMY
           }
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
           onClick={this.handleClick}
         />
         {animateUnitInAction}
-        {cannonball}
+        {/*arrow*/}
       </g>
     );
   };
@@ -402,4 +450,4 @@ let mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Catapult);
+export default connect(mapStateToProps)(Archer);

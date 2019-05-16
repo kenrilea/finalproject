@@ -94,6 +94,7 @@ let editGameData = (gameId, mods) => {
                      }
                   );
                   let collidedWithEnemy = false;
+                  let diedChanges = [];
                   gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
                      actor => {
                         if (actor.team !== char.team && actor.team !== "none") {
@@ -104,8 +105,7 @@ let editGameData = (gameId, mods) => {
                               if (char.charType === "legionary") {
                                  collidedWithEnemy = true;
                               }
-
-                              changes.push({ type: "died", actorId: actor.actorId });
+                              diedChanges.push({ type: "died", actorId: actor.actorId });
                               gameInstances[gameId]["points"][char.team] =
                                  gameInstances[gameId]["points"][char.team] + actor.points;
                               return false;
@@ -128,6 +128,7 @@ let editGameData = (gameId, mods) => {
                         return actor.actorId !== char.actorId;
                      });
                   }
+                  changes = changes.concat(diedChanges);
                }
             }
          }
@@ -151,140 +152,186 @@ let editGameData = (gameId, mods) => {
                               return true;
                            }
                         }
-                        return false;
                      }
-                  );
-                  if (allyTeamCollision.length < 1) {
-                     changes.push(mod);
-                     char.pos.x = mod.dest.x;
-                     char.pos.y = mod.dest.y;
-                  }
-               }
+         }
             }
          }
-      }
-      //_________________________________________________________
-      if (mod.type === "ranged-shot") {
-         let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
-            return actor.actorId === mod.actorId;
-         });
-         let char = gameInstances[gameId]["map"][actorIndex];
-         if (char.team === gameTurn) {
-            if (char.actions.includes("ranged-shot")) {
-               if (calcs.lineRange(char.range, char.pos, mod.target)) {
-                  let arrowPos = { ...char.pos };
-                  let stopArrow = false;
-                  for (let i = 0; i < char.range; i++) {
-                     let stepLine = calcs.lineMove(char.range, char.pos, mod.target);
-                     arrowPos.x = arrowPos.x + stepLine.x;
-                     arrowPos.y = arrowPos.y + stepLine.y;
+         //_________________________________________________________
+         if (mod.type === "ranged-shot") {
+            let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
+               return actor.actorId === mod.actorId;
+            });
+            let char = gameInstances[gameId]["map"][actorIndex];
+            if (char.team === gameTurn) {
+               if (char.actions.includes("ranged-shot")) {
+                  if (calcs.lineRange(char.range, char.pos, mod.target)) {
+                     let arrowPos = { ...char.pos };
+                     let stopArrow = false;
+                     for (let i = 0; i < char.range; i++) {
+                        let stepLine = calcs.lineMove(char.range, char.pos, mod.target);
+                        arrowPos.x = arrowPos.x + stepLine.x;
+                        arrowPos.y = arrowPos.y + stepLine.y;
 
-                     gameInstances[gameId]["map"] = gameInstances[gameId][
-                        "map"
-                     ].filter(actor => {
-                        if (stopArrow) {
+                        gameInstances[gameId]["map"] = gameInstances[gameId][
+                           "map"
+                        ].filter(actor => {
+                           if (stopArrow) {
+                              return true;
+                           }
+                           if (actor.team !== char.team && actor.team !== "none") {
+                              if (
+                                 actor.pos.x === arrowPos.x &&
+                                 actor.pos.y === arrowPos.y
+                              ) {
+                                 gameInstances[gameId]["points"][char.team] =
+                                    gameInstances[gameId]["points"][char.team] + actor.points;
+                                 stopArrow = true;
+                                 changes = changes.concat({
+                                    ...mod,
+                                    target: { ...arrowPos }
+                                 });
+                                 if (actor.charType === "legionary") {
+                                    changes = changes.concat({
+                                       type: "block-arrow",
+                                       actorId: actor.actorId
+                                    });
+                                    return true;
+                                 }
+                                 changes.push({ type: "died", actorId: actor.actorId });
+                                 return false;
+                              }
+                           }
                            return true;
-                        }
-                        if (actor.team !== char.team && actor.team !== "none") {
-                           if (
-                              actor.pos.x === arrowPos.x &&
-                              actor.pos.y === arrowPos.y
-                           ) {
-                              gameInstances[gameId]["points"][char.team] =
-                                 gameInstances[gameId]["points"][char.team] + actor.points;
-                              stopArrow = true;
-                              changes = changes.concat({
-                                 ...mod,
-                                 target: { ...arrowPos }
+                        });
+                     }
+                     if (stopArrow === false) {
+                        let modtemp = { ...mod, target: undefined };
+                        changes = changes.concat(modtemp);
+                     }
+                  }
+               }
+               //_________________________________________________________
+               if (mod.type === "ranged-shot") {
+                  let actorIndex = gameInstances[gameId]["map"].findIndex(actor => {
+                     return actor.actorId === mod.actorId;
+                  });
+                  let char = gameInstances[gameId]["map"][actorIndex];
+                  if (char.team === gameTurn) {
+                     if (char.actions.includes("ranged-shot")) {
+                        if (calcs.lineRange(char.range, char.pos, mod.target)) {
+                           let arrowPos = { ...char.pos };
+                           let stopArrow = false;
+                           for (let i = 0; i < char.range; i++) {
+                              let stepLine = calcs.lineMove(char.range, char.pos, mod.target);
+                              arrowPos.x = arrowPos.x + stepLine.x;
+                              arrowPos.y = arrowPos.y + stepLine.y;
+
+                              gameInstances[gameId]["map"] = gameInstances[gameId][
+                                 "map"
+                              ].filter(actor => {
+                                 if (stopArrow) {
+                                    return true;
+                                 }
+                                 if (actor.team !== char.team && actor.team !== "none") {
+                                    if (
+                                       actor.pos.x === arrowPos.x &&
+                                       actor.pos.y === arrowPos.y
+                                    ) {
+                                       gameInstances[gameId]["points"][char.team] =
+                                          gameInstances[gameId]["points"][char.team] + actor.points;
+                                       stopArrow = true;
+                                       changes = changes.concat({
+                                          ...mod,
+                                          target: { ...arrowPos }
+                                       });
+                                       changes.push({ type: "died", actorId: actor.actorId });
+                                       return false;
+                                    }
+                                 }
+                                 return true;
                               });
-                              changes.push({ type: "died", actorId: actor.actorId });
-                              return false;
+                           }
+                           if (stopArrow === false) {
+                              changes = changes.concat(mod);
                            }
                         }
-                        return true;
-                     });
-                  }
-                  if (stopArrow === false) {
-                     changes = changes.concat(mod);
+                     }
                   }
                }
-            }
-         }
-      }
-      //_________________________________________________________
-      if (mod.type === "charge") {
-         let char = utils.findActor(mod.actorId, gameInstances[gameId]);
-         if (char.team === gameTurn) {
-            if (char.actions.includes("charge")) {
-               if (calcs.lineRange(char.range, char.pos, mod.dest)) {
-                  if (
-                     utils.teamCollision(mod.dest, char.team, gameInstances[gameId])
-                        .length <= 0
-                  ) {
-                     if (calcs.lineTarget(char.range, char.pos, mod.dest)) {
-                        changes.push(mod);
-                        for (let i = 0; i < char.range; i++) {
-                           let stepLine = calcs.lineMove(char.range, char.pos, mod.dest);
-                           char.pos.x = char.pos.x + stepLine.x;
-                           char.pos.y = char.pos.y + stepLine.y;
+               //_________________________________________________________
+               if (mod.type === "charge") {
+                  let char = utils.findActor(mod.actorId, gameInstances[gameId]);
+                  if (char.team === gameTurn) {
+                     if (char.actions.includes("charge")) {
+                        if (calcs.lineRange(char.range, char.pos, mod.dest)) {
+                           if (
+                              utils.teamCollision(mod.dest, char.team, gameInstances[gameId])
+                                 .length <= 0
+                           ) {
+                              if (calcs.lineTarget(char.range, char.pos, mod.dest)) {
+                                 changes.push(mod);
+                                 for (let i = 0; i < char.range; i++) {
+                                    let stepLine = calcs.lineMove(char.range, char.pos, mod.dest);
+                                    char.pos.x = char.pos.x + stepLine.x;
+                                    char.pos.y = char.pos.y + stepLine.y;
 
-                           gameInstances[gameId]["map"] = gameInstances[gameId][
-                              "map"
-                           ].filter(actor => {
-                              if (actor.team !== char.team && actor.team !== "none") {
-                                 if (
-                                    actor.pos.x === char.pos.x &&
-                                    actor.pos.y === char.pos.y
-                                 ) {
-                                    gameInstances[gameId]["points"][char.team] =
-                                       gameInstances[gameId]["points"][char.team] +
-                                       actor.points;
-                                    changes.push({ type: "died", actorId: actor.actorId });
-                                    return false;
+                                    gameInstances[gameId]["map"] = gameInstances[gameId][
+                                       "map"
+                                    ].filter(actor => {
+                                       if (actor.team !== char.team && actor.team !== "none") {
+                                          if (
+                                             actor.pos.x === char.pos.x &&
+                                             actor.pos.y === char.pos.y
+                                          ) {
+                                             gameInstances[gameId]["points"][char.team] =
+                                                gameInstances[gameId]["points"][char.team] +
+                                                actor.points;
+                                             changes.push({ type: "died", actorId: actor.actorId });
+                                             return false;
+                                          }
+                                       }
+                                       return true;
+                                    });
                                  }
                               }
-                              return true;
-                           });
+                           }
                         }
                      }
                   }
                }
-            }
-         }
-      }
-      //_________________________________________________________
-      if (mod.type === "bombard") {
-         let char = utils.findActor(mod.actorId, gameInstances[gameId]);
-         if (char.team === gameTurn) {
-            if (char.actions.includes("bombard")) {
-               if (
-                  calcs.isInRange(char.range, char.pos, mod.target) &&
-                  !calcs.isInRange(1, char.pos, mod.target)
-               ) {
-                  changes.push(mod);
-                  gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
-                     actor => {
-                        if (actor.team !== char.team && actor.team !== "none") {
-                           if (
-                              actor.pos.x === mod.target.x &&
-                              actor.pos.y === mod.target.y
-                           ) {
-                              changes.push({ type: "died", actorId: actor.actorId });
-                              gameInstances[gameId]["points"][char.team] =
-                                 gameInstances[gameId]["points"][char.team] + actor.points;
-                              return false;
-                           }
-                        }
+               //_________________________________________________________
+               if (mod.type === "bombard") {
+                  let char = utils.findActor(mod.actorId, gameInstances[gameId]);
+                  if (char.team === gameTurn) {
+                     if (char.actions.includes("bombard")) {
+                        if (
+                           calcs.isInRange(char.range, char.pos, mod.target) &&
+                           !calcs.isInRange(1, char.pos, mod.target)
+                        ) {
+                           changes.push(mod);
+                           gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
+                              actor => {
+                                 if (actor.team !== char.team && actor.team !== "none") {
+                                    if (
+                                       actor.pos.x === mod.target.x &&
+                                       actor.pos.y === mod.target.y
+                                    ) {
+                                       changes.push({ type: "died", actorId: actor.actorId });
+                                       gameInstances[gameId]["points"][char.team] =
+                                          gameInstances[gameId]["points"][char.team] + actor.points;
+                                       return false;
+                                    }
+                                 }
 
-                        return true;
+                                 return true;
+                              }
+                           );
+                        }
                      }
-                  );
+                  }
                }
-            }
-         }
-      }
-      //_________________________________________________________
-   });
+               //_________________________________________________________
+            });
    return changes;
 };
 //________________________________________________________________________________________________

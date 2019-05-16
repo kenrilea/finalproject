@@ -20,7 +20,9 @@ class Legionary extends Component {
 
     this.state = {
       x: this.props.actorData.pos.x * this.props.gameData.width,
-      y: this.props.actorData.pos.y * this.props.gameData.height
+      y: this.props.actorData.pos.y * this.props.gameData.height,
+      lastBlockTime: 0,
+      isBlocking: false
     };
   }
 
@@ -98,6 +100,39 @@ class Legionary extends Component {
     });
   };
 
+  updateBlockArrow = () => {
+    const currentTime = new Date().getTime();
+
+    console.log("Blocking arrow!");
+
+    if (
+      this.state.lastBlockTime !== 0 &&
+      currentTime - this.state.lastBlockTime > 500
+    ) {
+      console.log("cancelled blocking arrow");
+      this.props.actorData.action = undefined;
+      cancelAnimationFrame(this.animationBlockArrow);
+      assignAnimationToActor();
+      this.setState({
+        lastBlockTime: 0,
+        isBlocking: false
+      });
+      return;
+    }
+
+    if (!this.state.isBlocking) {
+      this.setState({
+        lastBlockTime: currentTime,
+        isBlocking: true
+      });
+    }
+
+    cancelAnimationFrame(this.animationBlockArrow);
+    this.animationBlockArrow = requestAnimationFrame(() => {
+      this.updateBlockArrow();
+    });
+  };
+
   componentDidUpdate = () => {
     console.log("state: ", this.props.gameState.type);
     if (
@@ -111,6 +146,10 @@ class Legionary extends Component {
       } else if (this.props.actorData.action.type === "died") {
         this.animationDied = requestAnimationFrame(() => {
           this.updateDied();
+        });
+      } else if (this.props.actorData.action.type === "block-arrow") {
+        this.animationBlockArrow = requestAnimationFrame(() => {
+          this.updateBlockArrow();
         });
       }
     }
@@ -262,6 +301,26 @@ class Legionary extends Component {
           />
         </rect>
       ) : null;
+
+    const animateBlockArrow = this.state.isBlocking ? (
+      <animate
+        xlinkHref={"#" + id}
+        attributeName="x"
+        values={
+          xFrontend.toString() +
+          ";" +
+          (xFrontend - 1).toString() +
+          ";" +
+          xFrontend.toString() +
+          ";" +
+          (xFrontend + 1).toString() +
+          ";"
+        }
+        begin="0s"
+        dur="0.1s"
+        repeatCount="indefinite"
+      />
+    ) : null;
     return (
       <g>
         {animateOtherUnits}
@@ -279,6 +338,7 @@ class Legionary extends Component {
           onClick={this.handleClick}
         />
         {animateUnitInAction}
+        {animateBlockArrow}
       </g>
     );
   };

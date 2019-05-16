@@ -362,7 +362,7 @@ app.post("/get-current-lobby", upload.none(), function(req, res) {
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //_____________GAME TEST CODE____________________-
-let army = ["pawn", "archer", "knight", "legionary", "catapult"];
+let army = ["pawn", "knight", "catapult", "legionary", "archer"];
 gameEngine.createTestGameInst("user1", "user2", army, army);
 /*
 gameEngine.getGameInst("test").map.forEach(char => {
