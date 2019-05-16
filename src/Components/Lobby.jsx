@@ -24,6 +24,8 @@ class UnconnectedLobby extends Component {
 
       socket.open()
 
+      socket.emit("join", this.props.currentLobbyId)
+
       socket.on("lobby-data", lobby => {
          console.log("Lobby from socket: ", lobby)
          this.setState({
@@ -35,12 +37,11 @@ class UnconnectedLobby extends Component {
       })
 
       socket.emit("refresh-lobby", this.props.currentLobbyId)
-
    }
 
-   componentWillUnmount = () => {
-      socket.close()
-   }
+   // componentWillUnmount = () => {
+   //    socket.close()
+   // }
 
 
    handlerReadyButton = () => {
@@ -136,7 +137,7 @@ class UnconnectedLobby extends Component {
 
       //Redirect to lobby list if !props.inLobby
       if (!this.props.inLobby) {
-         return <Redirect to={"/lobbies_list"} />
+         return <Redirect to={"lobbies_list"} />
       }
 
       //If both players have pressed ready, redirect to the appropriate game page

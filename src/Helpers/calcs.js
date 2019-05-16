@@ -22,3 +22,48 @@ export const isInRange = (range, origin, dest) => {
   }
   return false;
 };
+
+export const lineRange = (range, origin, dest) => {
+  if (
+    Math.abs(origin.y - dest.y) > range ||
+    Math.abs(origin.x - dest.x) > range
+  ) {
+    return false;
+  }
+  if (origin.x === dest.x) {
+    return true;
+  }
+  if (origin.y === dest.y) {
+    return true;
+  }
+  if (Math.abs(origin.y - dest.y) === Math.abs(origin.x - dest.x)) {
+    return true;
+  }
+  return false;
+};
+
+export const lineTarget = (range, origin, dest) => {
+  if (
+    Math.abs(origin.y - dest.y) > range ||
+    Math.abs(origin.x - dest.x) > range
+  ) {
+    return false;
+  }
+  if (origin.x === dest.x) {
+    if (Math.abs(origin.y - dest.y)) {
+      return true;
+    }
+  }
+  if (origin.y === dest.y) {
+    return true;
+  }
+  if (Math.abs(origin.y - dest.y) === Math.abs(origin.x - dest.x)) {
+    if (
+      Math.abs(origin.y - dest.y) === range &&
+      Math.abs(origin.x - dest.x) === range
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
