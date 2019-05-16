@@ -99,7 +99,7 @@ let editGameData = (gameId, mods) => {
                     actor.pos.x === mod.dest.x &&
                     actor.pos.y === mod.dest.y
                   ) {
-                    if (actor.charType === "legionary") {
+                    if (char.charType === "legionary") {
                       collidedWithEnemy = true;
                     }
 
