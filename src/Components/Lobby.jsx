@@ -11,8 +11,8 @@ class UnconnectedLobby extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         readyOne: false,
-         readyTwo: false,
+         readyPlayerOne: false,
+         readyPlayerTwo: false,
          playerOne: "",
          playerTwo: ""
       };
@@ -29,8 +29,8 @@ class UnconnectedLobby extends Component {
          this.setState({
             playerOne: lobby.playerOne,
             playerTwo: lobby.playerTwo,
-            readyOne: lobby.readyPlayerOne,
-            readyTwo: lobby.readyPlayerTwo
+            readyPlayerOne: lobby.readyPlayerOne,
+            readyPlayerTwo: lobby.readyPlayerTwo
          })
       })
 
@@ -77,14 +77,14 @@ class UnconnectedLobby extends Component {
    };
 
    renderReadyOne = () => {
-      if (this.state.readyOne === true) {
+      if (this.state.readyPlayerOne === true) {
          return "ready to go";
       }
       return "not yet ready";
    };
 
    renderReadyTwo = () => {
-      if (this.state.readyTwo === true) {
+      if (this.state.readyPlayerTwo === true) {
          return "ready to go";
       }
       return "not yet ready";
@@ -94,10 +94,10 @@ class UnconnectedLobby extends Component {
    renderReadyButtonOne = () => {
       let buttonClass = "lobbyButtonNotReady";
       if (this.props.currentUser === this.state.playerOne) {
-         if (this.state.readyOne === true) {
+         if (this.state.readyPlayerOne === true) {
             buttonClass = "lobbyButtonReady";
          }
-         if (this.state.readyOne === false) {
+         if (this.state.readyPlayerOne === false) {
             buttonClass = "lobbyButtonNotReady";
          }
          return (
@@ -115,10 +115,10 @@ class UnconnectedLobby extends Component {
       let buttonClass = "lobbyButtonNotReady";
       if (this.props.currentUser === this.state.playerTwo) {
 
-         if (this.state.readyTwo === true) {
+         if (this.state.readyPlayerTwo === true) {
             buttonClass = "lobbyButtonReady";
          }
-         if (this.state.readyTwo === false) {
+         if (this.state.readyPlayerTwo === false) {
             buttonClass = "lobbyButtonNotReady";
          }
          return (
@@ -140,8 +140,8 @@ class UnconnectedLobby extends Component {
       }
 
       //If both players have pressed ready, redirect to the appropriate game page
-      if (this.state.readyOne && this.state.readyTwo) {
-         return <Redirect to={"game/:" + this.props.lobbyToJoinId} />
+      if (this.state.readyPlayerOne && this.state.readyPlayerTwo) {
+         return <Redirect to={"/game/" + this.props.currentLobbyId} />
       }
 
       return (
