@@ -365,7 +365,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "ranged-shot") {
     if (gameTurn === input.team) {
-      action.target = action.dest;
+      input.action.target = input.action.dest;
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
@@ -376,7 +376,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "bombard") {
     if (gameTurn === input.team) {
-      action.target = action.dest;
+      input.action.target = input.action.dest;
       changes = changes.concat(editGameData(input.gameId, [input.action]));
     }
   }
