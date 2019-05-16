@@ -3,6 +3,7 @@ import "./../../css/gameFrame.css";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import OuterBar from "./OuterBar.jsx";
+import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
 import Pawn from "./Actors/Pawn.jsx";
@@ -20,7 +21,9 @@ class GameFrame extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loaded: false
+      loaded: false,
+      gameOver: false,
+      winner: ""
     };
   }
 
@@ -39,6 +42,18 @@ class GameFrame extends Component {
     socket.on("game-data", data => {
       const width = 100 / data.width;
       const height = 100 / data.height;
+
+      if (data.playerWon !== undefined) {
+        console.log(data.playerWon + " won!");
+        this.props.dispatch(
+          setGameData({ ...data, actors: data.map, width, height })
+        );
+        this.setState({
+          gameOver: true,
+          winner: data.playerWon
+        });
+        return;
+      }
 
       let actors = data.map.slice();
 
@@ -83,6 +98,10 @@ class GameFrame extends Component {
   render = () => {
     if (!this.state.loaded) return null;
 
+    let gameOverContent = this.state.gameOver ? (
+      <GameOver winner={this.state.winner} />
+    ) : null;
+
     return (
       <div className="wrapper">
         <div className="gameframe wrapper">
@@ -95,8 +114,9 @@ class GameFrame extends Component {
             {this.getActorElements()}
           </svg>
           <Menu options={this.props.actionMenuOptions} />
+          {gameOverContent}
         </div>
-        <OuterBar />
+        <OuterBar gameOver={this.state.gameOver} />
       </div>
     );
   };
