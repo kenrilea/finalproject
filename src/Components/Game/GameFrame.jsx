@@ -6,6 +6,7 @@ import OuterBar from "./OuterBar.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
+import Archer from "./Actors/Archer.jsx";
 import Catapult from "./Actors/Catapult.jsx";
 import Knight from "./Actors/Knight.jsx";
 import Legionary from "./Actors/Legionary.jsx";
@@ -103,6 +104,8 @@ class GameFrame extends Component {
         return <Legionary key={actor.actorId} actorData={actor} />;
       } else if (actor.charType === "catapult") {
         return <Catapult key={actor.actorId} actorData={actor} />;
+      } else if (actor.charType === "archer") {
+        return <Archer key={actor.actorId} actorData={actor} />;
       }
     });
   };

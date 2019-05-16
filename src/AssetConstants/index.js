@@ -12,7 +12,8 @@ export const ASSET_TEAM = {
 };
 
 export const ASSET_ITEM = {
-  CANNONBALL: "cannonball.png"
+  CANNONBALL: "cannonball.png",
+  ARROW: "arrow.png"
 };
 
 export const ACTOR_HIGHLIGHT = {
