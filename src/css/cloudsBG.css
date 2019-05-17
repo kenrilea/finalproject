@@ -5,7 +5,7 @@
   position: fixed;
   right: 0;
   top: 0;
-  z-index: -99;
+  z-index: 2;
   padding-top: 20vh;
 }
 
@@ -127,7 +127,7 @@
   background: #fff;
   content: "";
   position: absolute;
-  z-index: 5000;
+  z-index: 3;
 }
 
 .cloud:after {
