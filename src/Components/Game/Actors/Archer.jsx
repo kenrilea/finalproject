@@ -369,11 +369,11 @@ class Archer extends Component {
   };
 
   render = () => {
-    const isoPos = this.state.frontendPos;
-    const xFrontend = isoPos.x;
-    const yFrontend = isoPos.y;
-    const width = this.props.gameData.width;
+    const width = this.props.gameData.width / 2;
     const height = this.props.gameData.height / 2;
+    const isoPos = this.state.frontendPos;
+    const xFrontend = isoPos.x + width / 2;
+    const yFrontend = isoPos.y;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -398,11 +398,18 @@ class Archer extends Component {
         />
       ) : null;
 
+    const polyPoints = [
+      [xFrontend + width / 2, yFrontend], // top
+      [xFrontend + width, yFrontend + height / 2], // right
+      [xFrontend + width / 2, yFrontend + height], // bottom
+      [xFrontend, yFrontend + height / 2] // left
+    ];
     const animateOtherUnits =
       this.props.actorData.highlighted &&
       this.props.gameState.unitInAction !== undefined &&
       this.props.actorData.team !== this.props.gameState.unitInAction.team ? (
-        <rect
+        <polygon
+          points={polyPoints.map(inner => inner.join(",")).join(" ")}
           id={"rect" + id}
           stroke={"#42f4eb"}
           strokeWidth="0.1"
@@ -422,10 +429,10 @@ class Archer extends Component {
             dur="1s"
             repeatCount="indefinite"
           />
-        </rect>
+        </polygon>
       ) : null;
 
-    console.log("STUFF: ", this.state.arrowPos, this.state.arrowDest);
+    //console.log("STUFF: ", this.state.arrowPos, this.state.arrowDest);
     let rotation =
       "rotate(" +
       parseFloat(

@@ -94,14 +94,21 @@ class Tile extends Component {
       //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
       stroke: stroke,
       strokeWidth: "0.1",
-      strokeLinecap: "square",
-      width: width,
-      height: height
+      strokeLinecap: "square"
+      // width: height,
+      // height: height
     };
 
+    const polyPoints = [
+      [xFrontend + width / 2, yFrontend], // top
+      [xFrontend + width, yFrontend + height / 2], // right
+      [xFrontend + width / 2, yFrontend + height], // bottom
+      [xFrontend, yFrontend + height / 2] // left
+    ];
     const animate =
       highlighted || onTarget ? (
-        <rect
+        <polygon
+          points={polyPoints.map(inner => inner.join(",")).join(" ")}
           id={"rect" + id}
           style={style}
           x={xFrontend}
@@ -117,7 +124,7 @@ class Tile extends Component {
             dur="1s"
             repeatCount="indefinite"
           />
-        </rect>
+        </polygon>
       ) : null;
 
     return (
@@ -125,10 +132,12 @@ class Tile extends Component {
         <image
           id={id}
           xlinkHref={ASSET_TILE.REGULAR}
-          style={style}
           x={xFrontend}
           y={yFrontend}
-          onClick={this.handleClick}
+          width={width}
+          height={height}
+          pointerEvents={"none"}
+          // onClick={this.handleClick}
         />
         {animate}
       </g>
