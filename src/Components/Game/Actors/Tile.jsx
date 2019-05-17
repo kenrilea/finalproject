@@ -75,7 +75,7 @@ class Tile extends Component {
     const xFrontend = this.props.actorData.pos.x * this.props.gameData.width;
     const yFrontend = this.props.actorData.pos.y * this.props.gameData.height;
 
-    const fill = "#000";
+    const fill = "#fff";
     const stroke = "#42f4eb";
 
     const style = {

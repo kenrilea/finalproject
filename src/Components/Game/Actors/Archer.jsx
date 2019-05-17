@@ -8,9 +8,11 @@ import {
 } from "./../../../Helpers/GameStateHelpers.js";
 import {
   updatePosition,
+  updatePositionAtSpeed,
   degreesBetweenPoints,
+  getLengthBetweenPoints,
   normalizedDirectionBetweenPoints,
-  multiplyDirectionVectorWithBounds,
+  multiplyDirectionVector,
   isInRange,
   lineTarget,
   lineRange,
@@ -38,7 +40,9 @@ class Archer extends Component {
       arrowDest: {
         x: 100,
         y: 100
-      }
+      },
+      arrowDirection: {},
+      arrowTravelDistance: {}
     };
   }
 
@@ -117,35 +121,71 @@ class Archer extends Component {
   };
 
   updateRangedShot = () => {
-    let dest = {};
-    if (this.props.actorData.action.target === undefined) {
-      dest = multiplyDirectionVectorWithBounds(
-        normalizedDirectionBetweenPoints(
-          { x: this.state.x, y: this.state.y },
+    const startPos = { x: this.state.x, y: this.state.y };
+
+    if (this.state.arrowPos.x === 900) {
+      let dest = {};
+      let direction = 0;
+
+      if (this.props.actorData.action.target === undefined) {
+        dest = { ...this.props.actorData.action.dest };
+        dest.x = dest.x * this.props.gameData.width;
+        dest.y = dest.y * this.props.gameData.height;
+
+        direction = normalizedDirectionBetweenPoints(
           {
-            ...this.props.actorData.action.dest
-          }
-        ),
-        100,
-        120,
-        -20
-      );
-    } else {
-      dest = { ...this.props.actorData.action.target };
+            x: this.state.x,
+            y: this.state.y
+          },
+          dest
+        );
+
+        dest = multiplyDirectionVector(direction, 100);
+      } else {
+        dest = { ...this.props.actorData.action.target };
+        dest.x = dest.x * this.props.gameData.width;
+        dest.y = dest.y * this.props.gameData.height;
+        direction = normalizedDirectionBetweenPoints(
+          {
+            x: this.state.x,
+            y: this.state.y
+          },
+          dest
+        );
+      }
+
+      this.setState({
+        arrowPos: { ...startPos },
+        arrowDest: {
+          x: dest.x,
+          y: dest.y
+        },
+        arrowDirection: direction,
+        arrowTravelDistance: getLengthBetweenPoints(startPos, dest)
+      });
+
+      cancelAnimationFrame(this.animationRangedShot);
+      this.animationRangedShot = requestAnimationFrame(() => {
+        this.updateRangedShot();
+      });
+      return;
     }
 
-    dest.x = dest.x * this.props.gameData.width;
-    dest.y = dest.y * this.props.gameData.height;
+    let newPos = updatePositionAtSpeed(
+      this.state.arrowPos,
+      startPos,
+      this.state.arrowDest,
+      this.state.arrowDirection,
+      this.state.arrowTravelDistance,
+      100,
+      0.01
+    );
 
-    let newPos =
-      this.state.arrowPos.x === 900
-        ? { x: this.state.x, y: this.state.y }
-        : updatePosition(this.state.arrowPos, dest, 0.0005);
-
-    console.log("positions: ", newPos, dest);
+    //console.log("positions: ", newPos, this.state.arrowDest);
 
     if (
-      (newPos.x === dest.x && newPos.y === dest.y) ||
+      (newPos.x === this.state.arrowDest.x &&
+        newPos.y === this.state.arrowDest.y) ||
       newPos.x > 140 ||
       newPos.x < -40 ||
       newPos.y > 140 ||
@@ -172,10 +212,6 @@ class Archer extends Component {
       arrowPos: {
         x: newPos.x,
         y: newPos.y
-      },
-      arrowDest: {
-        x: dest.x,
-        y: dest.y
       }
     });
 
@@ -396,6 +432,7 @@ class Archer extends Component {
         </rect>
       ) : null;
 
+    console.log("STUFF: ", this.state.arrowPos, this.state.arrowDest);
     const arrow = (
       <image
         xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
@@ -405,8 +442,17 @@ class Archer extends Component {
         height={height}
         transform={
           "rotate(" +
-          parseInt(
-            degreesBetweenPoints(this.state.arrowPos, this.state.arrowDest)
+          parseFloat(
+            degreesBetweenPoints(
+              {
+                x: xFrontend / this.props.gameData.width / 2,
+                y: yFrontend / this.props.gameData.height / 2
+              },
+              {
+                x: this.state.arrowDest.x / this.props.gameData.width / 2,
+                y: this.state.arrowDest.y / this.props.gameData.height / 2
+              }
+            )
           ) +
           " " +
           parseFloat(this.state.arrowPos.x + width / 2) +
@@ -416,6 +462,26 @@ class Archer extends Component {
         }
       />
     );
+
+    /* THIS WORKS
+    const arrow = (
+      <image
+        xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
+        x={"50"}
+        y={"50"}
+        width={width}
+        height={height}
+        transform={
+          "rotate(" +
+          parseFloat(degreesBetweenPoints({ x: 50, y: 50 }, { x: 0, y: 100 })) +
+          " " +
+          parseFloat(50 + width / 2) +
+          " " +
+          parseFloat(50 + height / 2) +
+          ")"
+        }
+      />
+    );*/
 
     return (
       <g>
@@ -434,7 +500,7 @@ class Archer extends Component {
           onClick={this.handleClick}
         />
         {animateUnitInAction}
-        {/*arrow*/}
+        {arrow}
       </g>
     );
   };
