@@ -71,7 +71,7 @@ class UnconnectedSideBar extends Component {
       else {
          return (
             <div>
-               <button onClick={this.handleShow} className="pure-material-button-contained show-button"> {this.props.currentUser} </button>
+               <button onClick={this.handleShow} className="pure-material-button-contained show-button"> PROFILE </button>
                <Animate show={this.state.show}>
                   {this.loggedInSidebar()}
                </Animate>
