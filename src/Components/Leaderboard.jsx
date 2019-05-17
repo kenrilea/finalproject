@@ -43,7 +43,7 @@ class Leaderboard extends Component {
 
       return (
          <div className="lobbies-list-background">
-            <div className="animated-fade-in animated-grow lobbies-list-foreground material-shadow">
+            <div className="animated-fade-in animated-grow-bounce lobbies-list-foreground material-shadow">
                <div id="scrolltable">
                   <table className="leader-table">
                      <thead className="leader-header">

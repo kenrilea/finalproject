@@ -8,6 +8,8 @@ import LobbiesListElem from "./LobbiesListElem.jsx";
 
 import socket from "./SocketSettings.jsx"
 
+import { AnimateGroup } from "react-animate-mount"
+
 import "../css/lobbiesList.css";
 
 class UnconnectedLobbiesList extends Component {
@@ -20,8 +22,6 @@ class UnconnectedLobbiesList extends Component {
    }
 
    componentDidMount = () => {
-
-      console.log("Component mounted")
 
       socket.open()
 
@@ -96,7 +96,7 @@ class UnconnectedLobbiesList extends Component {
 
       return (
          <div className="lobbies-list-background">
-            <div className="lobbies-list-foreground material-shadow animated-fade-in animated-grow">
+            <div className="lobbies-list-foreground material-shadow animated-fade-in animated-grow-bounce">
                <div className="lobbies-list-button-cont">
                   <h3 className="lobbies-label">Lobbies</h3>
                   <button className="ghost-button-dark" onClick={this.createLobby}>
@@ -104,16 +104,18 @@ class UnconnectedLobbiesList extends Component {
             </button>
                </div>
                <div className="lobbies-list-container">
-                  {this.state.lobbies.map(elem => {
-                     return (
-                        <LobbiesListElem
-                           key={elem._id}
-                           lobbyId={elem._id}
-                           playerOne={elem.playerOne}
-                           playerTwo={elem.playerTwo}
-                        />
-                     );
-                  })}
+                  <AnimateGroup>
+                     {this.state.lobbies.map(elem => {
+                        return (
+                           <LobbiesListElem
+                              key={elem._id}
+                              lobbyId={elem._id}
+                              playerOne={elem.playerOne}
+                              playerTwo={elem.playerTwo}
+                           />
+                        );
+                     })}
+                  </AnimateGroup>
                </div>
             </div>
          </div>
