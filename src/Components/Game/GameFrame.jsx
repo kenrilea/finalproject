@@ -46,13 +46,11 @@ class GameFrame extends Component {
     console.log(this.props.match.params.gameId);
     if (!this.state.loaded) {
       socket.open();
-      socket.emit("join-game", this.props.match.params.gameId);
-      socket.emit("get-game-data", {
-        gameId: this.props.match.params.gameId
-      });
-      socket.emit("get-game-data", { gameId: this.props.match.params.gameId });
     }
-
+    socket.emit("join-game", this.props.match.params.gameId);
+    socket.emit("get-game-data", {
+      gameId: this.props.match.params.gameId
+    });
     socket.on("game-data", data => {
       const width = 100 / data.width;
       const height = 100 / data.height;
