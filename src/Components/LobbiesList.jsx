@@ -97,11 +97,10 @@ class UnconnectedLobbiesList extends Component {
       return (
          <div className="lobbies-list-background">
             <div className="lobbies-list-foreground material-shadow animated-fade-in animated-grow-bounce">
+
                <div className="lobbies-list-button-cont">
                   <h3 className="lobbies-label">Lobbies</h3>
-                  <button className="ghost-button-dark" onClick={this.createLobby}>
-                     Create new lobby
-            </button>
+                  <button className="ghost-button-dark" onClick={this.createLobby}>Create new lobby</button>
                </div>
                <div className="lobbies-list-container">
                   <AnimateGroup>

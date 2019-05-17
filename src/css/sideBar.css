@@ -1,6 +1,6 @@
 .sideBar {
    /* position: absolute; */
-   z-index: 10;
+   z-index: 1000;
    width: 15vw;
    height: 50vh;
    /* background: linear-gradient(to right, #232526, #414345); */
@@ -17,6 +17,8 @@
 
 .show-button {
    margin: 30px 0 0 30px;
+   z-index: 1000;
+   position: relative;
 }
 
 .bottom-marge {

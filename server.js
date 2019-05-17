@@ -371,6 +371,7 @@ let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
 io.on("connection", socket => {
    console.log("Connected to socket");
 
+   //SET SOCKET ROOM
    socket.on("join", currentLobbyId => {
       //After receiving join event with lobbyId, set the room for the client
       console.log("Connecting client to socket room: ", currentLobbyId);
@@ -391,12 +392,22 @@ io.on("connection", socket => {
    });
 
    socket.on("refresh-lobby-list", () => {
-      console.log("REFRESHING  LOBBY LIST");
+      // console.log("REFRESHING  LOBBY LIST");
       lobbiesCollection.find().toArray((err, result) => {
          // console.log("Lobbies from socket: ", result)
          io.emit("lobby-list-data", result);
       });
    });
+
+   socket.on("refresh-leaderboard-data", () => {
+      console.log("REFRESHING LEADERBOARD")
+      usersCollection.find().sort({ wins: -1, losses: 1 }).toArray((err, result) => {
+         if (err) throw err;
+         console.log("Leaderboard:", result);
+
+         io.emit("leaderboard-data", result)
+      });
+   })
 
    socket.on("leave-lobby", data => {
       lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {

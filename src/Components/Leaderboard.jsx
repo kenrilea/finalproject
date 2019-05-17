@@ -5,6 +5,8 @@ import "../css/leaderboard.css";
 
 import mockLeaderboardData from "./mockLeaderboardData.jsx";
 
+import socket from "./SocketSettings.jsx"
+
 class Leaderboard extends Component {
    constructor(props) {
       super(props);
@@ -14,17 +16,18 @@ class Leaderboard extends Component {
    }
 
    componentDidMount = () => {
-      fetch("/get-leaderboard")
-         .then(resHead => {
-            return resHead.text();
-         })
-         .then(resBody => {
-            let parsed = JSON.parse(resBody);
 
-            this.setState({
-               leaderboard: parsed
-            });
-         });
+      socket.open()
+
+      socket.on("leaderboard-data", data => {
+         console.log("Receiving leaderboard from socket: ", data)
+         this.setState({
+            leaderboard: data
+         })
+      })
+
+      socket.emit("refresh-leaderboard-data")
+
    };
 
    render = () => {

@@ -21,7 +21,7 @@
    float: right;
    width: 20vw;
    height: 90vh;
-   border: 3px solid transparent;
+   border: 1px solid transparent;
    border-left-color: black;
    padding: 0;
    list-style-type: none;
