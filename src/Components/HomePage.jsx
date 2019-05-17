@@ -11,28 +11,6 @@ import "../css/main.css"
 
 class UnconnectedHomePage extends Component {
 
-   // checkAutoLogin = () => {
-
-   //    fetch("/verify-cookie2", { credentials: "include" })
-   //       .then(res => {
-   //          return res.text();
-   //       })
-   //       .then(resBody => {
-   //          let parsedBody = JSON.parse(resBody);
-   //          if (typeof parsedBody !== "object") {
-   //             console.log("autologin fetch needs to return an object");
-   //          }
-   //          if (parsedBody.success === true) {
-   //             console.log("Automatically logged in user");
-   //             console.log(parsedBody);
-   //             this.props.dispatch({
-   //                type: "logged-in",
-   //                toggle: true,
-   //                username: parsedBody.username
-   //             });
-   //          }
-   //       });
-   // }
 
    componentDidMount = () => {
       // this.checkAutoLogin()

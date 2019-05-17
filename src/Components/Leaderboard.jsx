@@ -31,19 +31,19 @@ class Leaderboard extends Component {
       {
          console.log("State : ", this.state);
       }
-      {
-         if (this.state.leaderboard.length === 0) {
-            return (
-               <div className="lobbies-list-background">
-                  <div className="lobbies-list-foreground">Loading...</div>
-               </div>
-            );
-         }
-      }
+      // {
+      //    if (this.state.leaderboard.length === 0) {
+      //       return (
+      //          <div className="lobbies-list-background">
+      //             <div className="lobbies-list-foreground">Loading...</div>
+      //          </div>
+      //       );
+      //    }
+      // }
 
       return (
          <div className="lobbies-list-background">
-            <div className="animated-fade-in animated-grow lobbies-list-foreground material-shadow">
+            <div className="animated-fade-in animated-grow-bounce lobbies-list-foreground material-shadow">
                <div id="scrolltable">
                   <table className="leader-table">
                      <thead className="leader-header">

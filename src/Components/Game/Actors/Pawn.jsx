@@ -6,7 +6,11 @@ import {
   assignAnimationToActor,
   resetToSelectUnitState
 } from "./../../../Helpers/GameStateHelpers.js";
-import { updatePosition, isInRange } from "./../../../Helpers/calcs.js";
+import {
+  updatePosition,
+  isInRange,
+  isTileOccupied
+} from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
   ASSET_TEAM,
@@ -132,11 +136,19 @@ class Pawn extends Component {
                 let pawnPos = this.props.actorData.pos;
                 let pawnRange = this.props.actorData.moveSpeed;
                 if (isInRange(pawnRange, pawnPos, actor.pos)) {
-                  return {
-                    ...actor,
-                    onTarget: true,
-                    highlighted: true
-                  };
+                  if (
+                    (actor.actorType !== "char" &&
+                      !isTileOccupied(actor, this.props.gameData.actors)) ||
+                    actor.actorType === "char"
+                  ) {
+                    // If actor is a tile but isn't occupied, highlight
+                    // If in range, highlight
+                    return {
+                      ...actor,
+                      onTarget: true,
+                      highlighted: true
+                    };
+                  }
                 }
 
                 return actor;
