@@ -31,21 +31,18 @@ class UnconnectedSideBar extends Component {
 
    loggedInSidebar = () => {
       return (
-         <div className="sideBar">
+         <div className="sideBar animated-fade-in material-shadow">
             <Profile />
-            <button
-               className="ghost-button-dark signout-button"
-               onClick={this.signout}
-            >
+            <button className="ghost-button-dark signout-button bottom-marge" onClick={this.signout} >
                Sign Out
-        </button>
+            </button>
          </div>
       );
    };
 
    notLoggedInSidebar = () => {
       return (
-         <div className="animated-fade-in sideBar">
+         <div className="animated-fade-in sideBar material-shadow">
             <div className="sideBarForm">
                <Login />
                <Signup className="animated-fade-in" />
@@ -64,8 +61,8 @@ class UnconnectedSideBar extends Component {
       if (this.props.loggedIn === false) {
          return (
             <div>
-               <button onClick={this.handleShow}> SHOW </button>
-               <Animate show={this.state.show}>
+               <button onClick={this.handleShow} className="ghost-button show-button "> LOGIN/SIGNUP </button>
+               <Animate show={this.state.show} >
                   {this.notLoggedInSidebar()}
                </Animate>
             </div>
@@ -74,7 +71,7 @@ class UnconnectedSideBar extends Component {
       else {
          return (
             <div>
-               <button onClick={this.handleShow}> SHOW </button>
+               <button onClick={this.handleShow} className="ghost-button show-button"> {this.props.currentUser} </button>
                <Animate show={this.state.show}>
                   {this.loggedInSidebar()}
                </Animate>
@@ -87,7 +84,8 @@ class UnconnectedSideBar extends Component {
 
 const mapStateToProps = state => {
    return {
-      loggedIn: state.loggedIn
+      loggedIn: state.loggedIn,
+      currentUser: state.currentUser
    };
 };
 
