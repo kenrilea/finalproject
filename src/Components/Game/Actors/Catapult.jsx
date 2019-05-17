@@ -336,9 +336,9 @@ class Catapult extends Component {
 
     const polyPoints = [
       [xFrontend + width / 2, yFrontend], // top
-      [xFrontend + width, yFrontend + height / 2], // right
+      [xFrontend + width + width / 2, yFrontend + height / 2], // right
       [xFrontend + width / 2, yFrontend + height], // bottom
-      [xFrontend, yFrontend + height / 2] // left
+      [xFrontend - width / 2, yFrontend + height / 2] // left
     ];
     const animateOtherUnits =
       this.props.actorData.highlighted &&
