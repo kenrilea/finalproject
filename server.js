@@ -360,6 +360,32 @@ app.post("/get-current-lobby", upload.none(), function (req, res) {
    });
 });
 
+//_____________GAME TEST CODE____________________-
+let UserGameAssoc = {};
+let army = [
+   [
+      "knight",
+      "knight",
+      "archer",
+      "catapult",
+      "catapult",
+      "archer",
+      "knight",
+      "knight"
+   ],
+   [
+      "legionary",
+      "pawn",
+      "legionary",
+      "pawn",
+      "pawn",
+      "legionary",
+      "pawn",
+      "legionary"
+   ]
+];
+//____________END OF GAME TEST CODE___________________
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +393,6 @@ app.post("/get-current-lobby", upload.none(), function (req, res) {
 io.on("connection", socket => {
    console.log("Connected to socket");
 
-   //SET SOCKET ROOM
    socket.on("join", currentLobbyId => {
       //After receiving join event with lobbyId, set the room for the client
       console.log("Connecting client to socket room: ", currentLobbyId);
@@ -386,122 +411,186 @@ io.on("connection", socket => {
          io.in(currentLobbyId).emit("lobby-data", result[0]);
       });
    });
-
+   socket.on("refresh-leaderboard-data", () => {
+      console.log("REFRESHING LEADERBOARD");
+      usersCollection
+         .find()
+         .sort({ wins: -1, losses: 1 })
+         .toArray((err, result) => {
+            if (err) throw err;
+            console.log("Leaderboard:", result);
+            io.emit("leaderboard-data", result);
+         });
+   });
    socket.on("refresh-lobby-list", () => {
-      // console.log("REFRESHING  LOBBY LIST");
+      console.log("REFRESHING  LOBBY LIST");
       lobbiesCollection.find().toArray((err, result) => {
          // console.log("Lobbies from socket: ", result)
          io.emit("lobby-list-data", result);
       });
+   });
 
-      socket.on("refresh-leaderboard-data", () => {
-         console.log("REFRESHING LEADERBOARD")
-         usersCollection.find().sort({ wins: -1, losses: 1 }).toArray((err, result) => {
-            if (err) throw err;
-            console.log("Leaderboard:", result);
+   socket.on("leave-lobby", data => {
+      lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+         //If playerOne is alone in lobby, remove it from db!
+         if (
+            result[0].playerOne === data.currentUser &&
+            result[0].playerTwo === ""
+         ) {
+            lobbiesCollection.remove({ _id: data.lobbyId });
+            lobbiesCollection.find().toArray((err, result) => {
+               io.emit("lobby-list-data", result);
+            });
+         }
 
-            io.emit("leaderboard-data", result)
-         });
-      })
+         //If playerTwo is alone in lobby, remove it as well!
+         if (
+            result[0].playerTwo === data.currentUser &&
+            result[0].playerOne === ""
+         ) {
+            lobbiesCollection.remove({ _id: data.lobbyId });
+            lobbiesCollection.find().toArray((err, result) => {
+               io.emit("lobby-list-data", result);
+            });
+         }
 
-      socket.on("leave-lobby", data => {
-         lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-            //If playerOne is alone in lobby, remove it from db!
-            if (
-               result[0].playerOne === data.currentUser &&
-               result[0].playerTwo === ""
-            ) {
-               lobbiesCollection.remove({ _id: data.lobbyId });
-               lobbiesCollection.find().toArray((err, result) => {
-                  io.emit("lobby-list-data", result);
-               });
-            }
+         //If playerOne leaves and is not alone, update lobby and emit!
+         if (
+            result[0].playerOne === data.currentUser &&
+            result[0].playerTwo !== ""
+         ) {
+            lobbiesCollection.update(
+               { _id: data.lobbyId },
+               { $set: { playerOne: "" } },
+               (err, result) => {
+                  if (err) throw err;
+                  console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
 
-            //If playerTwo is alone in lobby, remove it as well!
-            if (
-               result[0].playerTwo === data.currentUser &&
-               result[0].playerOne === ""
-            ) {
-               lobbiesCollection.remove({ _id: data.lobbyId });
-               lobbiesCollection.find().toArray((err, result) => {
-                  io.emit("lobby-list-data", result);
-               });
-            }
-
-            //If playerOne leaves and is not alone, update lobby and emit!
-            if (
-               result[0].playerOne === data.currentUser &&
-               result[0].playerTwo !== ""
-            ) {
-               lobbiesCollection.update(
-                  { _id: data.lobbyId },
-                  { $set: { playerOne: "" } },
-                  (err, result) => {
-                     if (err) throw err;
-                     console.log(
-                        `DB: Removing player1 from lobbyId: ${data.lobbyId}`
-                     );
-
-                     lobbiesCollection
-                        .find({ _id: data.lobbyId })
-                        .toArray((err, result) => {
-                           io.in(data.lobbyId).emit("lobby-data", result[0]);
-                           lobbiesCollection.find().toArray((err, result) => {
-                              io.emit("lobby-list-data", result);
-                           });
+                  lobbiesCollection
+                     .find({ _id: data.lobbyId })
+                     .toArray((err, result) => {
+                        io.in(data.lobbyId).emit("lobby-data", result[0]);
+                        lobbiesCollection.find().toArray((err, result) => {
+                           io.emit("lobby-list-data", result);
                         });
-                  }
-               );
-            }
+                     });
+               }
+            );
+         }
 
-            //If playerTwo leaves and is not alone, also update lobby and emit!
-            if (
-               result[0].playerTwo === data.currentUser &&
-               result[0].playerOne !== ""
-            ) {
-               lobbiesCollection.update(
-                  { _id: data.lobbyId },
-                  { $set: { playerTwo: "" } },
-                  (err, result) => {
-                     if (err) throw err;
-                     console.log(
-                        `DB: Removing player2 from lobbyId: ${data.lobbyId}`
-                     );
+         //If playerTwo leaves and is not alone, also update lobby and emit!
+         if (
+            result[0].playerTwo === data.currentUser &&
+            result[0].playerOne !== ""
+         ) {
+            lobbiesCollection.update(
+               { _id: data.lobbyId },
+               { $set: { playerTwo: "" } },
+               (err, result) => {
+                  if (err) throw err;
+                  console.log(`DB: Removing player2 from lobbyId: ${data.lobbyId}`);
 
-                     lobbiesCollection
-                        .find({ _id: data.lobbyId })
-                        .toArray((err, result) => {
-                           io.in(data.lobbyId).emit("lobby-data", result[0]);
-                           lobbiesCollection.find().toArray((err, result) => {
-                              io.emit("lobby-list-data", result);
-                           });
+                  lobbiesCollection
+                     .find({ _id: data.lobbyId })
+                     .toArray((err, result) => {
+                        io.in(data.lobbyId).emit("lobby-data", result[0]);
+                        lobbiesCollection.find().toArray((err, result) => {
+                           io.emit("lobby-list-data", result);
                         });
-                  }
-               );
-            }
-         });
+                     });
+               }
+            );
+         }
       });
    });
+
    //_______________________GAME________________________________________________
 
+   socket.on("join-game", lobbyId => {
+      console.log(
+         "_________________________________________________________________________________"
+      );
+      console.log("join game recieved: ", lobbyId);
+      socket.join(lobbyId);
+      if (gameEngine.getGameInst(lobbyId) === undefined) {
+         console.log("creating game instance: ", lobbyId);
+         if (lobbyId === undefined) {
+            console.log("no lobby id");
+            return;
+         }
+
+         //_________________________
+         if (lobbiesCollection === undefined) {
+            console.log("collection undefined");
+            return;
+         }
+         lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+            let originLobby = result[0];
+            console.log("-- origin lobby --");
+            console.log(originLobby[0]);
+            if (originLobby !== undefined) {
+               console.log("-- duplicate --");
+               console.log(originLobby[0]);
+
+               let newGameId = gameEngine.createGameInst(
+                  originLobby.playerOne,
+                  originLobby.playerTwo,
+                  army,
+                  army,
+                  lobbyId
+               );
+               UserGameAssoc[originLobby.playerOne] = newGameId;
+               UserGameAssoc[originLobby.playerTwo] = newGameId;
+               console.log("new Game Id: ", newGameId);
+            } else {
+               console.log("origin Lobby undefined");
+            }
+            //_________________________
+         });
+      }
+      console.log("game in session, sending game");
+      io.in(lobbyId).emit("game-data", gameEngine.getGameInst(lobbyId + ""));
+   });
+
    socket.on("get-game-data", message => {
-      //-- add gameIdFromUsernameCollection("username") to get gameId when its implemented
-      let gameData = gameEngine.getGameInst(gameId); //temporary gameId for testing, use collection later...
-      socket.emit("game-data", gameData);
+      console.log("get data request");
+      console.log(message.gameId + "");
+
+      let gameData = gameEngine.getGameInst(message.gameId + ""); //temporary gameId for testing, use collection later...
+      if (gameData !== undefined) {
+         console.log(gameData.map[0].actorId);
+      } else {
+         console.log("game is undefined in get-game-data");
+      }
+      io.emit("game-data", gameData);
    });
 
    socket.on("game-input", input => {
-      console.log("here");
-      let result = gameEngine.handlerUserInput({
-         gameId: "test",
-         action: input,
-         team: "user1"
-      });
-      socket.emit("game-state-change", {
-         success: result.success,
-         changes: result.changes
-      });
+      console.log("user assoc");
+      console.log(UserGameAssoc);
+      console.log("userCookie: ", socket.request.headers.cookie);
+      let usercookie = cookie.parse(socket.request.headers.cookie);
+      console.log("userCookie: ", usercookie.sid);
+      sessionsCollection
+         .find({ sessionId: usercookie.sid })
+         .toArray((err, result) => {
+            if (err) throw err;
+            //result is an array, we must check it elements with [ ]
+            if (result[0] === undefined || result.length === 0) {
+               console.log("invalid cookie - game-input");
+               return;
+            }
+            console.log("input from user: ", result[0].user);
+
+            let changes = gameEngine.handlerUserInput({
+               gameId: UserGameAssoc[result[0].user],
+               action: input,
+               team: result[0].user
+            });
+            socket.emit("game-state-change", changes);
+         });
    });
+
    //_______________________END OF GAME________________________________________________
 
    //_______________________DANIELSPERIMENTATION________________________________________________
@@ -529,9 +618,7 @@ io.on("connection", socket => {
          let ready;
          switch (currentUser) {
             case result[0].playerOne:
-               console.log(
-                  `User "` + currentUser + `" is registered as playerOne`
-               );
+               console.log(`User "` + currentUser + `" is registered as playerOne`);
                ready = !result[0].readyPlayerOne;
                lobbiesCollection.update(
                   { _id: lobbyId },
@@ -544,9 +631,7 @@ io.on("connection", socket => {
                );
                break;
             case result[0].playerTwo:
-               console.log(
-                  `User "` + currentUser + `" is registered as playerTwo`
-               );
+               console.log(`User "` + currentUser + `" is registered as playerTwo`);
                ready = !result[0].readyPlayerTwo;
                lobbiesCollection.updateOne(
                   { _id: lobbyId },
@@ -570,7 +655,7 @@ io.on("connection", socket => {
 
    ////////////////////////////////
 });
-});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
