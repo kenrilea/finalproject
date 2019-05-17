@@ -21,9 +21,11 @@
    position: relative;
 }
 
-.bottom-marge {
+.top-marge {
    margin-top: 30px;
+}
 
-   
+.bottom-marge {
+   margin-bottom: 30px;
 }
 

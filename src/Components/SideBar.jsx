@@ -33,7 +33,7 @@ class UnconnectedSideBar extends Component {
       return (
          <div className="sideBar animated-fade-in material-shadow">
             <Profile />
-            <button className="ghost-button-dark signout-button bottom-marge" onClick={this.signout} >
+            <button className="pure-material-button-contained signout-button top-marge" onClick={this.signout} >
                Sign Out
             </button>
          </div>
@@ -45,7 +45,7 @@ class UnconnectedSideBar extends Component {
          <div className="animated-fade-in sideBar material-shadow">
             <div className="sideBarForm">
                <Login />
-               <Signup className="animated-fade-in" />
+               <Signup className="animated-fade-in show-button" />
             </div>
          </div>
       );
@@ -61,7 +61,7 @@ class UnconnectedSideBar extends Component {
       if (this.props.loggedIn === false) {
          return (
             <div>
-               <button onClick={this.handleShow} className="ghost-button show-button "> LOGIN </button>
+               <button onClick={this.handleShow} className="pure-material-button-contained show-button "> LOGIN </button>
                <Animate show={this.state.show} >
                   {this.notLoggedInSidebar()}
                </Animate>
@@ -71,7 +71,7 @@ class UnconnectedSideBar extends Component {
       else {
          return (
             <div>
-               <button onClick={this.handleShow} className="ghost-button show-button"> {this.props.currentUser} </button>
+               <button onClick={this.handleShow} className="pure-material-button-contained show-button"> {this.props.currentUser} </button>
                <Animate show={this.state.show}>
                   {this.loggedInSidebar()}
                </Animate>

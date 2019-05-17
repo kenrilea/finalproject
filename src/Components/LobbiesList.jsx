@@ -100,7 +100,7 @@ class UnconnectedLobbiesList extends Component {
 
                <div className="lobbies-list-button-cont">
                   <h3 className="lobbies-label">Lobbies</h3>
-                  <button className="ghost-button-dark" onClick={this.createLobby}>Create new lobby</button>
+                  <button className="round-button" onClick={this.createLobby}>+</button>
                </div>
                <div className="lobbies-list-container">
                   <AnimateGroup>
