@@ -9,7 +9,8 @@ import {
 import {
   updatePosition,
   isInRange,
-  isTileOccupied
+  isTileOccupied,
+  getIsometricFrontendPos
 } from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
@@ -23,8 +24,10 @@ class Legionary extends Component {
     super(props);
 
     this.state = {
-      x: this.props.actorData.pos.x * this.props.gameData.width,
-      y: this.props.actorData.pos.y * this.props.gameData.height,
+      frontendPos: getIsometricFrontendPos({
+        x: this.props.actorData.pos.x,
+        y: this.props.actorData.pos.y
+      }),
       lastBlockTime: 0,
       isBlocking: false
     };
@@ -35,17 +38,11 @@ class Legionary extends Component {
   };
 
   updateMove = () => {
-    let dest = { ...this.props.actorData.action.dest };
-    dest.x = dest.x * this.props.gameData.width;
-    dest.y = dest.y * this.props.gameData.height;
+    let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    //console.log("positions: ", this.state.frontendPos, dest);
 
-    let newPos = updatePosition(
-      { x: this.state.x, y: this.state.y },
-      dest,
-      0.025
-    );
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
       console.log("cancelled anim");
@@ -53,15 +50,19 @@ class Legionary extends Component {
       cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
       this.setState({
-        x: newPos.x,
-        y: newPos.y
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
       });
       return;
     }
 
     this.setState({
-      x: newPos.x,
-      y: newPos.y
+      frontendPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
     });
 
     cancelAnimationFrame(this.animationMove);
@@ -71,31 +72,34 @@ class Legionary extends Component {
   };
 
   updateDied = () => {
-    let dest = { x: this.state.x, y: 110 };
+    let dest = {
+      x: this.state.frontendPos.x,
+      y: 110
+    };
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    console.log("positions: ", this.state.frontendPos, dest);
 
-    let newPos = updatePosition(
-      { x: this.state.x, y: this.state.y },
-      dest,
-      0.05
-    );
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.y > 100) {
+    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationDied);
       assignAnimationToActor();
       this.setState({
-        x: newPos.x,
-        y: newPos.y
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
       });
       return;
     }
 
     this.setState({
-      x: newPos.x,
-      y: newPos.y
+      frontendPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
     });
 
     cancelAnimationFrame(this.animationDied);
@@ -224,8 +228,8 @@ class Legionary extends Component {
         this.props.dispatch(
           setActionMenu(
             true,
-            this.props.actorData.pos.x * this.props.gameData.width,
-            this.props.actorData.pos.y * this.props.gameData.height,
+            this.state.frontendPos.x,
+            this.state.frontendPos.y,
             this.props.actorData.actions.map(action => {
               return {
                 text: action,
@@ -261,8 +265,9 @@ class Legionary extends Component {
   };
 
   render = () => {
-    const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
-    const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
+    const isoPos = this.state.frontendPos;
+    const xFrontend = isoPos.x;
+    const yFrontend = isoPos.y;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -300,7 +305,7 @@ class Legionary extends Component {
           x={xFrontend}
           y={yFrontend}
           width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          height={this.props.gameData.height / 2}
         >
           <animate
             xlinkHref={"#rect" + id}
@@ -346,7 +351,7 @@ class Legionary extends Component {
           x={xFrontend}
           y={yFrontend}
           width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          height={this.props.gameData.height / 2}
           onClick={this.handleClick}
         />
         {animateUnitInAction}

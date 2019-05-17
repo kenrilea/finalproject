@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu, setGameData, setGameState } from "./../../../Actions";
 import { STATES } from "./../../../GameStates";
-import {
-  resetToSelectUnitState,
-  updateAnimationPhase
-} from "./../../../Helpers/GameStateHelpers.js";
-import { ACTOR_HIGHLIGHT } from "./../../../AssetConstants";
+import { resetToSelectUnitState } from "./../../../Helpers/GameStateHelpers.js";
+import { getIsometricFrontendPos } from "./../../../Helpers/calcs.js";
+import { ACTOR_HIGHLIGHT, ASSET_TILE } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
 class Tile extends Component {
@@ -72,10 +70,23 @@ class Tile extends Component {
   };
 
   render = () => {
-    const xFrontend = this.props.actorData.pos.x * this.props.gameData.width;
-    const yFrontend = this.props.actorData.pos.y * this.props.gameData.height;
+    const x = this.props.actorData.pos.x;
+    const y = this.props.actorData.pos.y;
+    const width = this.props.gameData.width;
+    const height = this.props.gameData.height / 2;
 
-    const fill = "#fff";
+    const isoPos = getIsometricFrontendPos({ x, y });
+    const xFrontend = isoPos.x;
+    const yFrontend = isoPos.y;
+
+    const id = "actorId" + this.props.actorData.actorId;
+
+    const highlighted = this.props.actorData.highlighted;
+    const onTarget = this.props.actorData.onTarget;
+
+    const fill = onTarget
+      ? ACTOR_HIGHLIGHT.TILE_TARGET
+      : ACTOR_HIGHLIGHT.TILE_ON_PATH;
     const stroke = "#42f4eb";
 
     const style = {
@@ -84,36 +95,36 @@ class Tile extends Component {
       stroke: stroke,
       strokeWidth: "0.1",
       strokeLinecap: "square",
-      width: this.props.gameData.width,
-      height: this.props.gameData.height
+      width: width,
+      height: height
     };
-
-    const id = "actorId" + this.props.actorData.actorId;
-
-    const highlighted = this.props.actorData.highlighted;
-    const onTarget = this.props.actorData.onTarget;
 
     const animate =
       highlighted || onTarget ? (
-        <animate
-          xlinkHref={"#" + id}
-          attributeName="fill"
-          from={fill}
-          to={
-            onTarget
-              ? ACTOR_HIGHLIGHT.TILE_TARGET
-              : ACTOR_HIGHLIGHT.TILE_ON_PATH
-          }
-          begin="0s"
-          dur="1s"
-          repeatCount="indefinite"
-        />
+        <rect
+          id={"rect" + id}
+          style={style}
+          x={xFrontend}
+          y={yFrontend}
+          onClick={this.handleClick}
+        >
+          <animate
+            xlinkHref={"#rect" + id}
+            attributeName="opacity"
+            from="0"
+            to="1"
+            begin="0s"
+            dur="1s"
+            repeatCount="indefinite"
+          />
+        </rect>
       ) : null;
 
     return (
       <g>
-        <rect
+        <image
           id={id}
+          xlinkHref={ASSET_TILE.REGULAR}
           style={style}
           x={xFrontend}
           y={yFrontend}

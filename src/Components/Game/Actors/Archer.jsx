@@ -16,7 +16,8 @@ import {
   isInRange,
   lineTarget,
   lineRange,
-  isTileOccupied
+  isTileOccupied,
+  getIsometricFrontendPos
 } from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
@@ -31,8 +32,10 @@ class Archer extends Component {
     super(props);
 
     this.state = {
-      x: this.props.actorData.pos.x * this.props.gameData.width,
-      y: this.props.actorData.pos.y * this.props.gameData.height,
+      frontendPos: getIsometricFrontendPos({
+        x: this.props.actorData.pos.x,
+        y: this.props.actorData.pos.y
+      }),
       arrowPos: {
         x: 900,
         y: 900
@@ -51,17 +54,11 @@ class Archer extends Component {
   };
 
   updateMove = (speed = 0.05) => {
-    let dest = { ...this.props.actorData.action.dest };
-    dest.x = dest.x * this.props.gameData.width;
-    dest.y = dest.y * this.props.gameData.height;
+    let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    //console.log("positions: ",this.state.frontendPos, dest);
 
-    let newPos = updatePosition(
-      { x: this.state.x, y: this.state.y },
-      dest,
-      speed
-    );
+    let newPos = updatePosition(this.state.frontendPos, dest, speed);
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
       console.log("cancelled anim");
@@ -69,15 +66,19 @@ class Archer extends Component {
       cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
       this.setState({
-        x: newPos.x,
-        y: newPos.y
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
       });
       return;
     }
 
     this.setState({
-      x: newPos.x,
-      y: newPos.y
+      frontendPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
     });
 
     cancelAnimationFrame(this.animationMove);
@@ -87,31 +88,31 @@ class Archer extends Component {
   };
 
   updateDied = () => {
-    let dest = { x: this.state.x, y: 110 };
+    let dest = { x: this.state.frontendPos.x, y: 110 };
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    //console.log("positions: ", this.state.frontendPos, dest);
 
-    let newPos = updatePosition(
-      { x: this.state.x, y: this.state.y },
-      dest,
-      0.05
-    );
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.y > 100) {
+    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationDied);
       assignAnimationToActor();
       this.setState({
-        x: newPos.x,
-        y: newPos.y
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
       });
       return;
     }
 
     this.setState({
-      x: newPos.x,
-      y: newPos.y
+      frontendPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
     });
 
     cancelAnimationFrame(this.animationDied);
@@ -121,35 +122,27 @@ class Archer extends Component {
   };
 
   updateRangedShot = () => {
-    const startPos = { x: this.state.x, y: this.state.y };
+    const startPos = this.state.frontendPos;
 
     if (this.state.arrowPos.x === 900) {
       let dest = {};
       let direction = 0;
 
       if (this.props.actorData.action.target === undefined) {
-        dest = { ...this.props.actorData.action.dest };
-        dest.x = dest.x * this.props.gameData.width;
-        dest.y = dest.y * this.props.gameData.height;
+        dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
         direction = normalizedDirectionBetweenPoints(
-          {
-            x: this.state.x,
-            y: this.state.y
-          },
+          this.state.frontendPos,
           dest
         );
 
         dest = multiplyDirectionVector(direction, 30000);
       } else {
-        dest = { ...this.props.actorData.action.target };
-        dest.x = dest.x * this.props.gameData.width;
-        dest.y = dest.y * this.props.gameData.height;
+        dest = getIsometricFrontendPos({
+          ...this.props.actorData.action.target
+        });
         direction = normalizedDirectionBetweenPoints(
-          {
-            x: this.state.x,
-            y: this.state.y
-          },
+          this.state.frontendPos,
           dest
         );
       }
@@ -339,8 +332,8 @@ class Archer extends Component {
         this.props.dispatch(
           setActionMenu(
             true,
-            this.props.actorData.pos.x * this.props.gameData.width,
-            this.props.actorData.pos.y * this.props.gameData.height,
+            this.state.frontendPos.x,
+            this.state.frontendPos.y,
             this.props.actorData.actions.map(action => {
               return {
                 text: action,
@@ -376,10 +369,11 @@ class Archer extends Component {
   };
 
   render = () => {
-    const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
-    const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
+    const isoPos = this.state.frontendPos;
+    const xFrontend = isoPos.x;
+    const yFrontend = isoPos.y;
     const width = this.props.gameData.width;
-    const height = this.props.gameData.height;
+    const height = this.props.gameData.height / 2;
 
     const id = "actorId" + this.props.actorData.actorId;
 
