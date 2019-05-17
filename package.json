@@ -33,6 +33,8 @@
     "multer": "^1.4.1",
     "react": "^16.8.6",
     "react-animate-mount": "^1.0.1",
+    "react-chat-popup": "^1.1.2",
+    "react-chat-window": "^1.2.1",
     "react-dom": "^16.8.6",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.0.0",
