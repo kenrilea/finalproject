@@ -127,7 +127,7 @@
   background: #fff;
   content: "";
   position: absolute;
-  z-index: 5000;
+  z-index: 3;
 }
 
 .cloud:after {
