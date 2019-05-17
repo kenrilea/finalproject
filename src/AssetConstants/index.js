@@ -21,7 +21,7 @@ export const ASSET_ITEM = {
 };
 
 export const ACTOR_HIGHLIGHT = {
-  TILE_ON_PATH: "#F0E4F5",
+  TILE_ON_PATH: "#C0B6C4",
   TILE_TARGET: "#007",
   ACTOR_ENEMY_ON_TARGET: "#f00"
 };

@@ -36,6 +36,15 @@ class GameFrame extends Component {
     return state === this.props.gameState.type;
   };
 
+  handleOverworldClick = event => {
+    event.stopPropagation;
+    if (this.isGameState(STATES.SELECT_TILE)) {
+      // if actor is part of the unit in action's team,
+      // change game state back to SELECT_UNIT
+      resetToSelectUnitState();
+    }
+  };
+
   componentDidMount = () => {
     this.props.dispatch({
       type: "JOIN-LOBBY",
@@ -127,7 +136,7 @@ class GameFrame extends Component {
     ) : null;
 
     return (
-      <div className="wrapper">
+      <div className="wrapper" onClick={this.handleOverworldClick}>
         <div className="gameframe wrapper">
           <svg
             className="svg-canvas"
