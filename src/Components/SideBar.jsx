@@ -8,11 +8,13 @@ import Signup from "./Signup.jsx";
 import "../css/sideBar.css";
 import Profile from "./Profile.jsx";
 
+import { Animate } from "react-animate-mount"
+
 class UnconnectedSideBar extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         //
+         show: false
       };
    }
 
@@ -25,14 +27,6 @@ class UnconnectedSideBar extends Component {
       fetch("/logout", {
          credentials: "include"
       });
-   };
-
-   render = () => {
-      if (this.props.loggedIn === false) {
-         return this.notLoggedInSidebar();
-      } else {
-         return this.loggedInSidebar();
-      }
    };
 
    loggedInSidebar = () => {
@@ -58,6 +52,36 @@ class UnconnectedSideBar extends Component {
             </div>
          </div>
       );
+   };
+
+   handleShow = () => {
+      this.setState({
+         show: !this.state.show
+      })
+   }
+
+   render = () => {
+      if (this.props.loggedIn === false) {
+         return (
+            <div>
+               <button onClick={this.handleShow}> SHOW </button>
+               <Animate show={this.state.show}>
+                  {this.notLoggedInSidebar()}
+               </Animate>
+            </div>
+         )
+      }
+      else {
+         return (
+            <div>
+               <button onClick={this.handleShow}> SHOW </button>
+               <Animate show={this.state.show}>
+                  {this.loggedInSidebar()}
+               </Animate>
+            </div>
+         )
+      }
+
    };
 }
 
