@@ -114,5 +114,33 @@ let unitTypes = {
     range: 3
   }
 };
+let defaultArmy = [
+  [
+    "knight",
+    "knight",
+    "archer",
+    "catapult",
+    "catapult",
+    "archer",
+    "knight",
+    "knight"
+  ],
+  [
+    "legionary",
+    "pawn",
+    "legionary",
+    "pawn",
+    "pawn",
+    "legionary",
+    "pawn",
+    "legionary"
+  ]
+];
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };
-module.exports = { moveinput, defaultArmyA, defaultArmyB, unitTypes };
+module.exports = {
+  moveinput,
+  defaultArmyA,
+  defaultArmyB,
+  unitTypes,
+  defaultArmy
+};

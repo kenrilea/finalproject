@@ -57,8 +57,6 @@ let editGameData = (gameId, mods) => {
   ///////////////////////////////////////////////////////////
   //_________________________________________________________
   mods.forEach(mod => {
-    console.log("editing game data with:");
-    console.log(mod);
     if (mod.type === "add-new") {
       gameInstances[gameId]["map"].push(mod.actor);
     }
@@ -321,8 +319,8 @@ let createGameInst = (teamA, teamB, armyA, armyB, gameId) => {
     points: points
   };
   editGameData(gameId, createMap(width, height));
-  editGameData(gameId, createArmy(armyA, teamA, 1));
-  editGameData(gameId, createArmy(armyB, teamB, 2));
+  editGameData(gameId, createArmy(armyA, teamA, 0));
+  editGameData(gameId, createArmy(armyB, teamB, height));
   return gameId;
 };
 let createTestGameInst = (teamA, teamB, armyA, armyB) => {
@@ -349,12 +347,14 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
-  console.log("user input in game engine");
-  console.log(input);
-
   let changes = [];
   let success = true;
+  console.log("input");
+  console.log(input);
   if (input.action === undefined) {
+    return { changes, successs: false };
+  }
+  if (gameInstances[input.gameId] === undefined) {
     return { changes, successs: false };
   }
   let players = gameInstances[input.gameId]["players"];

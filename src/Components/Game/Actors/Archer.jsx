@@ -10,7 +10,7 @@ import {
   updatePosition,
   updatePositionAtSpeed,
   degreesBetweenPoints,
-  getLengthBetweenPoints,
+  getSquaredLengthBetweenPoints,
   normalizedDirectionBetweenPoints,
   multiplyDirectionVector,
   isInRange,
@@ -140,7 +140,7 @@ class Archer extends Component {
           dest
         );
 
-        dest = multiplyDirectionVector(direction, 100);
+        dest = multiplyDirectionVector(direction, 30000);
       } else {
         dest = { ...this.props.actorData.action.target };
         dest.x = dest.x * this.props.gameData.width;
@@ -161,7 +161,7 @@ class Archer extends Component {
           y: dest.y
         },
         arrowDirection: direction,
-        arrowTravelDistance: getLengthBetweenPoints(startPos, dest)
+        arrowTravelDistance: getSquaredLengthBetweenPoints(startPos, dest)
       });
 
       cancelAnimationFrame(this.animationRangedShot);
@@ -177,8 +177,7 @@ class Archer extends Component {
       this.state.arrowDest,
       this.state.arrowDirection,
       this.state.arrowTravelDistance,
-      100,
-      0.01
+      100
     );
 
     //console.log("positions: ", newPos, this.state.arrowDest);
@@ -433,6 +432,26 @@ class Archer extends Component {
       ) : null;
 
     console.log("STUFF: ", this.state.arrowPos, this.state.arrowDest);
+    let rotation =
+      "rotate(" +
+      parseFloat(
+        degreesBetweenPoints(
+          {
+            x: xFrontend + width / 2,
+            y: yFrontend + height / 2
+          },
+          {
+            x: this.state.arrowDest.x + width / 2,
+            y: this.state.arrowDest.y + height / 2
+          }
+        )
+      ) +
+      " " +
+      parseFloat(this.state.arrowPos.x + width / 2) +
+      " " +
+      parseFloat(this.state.arrowPos.y + height / 2) +
+      ")";
+    console.log("ROTATION: ", rotation);
     const arrow = (
       <image
         xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
@@ -440,48 +459,31 @@ class Archer extends Component {
         y={this.state.arrowPos.y}
         width={width}
         height={height}
-        transform={
-          "rotate(" +
-          parseFloat(
-            degreesBetweenPoints(
-              {
-                x: xFrontend / this.props.gameData.width / 2,
-                y: yFrontend / this.props.gameData.height / 2
-              },
-              {
-                x: this.state.arrowDest.x / this.props.gameData.width / 2,
-                y: this.state.arrowDest.y / this.props.gameData.height / 2
-              }
-            )
-          ) +
-          " " +
-          parseFloat(this.state.arrowPos.x + width / 2) +
-          " " +
-          parseFloat(this.state.arrowPos.y + height / 2) +
-          ")"
-        }
+        transform={rotation}
       />
     );
 
-    /* THIS WORKS
-    const arrow = (
-      <image
-        xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
-        x={"50"}
-        y={"50"}
-        width={width}
-        height={height}
-        transform={
-          "rotate(" +
-          parseFloat(degreesBetweenPoints({ x: 50, y: 50 }, { x: 0, y: 100 })) +
-          " " +
-          parseFloat(50 + width / 2) +
-          " " +
-          parseFloat(50 + height / 2) +
-          ")"
-        }
-      />
-    );*/
+    //THIS WORKS
+    // const arrow = (
+    //   <image
+    //     xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
+    //     x={"50"}
+    //     y={"50"}
+    //     width={width}
+    //     height={height}
+    //     transform={
+    //       "rotate(" +
+    //       parseFloat(
+    //         degreesBetweenPoints({ x: 50, y: 50 }, { x: 62.5, y: 37.5 })
+    //       ) +
+    //       " " +
+    //       parseFloat(50 + width / 2) +
+    //       " " +
+    //       parseFloat(50 + height / 2) +
+    //       ")"
+    //     }
+    //   />
+    // );
 
     return (
       <g>

@@ -22,17 +22,16 @@ export const updatePositionAtSpeed = (
   end,
   direction,
   distance,
-  speed,
-  elapsed
+  speed
 ) => {
   let newPos = {};
 
   newPos = {
-    x: (position.x += direction.x * speed * elapsed),
-    y: (position.y += direction.y * speed * elapsed)
+    x: (position.x += direction.x * speed),
+    y: (position.y += direction.y * speed)
   };
 
-  if (getLengthBetweenPoints(start, position) >= distance) {
+  if (getSquaredLengthBetweenPoints(start, position) >= distance) {
     newPos = {
       x: end.x,
       y: end.y
@@ -89,12 +88,12 @@ export const degreesBetweenPoints = (point1, point2) => {
   );
 };
 
-export const getLengthBetweenPoints = (start, end) => {
-  return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+export const getSquaredLengthBetweenPoints = (start, end) => {
+  return Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2);
 };
 
 export const normalizedDirectionBetweenPoints = (start, end) => {
-  let length = getLengthBetweenPoints(start, end);
+  let length = getSquaredLengthBetweenPoints(start, end);
   return {
     x: (end.x - start.x) / length,
     y: (end.y - start.y) / length

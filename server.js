@@ -5,6 +5,7 @@ const fs = require("fs");
 const cookieParser = require("cookie-parser");
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
+const cookie = require("cookie");
 
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
@@ -359,11 +360,6 @@ app.post("/get-current-lobby", upload.none(), function (req, res) {
    });
 });
 
-//_____________GAME TEST CODE____________________-
-let army = ["pawn"];
-let gameId = gameEngine.createTestGameInst("user1", "user2", army, army);
-//____________END OF GAME TEST CODE___________________
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,92 +393,95 @@ io.on("connection", socket => {
          // console.log("Lobbies from socket: ", result)
          io.emit("lobby-list-data", result);
       });
-   });
 
-   socket.on("refresh-leaderboard-data", () => {
-      console.log("REFRESHING LEADERBOARD")
-      usersCollection.find().sort({ wins: -1, losses: 1 }).toArray((err, result) => {
-         if (err) throw err;
-         console.log("Leaderboard:", result);
+      socket.on("refresh-leaderboard-data", () => {
+         console.log("REFRESHING LEADERBOARD")
+         usersCollection.find().sort({ wins: -1, losses: 1 }).toArray((err, result) => {
+            if (err) throw err;
+            console.log("Leaderboard:", result);
 
-         io.emit("leaderboard-data", result)
-      });
-   })
+            io.emit("leaderboard-data", result)
+         });
+      })
 
-   socket.on("leave-lobby", data => {
-      lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-         //If playerOne is alone in lobby, remove it from db!
-         if (
-            result[0].playerOne === data.currentUser &&
-            result[0].playerTwo === ""
-         ) {
-            lobbiesCollection.remove({ _id: data.lobbyId });
-            lobbiesCollection.find().toArray((err, result) => {
-               io.emit("lobby-list-data", result);
-            });
-         }
+      socket.on("leave-lobby", data => {
+         lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+            //If playerOne is alone in lobby, remove it from db!
+            if (
+               result[0].playerOne === data.currentUser &&
+               result[0].playerTwo === ""
+            ) {
+               lobbiesCollection.remove({ _id: data.lobbyId });
+               lobbiesCollection.find().toArray((err, result) => {
+                  io.emit("lobby-list-data", result);
+               });
+            }
 
-         //If playerTwo is alone in lobby, remove it as well!
-         if (
-            result[0].playerTwo === data.currentUser &&
-            result[0].playerOne === ""
-         ) {
-            lobbiesCollection.remove({ _id: data.lobbyId });
-            lobbiesCollection.find().toArray((err, result) => {
-               io.emit("lobby-list-data", result);
-            });
-         }
+            //If playerTwo is alone in lobby, remove it as well!
+            if (
+               result[0].playerTwo === data.currentUser &&
+               result[0].playerOne === ""
+            ) {
+               lobbiesCollection.remove({ _id: data.lobbyId });
+               lobbiesCollection.find().toArray((err, result) => {
+                  io.emit("lobby-list-data", result);
+               });
+            }
 
-         //If playerOne leaves and is not alone, update lobby and emit!
-         if (
-            result[0].playerOne === data.currentUser &&
-            result[0].playerTwo !== ""
-         ) {
-            lobbiesCollection.update(
-               { _id: data.lobbyId },
-               { $set: { playerOne: "" } },
-               (err, result) => {
-                  if (err) throw err;
-                  console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
+            //If playerOne leaves and is not alone, update lobby and emit!
+            if (
+               result[0].playerOne === data.currentUser &&
+               result[0].playerTwo !== ""
+            ) {
+               lobbiesCollection.update(
+                  { _id: data.lobbyId },
+                  { $set: { playerOne: "" } },
+                  (err, result) => {
+                     if (err) throw err;
+                     console.log(
+                        `DB: Removing player1 from lobbyId: ${data.lobbyId}`
+                     );
 
-                  lobbiesCollection
-                     .find({ _id: data.lobbyId })
-                     .toArray((err, result) => {
-                        io.in(data.lobbyId).emit("lobby-data", result[0]);
-                        lobbiesCollection.find().toArray((err, result) => {
-                           io.emit("lobby-list-data", result);
+                     lobbiesCollection
+                        .find({ _id: data.lobbyId })
+                        .toArray((err, result) => {
+                           io.in(data.lobbyId).emit("lobby-data", result[0]);
+                           lobbiesCollection.find().toArray((err, result) => {
+                              io.emit("lobby-list-data", result);
+                           });
                         });
-                     });
-               }
-            );
-         }
+                  }
+               );
+            }
 
-         //If playerTwo leaves and is not alone, also update lobby and emit!
-         if (
-            result[0].playerTwo === data.currentUser &&
-            result[0].playerOne !== ""
-         ) {
-            lobbiesCollection.update(
-               { _id: data.lobbyId },
-               { $set: { playerTwo: "" } },
-               (err, result) => {
-                  if (err) throw err;
-                  console.log(`DB: Removing player2 from lobbyId: ${data.lobbyId}`);
+            //If playerTwo leaves and is not alone, also update lobby and emit!
+            if (
+               result[0].playerTwo === data.currentUser &&
+               result[0].playerOne !== ""
+            ) {
+               lobbiesCollection.update(
+                  { _id: data.lobbyId },
+                  { $set: { playerTwo: "" } },
+                  (err, result) => {
+                     if (err) throw err;
+                     console.log(
+                        `DB: Removing player2 from lobbyId: ${data.lobbyId}`
+                     );
 
-                  lobbiesCollection
-                     .find({ _id: data.lobbyId })
-                     .toArray((err, result) => {
-                        io.in(data.lobbyId).emit("lobby-data", result[0]);
-                        lobbiesCollection.find().toArray((err, result) => {
-                           io.emit("lobby-list-data", result);
+                     lobbiesCollection
+                        .find({ _id: data.lobbyId })
+                        .toArray((err, result) => {
+                           io.in(data.lobbyId).emit("lobby-data", result[0]);
+                           lobbiesCollection.find().toArray((err, result) => {
+                              io.emit("lobby-list-data", result);
+                           });
                         });
-                     });
-               }
-            );
-         }
+                  }
+               );
+            }
+         });
       });
    });
-
    //_______________________GAME________________________________________________
 
    socket.on("get-game-data", message => {
@@ -530,7 +529,9 @@ io.on("connection", socket => {
          let ready;
          switch (currentUser) {
             case result[0].playerOne:
-               console.log(`User "` + currentUser + `" is registered as playerOne`);
+               console.log(
+                  `User "` + currentUser + `" is registered as playerOne`
+               );
                ready = !result[0].readyPlayerOne;
                lobbiesCollection.update(
                   { _id: lobbyId },
@@ -543,7 +544,9 @@ io.on("connection", socket => {
                );
                break;
             case result[0].playerTwo:
-               console.log(`User "` + currentUser + `" is registered as playerTwo`);
+               console.log(
+                  `User "` + currentUser + `" is registered as playerTwo`
+               );
                ready = !result[0].readyPlayerTwo;
                lobbiesCollection.updateOne(
                   { _id: lobbyId },
@@ -567,7 +570,7 @@ io.on("connection", socket => {
 
    ////////////////////////////////
 });
-
+});
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ JAQUES STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
