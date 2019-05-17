@@ -263,8 +263,10 @@ class Knight extends Component {
   };
 
   render = () => {
+    const width = this.props.gameData.width / 2;
+    const height = this.props.gameData.height / 2;
     const isoPos = this.state.frontendPos;
-    const xFrontend = isoPos.x;
+    const xFrontend = isoPos.x + width / 2;
     const yFrontend = isoPos.y;
 
     const id = "actorId" + this.props.actorData.actorId;
@@ -290,11 +292,18 @@ class Knight extends Component {
         />
       ) : null;
 
+    const polyPoints = [
+      [xFrontend + width / 2, yFrontend], // top
+      [xFrontend + width + width / 2, yFrontend + height / 2], // right
+      [xFrontend + width / 2, yFrontend + height], // bottom
+      [xFrontend - width / 2, yFrontend + height / 2] // left
+    ];
     const animateOtherUnits =
       this.props.actorData.highlighted &&
       this.props.gameState.unitInAction !== undefined &&
       this.props.actorData.team !== this.props.gameState.unitInAction.team ? (
-        <rect
+        <polygon
+          points={polyPoints.map(inner => inner.join(",")).join(" ")}
           id={"rect" + id}
           stroke={"#42f4eb"}
           strokeWidth="0.1"
@@ -302,8 +311,8 @@ class Knight extends Component {
           fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height / 2}
+          width={width}
+          height={height}
         >
           <animate
             xlinkHref={"#rect" + id}
@@ -314,7 +323,7 @@ class Knight extends Component {
             dur="1s"
             repeatCount="indefinite"
           />
-        </rect>
+        </polygon>
       ) : null;
     return (
       <g>
@@ -328,8 +337,8 @@ class Knight extends Component {
           }
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height / 2}
+          width={width}
+          height={height}
           onClick={this.handleClick}
         />
         {animateUnitInAction}
