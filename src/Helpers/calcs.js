@@ -1,15 +1,21 @@
+import store from "./../store.js";
+
 export const updatePosition = (start, end, mult) => {
   let newPos = {};
 
-  /*newPos.x = (1 - mult) * start.x + mult * end.x;
-  newPos.y = (1 - mult) * start.y + mult * end.y;*/
+  // newPos.x = (1 - mult) * start.x + mult * end.x;
+  // newPos.y = (1 - mult) * start.y + mult * end.y;
   newPos.x = start.x + mult * (end.x - start.x);
   newPos.y = start.y + mult * (end.y - start.y);
+  console.log("DISTANCES: ", newPos.x - end.x, newPos.y - end.y);
 
   if (Math.abs(newPos.x - end.x) < 0.5) {
-    newPos.x = end.x;
   }
   if (Math.abs(newPos.y - end.y) < 0.5) {
+  }
+
+  if (getDistance(newPos, end) < 0.5) {
+    newPos.x = end.x;
     newPos.y = end.y;
   }
 
@@ -39,6 +45,15 @@ export const updatePositionAtSpeed = (
   }
 
   return newPos;
+};
+
+export const getIsometricFrontendPos = coord => {
+  const width = store.getState().gameData.width;
+  const height = store.getState().gameData.height / 2;
+  return {
+    x: (coord.x - coord.y) * height - width / 2 + 50,
+    y: ((coord.x + coord.y) * height) / 2 + 25
+  };
 };
 
 export const wait = ms => {

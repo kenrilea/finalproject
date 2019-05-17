@@ -54,6 +54,7 @@ class UnconnectedLobbiesListElem extends Component {
       return (
          <div className="lobbies-list-elem-container">
 
+
             <div className="player-label">
                {this.props.lobbyId}
             </div>
@@ -63,15 +64,15 @@ class UnconnectedLobbiesListElem extends Component {
             </div>
 
             <div className="player-label">
-               -VS-
+               VS
             </div>
 
             <div className="player-label">
                {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
             </div>
 
-            <button className="ghost-button-dark" onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
-               {this.props.playerTwo ? "In Progress" : "Join!"}
+            <button className="pure-material-button-contained square bottom-pad" disabled={this.props.playerTwo ? true : false} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
+               {this.props.playerTwo ? "FULL" : "JOIN!"}
             </button>
 
          </div>

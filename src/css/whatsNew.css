@@ -18,6 +18,7 @@
 }
 
 .news-container {
+   z-index: 1000;
    float: right;
    width: 20vw;
    height: 90vh;

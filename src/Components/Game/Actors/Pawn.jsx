@@ -9,7 +9,8 @@ import {
 import {
   updatePosition,
   isInRange,
-  isTileOccupied
+  isTileOccupied,
+  getIsometricFrontendPos
 } from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
@@ -23,8 +24,10 @@ class Pawn extends Component {
     super(props);
 
     this.state = {
-      x: this.props.actorData.pos.x * this.props.gameData.width,
-      y: this.props.actorData.pos.y * this.props.gameData.height
+      frontendPos: getIsometricFrontendPos({
+        x: this.props.actorData.pos.x,
+        y: this.props.actorData.pos.y
+      })
     };
   }
 
@@ -33,17 +36,11 @@ class Pawn extends Component {
   };
 
   updateMove = () => {
-    let dest = { ...this.props.actorData.action.dest };
-    dest.x = dest.x * this.props.gameData.width;
-    dest.y = dest.y * this.props.gameData.height;
+    let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    //console.log("positions: ", this.state.frontendPos, dest);
 
-    let newPos = updatePosition(
-      { x: this.state.x, y: this.state.y },
-      dest,
-      0.05
-    );
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.5);
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
       console.log("cancelled anim");
@@ -51,15 +48,19 @@ class Pawn extends Component {
       cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
       this.setState({
-        x: newPos.x,
-        y: newPos.y
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
       });
       return;
     }
 
     this.setState({
-      x: newPos.x,
-      y: newPos.y
+      frontendPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
     });
 
     cancelAnimationFrame(this.animationMove);
@@ -69,31 +70,31 @@ class Pawn extends Component {
   };
 
   updateDied = () => {
-    let dest = { x: this.state.x, y: 110 };
+    let dest = { x: this.state.frontendPos.x, y: 110 };
 
-    //console.log("positions: ", { x: this.state.x, y: this.state.y }, dest);
+    //console.log("positions: ", this.state.frontendPos, dest);
 
-    let newPos = updatePosition(
-      { x: this.state.x, y: this.state.y },
-      dest,
-      0.05
-    );
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.y > 100) {
+    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationDied);
       assignAnimationToActor();
       this.setState({
-        x: newPos.x,
-        y: newPos.y
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
       });
       return;
     }
 
     this.setState({
-      x: newPos.x,
-      y: newPos.y
+      frontendPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
     });
 
     cancelAnimationFrame(this.animationDied);
@@ -185,8 +186,8 @@ class Pawn extends Component {
         this.props.dispatch(
           setActionMenu(
             true,
-            this.props.actorData.pos.x * this.props.gameData.width,
-            this.props.actorData.pos.y * this.props.gameData.height,
+            this.state.frontendPos.x,
+            this.state.frontendPos.y,
             this.props.actorData.actions.map(action => {
               return {
                 text: action,
@@ -222,8 +223,11 @@ class Pawn extends Component {
   };
 
   render = () => {
-    const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
-    const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
+    const width = this.props.gameData.width / 2;
+    const height = this.props.gameData.height / 2;
+    const isoPos = this.state.frontendPos;
+    const xFrontend = isoPos.x + width / 2;
+    const yFrontend = isoPos.y;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -248,11 +252,18 @@ class Pawn extends Component {
         />
       ) : null;
 
+    const polyPoints = [
+      [xFrontend + width / 2, yFrontend], // top
+      [xFrontend + width + width / 2, yFrontend + height / 2], // right
+      [xFrontend + width / 2, yFrontend + height], // bottom
+      [xFrontend - width / 2, yFrontend + height / 2] // left
+    ];
     const animateOtherUnits =
       this.props.actorData.highlighted &&
       this.props.gameState.unitInAction !== undefined &&
       this.props.actorData.team !== this.props.gameState.unitInAction.team ? (
-        <rect
+        <polygon
+          points={polyPoints.map(inner => inner.join(",")).join(" ")}
           id={"rect" + id}
           stroke={"#42f4eb"}
           strokeWidth="0.1"
@@ -260,8 +271,8 @@ class Pawn extends Component {
           fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
         >
           <animate
             xlinkHref={"#rect" + id}
@@ -272,7 +283,7 @@ class Pawn extends Component {
             dur="1s"
             repeatCount="indefinite"
           />
-        </rect>
+        </polygon>
       ) : null;
     return (
       <g>
@@ -286,8 +297,8 @@ class Pawn extends Component {
           }
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
           onClick={this.handleClick}
         />
         {animateUnitInAction}

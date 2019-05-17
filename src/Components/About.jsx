@@ -8,7 +8,7 @@ class About extends Component {
    render = () => {
       return (
          <div className="lobbies-list-background">
-            <div className="lobbies-list-foreground material-shadow animated-fade-in animated-grow-bounce">
+            <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
                <h3 className="about-top-label"> About us! </h3>
                <div>Don't believe the facts? Just <a href="https://github.com/kenrilea/finalproject">check out our GitHub repo</a> </div>
             </div>
