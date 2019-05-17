@@ -61,7 +61,7 @@ class UnconnectedSideBar extends Component {
       if (this.props.loggedIn === false) {
          return (
             <div>
-               <button onClick={this.handleShow} className="ghost-button show-button "> LOGIN/SIGNUP </button>
+               <button onClick={this.handleShow} className="ghost-button show-button "> LOGIN </button>
                <Animate show={this.state.show} >
                   {this.notLoggedInSidebar()}
                </Animate>
