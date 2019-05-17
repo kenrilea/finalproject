@@ -71,7 +71,7 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
             </div>
 
-            <button className="pure-material-button-contained square bottom-pad" onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
+            <button className="pure-material-button-contained square bottom-pad" disabled={this.props.playerTwo ? true : false} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
                {this.props.playerTwo ? "FULL" : "JOIN!"}
             </button>
 

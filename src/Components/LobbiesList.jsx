@@ -96,7 +96,7 @@ class UnconnectedLobbiesList extends Component {
 
       return (
          <div className="lobbies-list-background">
-            <div className="lobbies-list-foreground material-shadow animated-fade-in animated-grow-bounce">
+            <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
 
                <div className="lobbies-list-button-cont">
                   <h3 className="lobbies-label">Lobbies</h3>
@@ -128,7 +128,7 @@ let mapStateToProps = state => {
       currentUser: state.currentUser,
       currentLobby: state.currentLobby,
       inLobby: state.inLobby,
-      lobbyToJoinId: state.currentLobby
+      lobbyToJoinId: state.currentLobbyId
    };
 };
 

@@ -38,7 +38,7 @@ class Leaderboard extends Component {
       //    if (this.state.leaderboard.length === 0) {
       //       return (
       //          <div className="lobbies-list-background">
-      //             <div className="lobbies-list-foreground">Loading...</div>
+      //             <div className="card-container">Loading...</div>
       //          </div>
       //       );
       //    }
@@ -46,7 +46,7 @@ class Leaderboard extends Component {
 
       return (
          <div className="lobbies-list-background">
-            <div className="animated-fade-in animated-grow-bounce lobbies-list-foreground material-shadow">
+            <div className="animated-fade-in animated-grow-bounce card-container material-shadow">
                <div id="scrolltable">
                   <table className="leader-table">
                      <thead className="leader-header">

@@ -25,7 +25,7 @@
 }
 
 .round-button {
-   font-size: 1.5em;
+   font-size: 1.8em;
    position: relative;
    display: inline-block;
    box-sizing: border-box;
@@ -49,6 +49,14 @@
    outline: none;
    cursor: pointer;
    transition: box-shadow 0.2s;
+}
+
+.red {
+   background-color: #d50000;
+}
+
+.green {
+   background-color: #388E3C;
 }
 
 /* Overlay */
