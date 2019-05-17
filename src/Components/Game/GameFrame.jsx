@@ -6,6 +6,7 @@ import OuterBar from "./OuterBar.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
+import Archer from "./Actors/Archer.jsx";
 import Catapult from "./Actors/Catapult.jsx";
 import Knight from "./Actors/Knight.jsx";
 import Legionary from "./Actors/Legionary.jsx";
@@ -36,11 +37,20 @@ class GameFrame extends Component {
   };
 
   componentDidMount = () => {
+    this.props.dispatch({
+      type: "JOIN-LOBBY",
+      lobbyId: this.props.match.params.gameId,
+      inLobby: false
+    });
+    console.log("wildcard");
+    console.log(this.props.match.params.gameId);
     if (!this.state.loaded) {
       socket.open();
+      socket.emit("join-game", this.props.match.params.gameId);
       socket.emit("get-game-data", {
-        gameId: "test"
+        gameId: this.props.match.params.gameId
       });
+      socket.emit("get-game-data", { gameId: this.props.match.params.gameId });
     }
 
     socket.on("game-data", data => {
@@ -103,6 +113,8 @@ class GameFrame extends Component {
         return <Legionary key={actor.actorId} actorData={actor} />;
       } else if (actor.charType === "catapult") {
         return <Catapult key={actor.actorId} actorData={actor} />;
+      } else if (actor.charType === "archer") {
+        return <Archer key={actor.actorId} actorData={actor} />;
       }
     });
   };
@@ -141,7 +153,8 @@ const mapStateToProps = state => {
   return {
     actionMenuOptions: state.actionMenu.options,
     gameData: state.gameData,
-    gameState: state.gameState
+    gameState: state.gameState,
+    currentLobbyId: state.currentLobbyId
   };
 };
 

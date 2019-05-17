@@ -73,7 +73,7 @@ class UnconnectedSignup extends Component {
    render = () => {
       return (
          <Popup
-            trigger={<button className="ghost-button">Sign up!</button>}
+            trigger={<button className="ghost-button-dark">Sign up!</button>}
             position="bottom center"
             modal
          >

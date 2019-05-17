@@ -2,12 +2,23 @@ let actorUtils = require(__dirname + "/actor-utils.js");
 let data = require(__dirname + "/DATA.js");
 
 let createArmy = (army, team, side) => {
+  if (side > 0) {
+    side = side - 1;
+  }
   console.log("side: " + side);
   let addArmyMod = [];
-  army = army.map((char, index) => {
-    let newChar = { ...data.unitTypes[char] };
-    newChar.pos = { ...newChar.pos, x: index, y: side };
-    return newChar;
+  let armyTemp = army;
+  army = [];
+  armyTemp.forEach((armyRow, yIndex) => {
+    if (side > 0) {
+      yIndex = -yIndex;
+    }
+    armyRow.forEach((char, index) => {
+      console.log(side + yIndex);
+      let newChar = { ...data.unitTypes[char] };
+      newChar.pos = { ...newChar.pos, x: index, y: side + yIndex };
+      army.push(newChar);
+    });
   });
   army = army.filter(char => {
     return char !== undefined;

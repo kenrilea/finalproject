@@ -16,6 +16,31 @@ export const updatePosition = (start, end, mult) => {
   return newPos;
 };
 
+export const updatePositionAtSpeed = (
+  position,
+  start,
+  end,
+  direction,
+  distance,
+  speed
+) => {
+  let newPos = {};
+
+  newPos = {
+    x: (position.x += direction.x * speed),
+    y: (position.y += direction.y * speed)
+  };
+
+  if (getSquaredLengthBetweenPoints(start, position) >= distance) {
+    newPos = {
+      x: end.x,
+      y: end.y
+    };
+  }
+
+  return newPos;
+};
+
 export const wait = ms => {
   let startTime = new Date() / 1;
   let currentTime = startTime;
@@ -51,6 +76,35 @@ export const isTileOccupied = (tileActor, actorList) => {
   });
   if (found === undefined) return false;
   return true;
+};
+
+export const radiansToDegrees = rad => {
+  return (rad * 180) / Math.PI;
+};
+
+export const degreesBetweenPoints = (point1, point2) => {
+  return radiansToDegrees(
+    Math.atan2(-point1.x + point2.x, point1.y - point2.y)
+  );
+};
+
+export const getSquaredLengthBetweenPoints = (start, end) => {
+  return Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2);
+};
+
+export const normalizedDirectionBetweenPoints = (start, end) => {
+  let length = getSquaredLengthBetweenPoints(start, end);
+  return {
+    x: (end.x - start.x) / length,
+    y: (end.y - start.y) / length
+  };
+};
+
+export const multiplyDirectionVector = (vector, mult) => {
+  return {
+    x: vector.x * mult,
+    y: vector.y * mult
+  };
 };
 
 export const getDistance = (origin, dest) => {

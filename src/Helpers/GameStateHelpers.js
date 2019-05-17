@@ -57,7 +57,7 @@ export const assignAnimationToActor = () => {
       )
     );*/
     socket.emit("get-game-data", {
-      gameId: "test"
+      gameId: store.getState().currentLobbyId
     });
 
     // Change the following to opponent turn later:

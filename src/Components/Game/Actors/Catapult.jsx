@@ -190,11 +190,11 @@ class Catapult extends Component {
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let cannonballPos = this.props.actorData.pos;
-                let CatapultRange = this.props.actorData.moveSpeed;
+                let catapultPos = this.props.actorData.pos;
+                let catapultRange = this.props.actorData.moveSpeed;
                 if (
                   actor.actorType !== "char" &&
-                  isInRange(CatapultRange, cannonballPos, actor.pos) &&
+                  isInRange(catapultRange, catapultPos, actor.pos) &&
                   !isTileOccupied(actor, this.props.gameData.actors)
                 ) {
                   return {
@@ -221,12 +221,12 @@ class Catapult extends Component {
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let cannonballPos = this.props.actorData.pos;
+                let catapultPos = this.props.actorData.pos;
                 let catapultRange = this.props.actorData.range;
 
                 if (
-                  isInRange(catapultRange, cannonballPos, actor.pos) &&
-                  !isInRange(1, cannonballPos, actor.pos)
+                  isInRange(catapultRange, catapultPos, actor.pos) &&
+                  !isInRange(1, catapultPos, actor.pos)
                 ) {
                   return {
                     ...actor,

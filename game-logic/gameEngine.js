@@ -57,8 +57,6 @@ let editGameData = (gameId, mods) => {
   ///////////////////////////////////////////////////////////
   //_________________________________________________________
   mods.forEach(mod => {
-    console.log("editing game data with:");
-    console.log(mod);
     if (mod.type === "add-new") {
       gameInstances[gameId]["map"].push(mod.actor);
     }
@@ -94,6 +92,7 @@ let editGameData = (gameId, mods) => {
               }
             );
             let collidedWithEnemy = false;
+            let diedChanges = [];
             gameInstances[gameId]["map"] = gameInstances[gameId]["map"].filter(
               actor => {
                 if (actor.team !== char.team && actor.team !== "none") {
@@ -104,8 +103,7 @@ let editGameData = (gameId, mods) => {
                     if (char.charType === "legionary") {
                       collidedWithEnemy = true;
                     }
-
-                    changes.push({ type: "died", actorId: actor.actorId });
+                    diedChanges.push({ type: "died", actorId: actor.actorId });
                     gameInstances[gameId]["points"][char.team] =
                       gameInstances[gameId]["points"][char.team] + actor.points;
                     return false;
@@ -128,6 +126,7 @@ let editGameData = (gameId, mods) => {
                 return actor.actorId !== char.actorId;
               });
             }
+            changes = changes.concat(diedChanges);
           }
         }
       }
@@ -197,6 +196,13 @@ let editGameData = (gameId, mods) => {
                       ...mod,
                       target: { ...arrowPos }
                     });
+                    if (actor.charType === "legionary") {
+                      changes = changes.concat({
+                        type: "block-arrow",
+                        actorId: actor.actorId
+                      });
+                      return true;
+                    }
                     changes.push({ type: "died", actorId: actor.actorId });
                     return false;
                   }
@@ -205,7 +211,8 @@ let editGameData = (gameId, mods) => {
               });
             }
             if (stopArrow === false) {
-              changes = changes.concat(mod);
+              let modtemp = { ...mod, target: undefined };
+              changes = changes.concat(modtemp);
             }
           }
         }
@@ -312,8 +319,8 @@ let createGameInst = (teamA, teamB, armyA, armyB, gameId) => {
     points: points
   };
   editGameData(gameId, createMap(width, height));
-  editGameData(gameId, createArmy(armyA, teamA, 1));
-  editGameData(gameId, createArmy(armyB, teamB, 2));
+  editGameData(gameId, createArmy(armyA, teamA, 0));
+  editGameData(gameId, createArmy(armyB, teamB, height));
   return gameId;
 };
 let createTestGameInst = (teamA, teamB, armyA, armyB) => {
@@ -340,12 +347,14 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
-  console.log("user input in game engine");
-  console.log(input);
-
   let changes = [];
   let success = true;
+  console.log("input");
+  console.log(input);
   if (input.action === undefined) {
+    return { changes, successs: false };
+  }
+  if (gameInstances[input.gameId] === undefined) {
     return { changes, successs: false };
   }
   let players = gameInstances[input.gameId]["players"];

@@ -2,72 +2,93 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import Login from "./Login.jsx"
-import Signup from "./Signup.jsx"
+import Login from "./Login.jsx";
+import Signup from "./Signup.jsx";
 
-import "../css/sideBar.css"
+import "../css/sideBar.css";
 import Profile from "./Profile.jsx";
 
-class UnconnectedSideBar extends Component {
+import { Animate } from "react-animate-mount"
 
+class UnconnectedSideBar extends Component {
    constructor(props) {
-      super(props)
+      super(props);
       this.state = {
-         //
-      }
+         show: false
+      };
    }
 
    signout = () => {
       this.props.dispatch({
          type: "SIGN-OUT",
          toggle: false
-      })
+      });
 
       fetch("/logout", {
          credentials: "include"
-      })
-   }
-
-   render = () => {
-
-      if (this.props.loggedIn === false) {
-         return this.notLoggedInSidebar()
-      }
-      else {
-         return this.loggedInSidebar()
-      }
-   }
+      });
+   };
 
    loggedInSidebar = () => {
       return (
-         <div className="sideBar">
+         <div className="sideBar animated-fade-in material-shadow">
             <Profile />
-            <button className="ghost-button signout-button" onClick={this.signout}>Sign Out</button>
+            <button className="ghost-button-dark signout-button bottom-marge" onClick={this.signout} >
+               Sign Out
+            </button>
          </div>
-      )
-   }
+      );
+   };
 
    notLoggedInSidebar = () => {
       return (
-         <div className="slide-from-left sideBar">
+         <div className="animated-fade-in sideBar material-shadow">
             <div className="sideBarForm">
                <Login />
                <Signup className="animated-fade-in" />
             </div>
          </div>
-      )
+      );
+   };
+
+   handleShow = () => {
+      this.setState({
+         show: !this.state.show
+      })
    }
 
+   render = () => {
+      if (this.props.loggedIn === false) {
+         return (
+            <div>
+               <button onClick={this.handleShow} className="ghost-button show-button "> LOGIN </button>
+               <Animate show={this.state.show} >
+                  {this.notLoggedInSidebar()}
+               </Animate>
+            </div>
+         )
+      }
+      else {
+         return (
+            <div>
+               <button onClick={this.handleShow} className="ghost-button show-button"> {this.props.currentUser} </button>
+               <Animate show={this.state.show}>
+                  {this.loggedInSidebar()}
+               </Animate>
+            </div>
+         )
+      }
+
+   };
 }
-
-
 
 const mapStateToProps = state => {
    return {
-      loggedIn: state.loggedIn
-   }
-}
+      loggedIn: state.loggedIn,
+      currentUser: state.currentUser
+   };
+};
 
-let SideBar = connect(mapStateToProps)(UnconnectedSideBar)
+let SideBar = connect(mapStateToProps)(UnconnectedSideBar);
 
-export default SideBar
+export default SideBar;

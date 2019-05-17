@@ -8,33 +8,49 @@ import {
 } from "./../../../Helpers/GameStateHelpers.js";
 import {
   updatePosition,
+  updatePositionAtSpeed,
+  degreesBetweenPoints,
+  getSquaredLengthBetweenPoints,
+  normalizedDirectionBetweenPoints,
+  multiplyDirectionVector,
   isInRange,
+  lineTarget,
+  lineRange,
   isTileOccupied
 } from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
   ASSET_TEAM,
+  ASSET_ITEM,
   ACTOR_HIGHLIGHT
 } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
-class Legionary extends Component {
+class Archer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       x: this.props.actorData.pos.x * this.props.gameData.width,
       y: this.props.actorData.pos.y * this.props.gameData.height,
-      lastBlockTime: 0,
-      isBlocking: false
+      arrowPos: {
+        x: 900,
+        y: 900
+      },
+      arrowDest: {
+        x: 100,
+        y: 100
+      },
+      arrowDirection: {},
+      arrowTravelDistance: {}
     };
   }
 
   componentDidMount = () => {
-    console.log("Legionary did mount");
+    console.log("Archer did mount");
   };
 
-  updateMove = () => {
+  updateMove = (speed = 0.05) => {
     let dest = { ...this.props.actorData.action.dest };
     dest.x = dest.x * this.props.gameData.width;
     dest.y = dest.y * this.props.gameData.height;
@@ -44,7 +60,7 @@ class Legionary extends Component {
     let newPos = updatePosition(
       { x: this.state.x, y: this.state.y },
       dest,
-      0.025
+      speed
     );
 
     if (newPos.x === dest.x && newPos.y === dest.y) {
@@ -66,7 +82,7 @@ class Legionary extends Component {
 
     cancelAnimationFrame(this.animationMove);
     this.animationMove = requestAnimationFrame(() => {
-      this.updateMove();
+      this.updateMove(speed);
     });
   };
 
@@ -104,56 +120,128 @@ class Legionary extends Component {
     });
   };
 
-  updateBlockArrow = () => {
-    const currentTime = new Date().getTime();
+  updateRangedShot = () => {
+    const startPos = { x: this.state.x, y: this.state.y };
 
-    console.log("Blocking arrow!");
+    if (this.state.arrowPos.x === 900) {
+      let dest = {};
+      let direction = 0;
 
-    if (
-      this.state.lastBlockTime !== 0 &&
-      currentTime - this.state.lastBlockTime > 500
-    ) {
-      console.log("cancelled blocking arrow");
-      this.props.actorData.action = undefined;
-      cancelAnimationFrame(this.animationBlockArrow);
-      assignAnimationToActor();
+      if (this.props.actorData.action.target === undefined) {
+        dest = { ...this.props.actorData.action.dest };
+        dest.x = dest.x * this.props.gameData.width;
+        dest.y = dest.y * this.props.gameData.height;
+
+        direction = normalizedDirectionBetweenPoints(
+          {
+            x: this.state.x,
+            y: this.state.y
+          },
+          dest
+        );
+
+        dest = multiplyDirectionVector(direction, 30000);
+      } else {
+        dest = { ...this.props.actorData.action.target };
+        dest.x = dest.x * this.props.gameData.width;
+        dest.y = dest.y * this.props.gameData.height;
+        direction = normalizedDirectionBetweenPoints(
+          {
+            x: this.state.x,
+            y: this.state.y
+          },
+          dest
+        );
+      }
+
       this.setState({
-        lastBlockTime: 0,
-        isBlocking: false
+        arrowPos: { ...startPos },
+        arrowDest: {
+          x: dest.x,
+          y: dest.y
+        },
+        arrowDirection: direction,
+        arrowTravelDistance: getSquaredLengthBetweenPoints(startPos, dest)
+      });
+
+      cancelAnimationFrame(this.animationRangedShot);
+      this.animationRangedShot = requestAnimationFrame(() => {
+        this.updateRangedShot();
       });
       return;
     }
 
-    if (!this.state.isBlocking) {
+    let newPos = updatePositionAtSpeed(
+      this.state.arrowPos,
+      startPos,
+      this.state.arrowDest,
+      this.state.arrowDirection,
+      this.state.arrowTravelDistance,
+      100
+    );
+
+    //console.log("positions: ", newPos, this.state.arrowDest);
+
+    if (
+      (newPos.x === this.state.arrowDest.x &&
+        newPos.y === this.state.arrowDest.y) ||
+      newPos.x > 140 ||
+      newPos.x < -40 ||
+      newPos.y > 140 ||
+      newPos.y < -40
+    ) {
+      console.log("cancelled anim");
+      this.props.actorData.action = undefined;
+      cancelAnimationFrame(this.animationRangedShot);
+      assignAnimationToActor();
       this.setState({
-        lastBlockTime: currentTime,
-        isBlocking: true
+        arrowPos: {
+          x: 900,
+          y: 900
+        },
+        arrowDest: {
+          x: 100,
+          y: 100
+        }
       });
+      return;
     }
 
-    cancelAnimationFrame(this.animationBlockArrow);
-    this.animationBlockArrow = requestAnimationFrame(() => {
-      this.updateBlockArrow();
+    this.setState({
+      arrowPos: {
+        x: newPos.x,
+        y: newPos.y
+      }
+    });
+
+    cancelAnimationFrame(this.animationRangedShot);
+    this.animationRangedShot = requestAnimationFrame(() => {
+      this.updateRangedShot();
     });
   };
 
   componentDidUpdate = () => {
-    console.log("state: ", this.props.gameState.type);
+    console.log(
+      "state: ",
+      this.props.gameState.type,
+      " action: ",
+      this.props.actorData.action
+    );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined
     ) {
-      if (this.props.actorData.action.type === "move") {
+      if (this.props.actorData.action.type === "move-passive") {
         this.animationMove = requestAnimationFrame(() => {
-          this.updateMove();
+          this.updateMove(0.05);
         });
       } else if (this.props.actorData.action.type === "died") {
         this.animationDied = requestAnimationFrame(() => {
           this.updateDied();
         });
-      } else if (this.props.actorData.action.type === "block-arrow") {
-        this.animationBlockArrow = requestAnimationFrame(() => {
-          this.updateBlockArrow();
+      } else if (this.props.actorData.action.type === "ranged-shot") {
+        this.animationRangedShot = requestAnimationFrame(() => {
+          this.updateRangedShot();
         });
       }
     }
@@ -165,29 +253,24 @@ class Legionary extends Component {
 
   getCallbackFunc = action => {
     switch (action) {
-      case "move":
+      case "move-passive":
         return () => {
           this.props.dispatch(
             // Highlight nearby tiles
             setGameData({
               ...this.props.gameData,
               actors: this.props.gameData.actors.map(actor => {
-                let legionaryPos = this.props.actorData.pos;
-                let legionaryRange = this.props.actorData.moveSpeed;
-                if (isInRange(legionaryRange, legionaryPos, actor.pos)) {
-                  if (
-                    (actor.actorType !== "char" &&
-                      !isTileOccupied(actor, this.props.gameData.actors)) ||
-                    actor.actorType === "char"
-                  ) {
-                    // If actor is a tile but isn't occupied, highlight
-                    // If in range, highlight
-                    return {
-                      ...actor,
-                      onTarget: true,
-                      highlighted: true
-                    };
-                  }
+                let archerPos = this.props.actorData.pos;
+                let archerRange = this.props.actorData.moveSpeed;
+                if (
+                  actor.actorType !== "char" &&
+                  isInRange(archerRange, archerPos, actor.pos) &&
+                  !isTileOccupied(actor, this.props.gameData.actors)
+                ) {
+                  return {
+                    ...actor,
+                    highlighted: true
+                  };
                 }
 
                 return actor;
@@ -198,7 +281,39 @@ class Legionary extends Component {
           // Set state to selectTile
           console.log("actorData: ", this.props.actorData);
           this.props.dispatch(
-            setGameState(selectTile(this.props.actorData, "move"))
+            setGameState(selectTile(this.props.actorData, "move-passive"))
+          );
+        };
+      case "ranged-shot":
+        return () => {
+          this.props.dispatch(
+            // Highlight nearby tiles
+            setGameData({
+              ...this.props.gameData,
+              actors: this.props.gameData.actors.map(actor => {
+                let archerPos = this.props.actorData.pos;
+                let archerRange = this.props.actorData.range;
+
+                if (
+                  lineTarget(archerRange, archerPos, actor.pos) ||
+                  lineRange(archerRange, archerPos, actor.pos)
+                ) {
+                  return {
+                    ...actor,
+                    onTarget: true,
+                    highlighted: true
+                  };
+                }
+
+                return actor;
+              })
+            })
+          );
+
+          // Set state to selectTile
+          console.log("actorData: ", this.props.actorData);
+          this.props.dispatch(
+            setGameState(selectTile(this.props.actorData, "ranged-shot"))
           );
         };
       default:
@@ -209,7 +324,7 @@ class Legionary extends Component {
   handleClick = () => {
     event.stopPropagation();
     console.log(
-      "Legionary: ",
+      "Archer: ",
       this.props.actorData.actorId,
       " team: " + this.props.actorData.team
     );
@@ -263,6 +378,8 @@ class Legionary extends Component {
   render = () => {
     const xFrontend = this.state.x; // this.props.actorData.pos.x * this.props.gameData.width;
     const yFrontend = this.state.y; // this.props.actorData.pos.y * this.props.gameData.height;
+    const width = this.props.gameData.width;
+    const height = this.props.gameData.height;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -299,8 +416,8 @@ class Legionary extends Component {
           fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
         >
           <animate
             xlinkHref={"#rect" + id}
@@ -314,25 +431,60 @@ class Legionary extends Component {
         </rect>
       ) : null;
 
-    const animateBlockArrow = this.state.isBlocking ? (
-      <animate
-        xlinkHref={"#" + id}
-        attributeName="x"
-        values={
-          xFrontend.toString() +
-          ";" +
-          (xFrontend - 1).toString() +
-          ";" +
-          xFrontend.toString() +
-          ";" +
-          (xFrontend + 1).toString() +
-          ";"
-        }
-        begin="0s"
-        dur="0.1s"
-        repeatCount="indefinite"
+    console.log("STUFF: ", this.state.arrowPos, this.state.arrowDest);
+    let rotation =
+      "rotate(" +
+      parseFloat(
+        degreesBetweenPoints(
+          {
+            x: xFrontend + width / 2,
+            y: yFrontend + height / 2
+          },
+          {
+            x: this.state.arrowDest.x + width / 2,
+            y: this.state.arrowDest.y + height / 2
+          }
+        )
+      ) +
+      " " +
+      parseFloat(this.state.arrowPos.x + width / 2) +
+      " " +
+      parseFloat(this.state.arrowPos.y + height / 2) +
+      ")";
+    console.log("ROTATION: ", rotation);
+    const arrow = (
+      <image
+        xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
+        x={this.state.arrowPos.x}
+        y={this.state.arrowPos.y}
+        width={width}
+        height={height}
+        transform={rotation}
       />
-    ) : null;
+    );
+
+    //THIS WORKS
+    // const arrow = (
+    //   <image
+    //     xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
+    //     x={"50"}
+    //     y={"50"}
+    //     width={width}
+    //     height={height}
+    //     transform={
+    //       "rotate(" +
+    //       parseFloat(
+    //         degreesBetweenPoints({ x: 50, y: 50 }, { x: 62.5, y: 37.5 })
+    //       ) +
+    //       " " +
+    //       parseFloat(50 + width / 2) +
+    //       " " +
+    //       parseFloat(50 + height / 2) +
+    //       ")"
+    //     }
+    //   />
+    // );
+
     return (
       <g>
         {animateOtherUnits}
@@ -340,23 +492,23 @@ class Legionary extends Component {
           id={id}
           xlinkHref={
             this.props.currentUser === this.props.actorData.team
-              ? ASSET_ACTOR_TYPE.LEGIONARY + ASSET_TEAM.FRIENDLY
-              : ASSET_ACTOR_TYPE.LEGIONARY + ASSET_TEAM.ENEMY
+              ? ASSET_ACTOR_TYPE.ARCHER + ASSET_TEAM.FRIENDLY
+              : ASSET_ACTOR_TYPE.ARCHER + ASSET_TEAM.ENEMY
           }
           x={xFrontend}
           y={yFrontend}
-          width={this.props.gameData.width}
-          height={this.props.gameData.height}
+          width={width}
+          height={height}
           onClick={this.handleClick}
         />
         {animateUnitInAction}
-        {animateBlockArrow}
+        {arrow}
       </g>
     );
   };
 }
 
-const mapStateToProps = state => {
+let mapStateToProps = state => {
   return {
     currentUser: state.currentUser,
     actionMenuVisible: state.actionMenu.visible,
@@ -366,4 +518,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Legionary);
+export default connect(mapStateToProps)(Archer);
