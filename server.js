@@ -418,7 +418,7 @@ io.on("connection", socket => {
          .sort({ wins: -1, losses: 1 })
          .toArray((err, result) => {
             if (err) throw err;
-            console.log("Leaderboard:", result);
+            // console.log("Leaderboard:", result);
             io.emit("leaderboard-data", result);
          });
    });

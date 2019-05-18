@@ -14,9 +14,13 @@
 .player-label {
    font-size: 1.3em;
    /* border: 2px solid black; */
-   width: 12vw;
+   width: 10vw;
+   max-width: 13vw;
    text-align: center;
-   
+}
+
+.letter-spacing1 {
+   letter-spacing: 1px;
 }
 
 .square {
