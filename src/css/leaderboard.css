@@ -26,7 +26,7 @@
 }
 
 .leader-header {
-  background-color: orange;
+  background-color: rgba(33,150,243,0.7)
 }
 
 .leader-body {
@@ -43,7 +43,7 @@
 }
 
 .leader-row:hover {
-  background-color: orange;
+  background-color: rgba(33,150,243,0.7)
 }
 
 .center-text {

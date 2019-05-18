@@ -144,10 +144,17 @@ div {
    font-weight: bold;
 }
 
+.card-top-sub-label {
+   font-size: 1.5em;
+   vertical-align: bottom;
+   line-height: 8vh;
+}
+
 .card-top-cont {
    display: flex;
    justify-content: space-between;
    width: 55vw;
+   height: 10vh;
    /* border: 1px solid black; */
    margin: 10px auto 10px auto;
    border: 2px solid transparent;
@@ -165,55 +172,6 @@ div {
    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
  }
  
-
-.ghost-button {
-  cursor: pointer;
-  display: inline-block;
-  width: 100px;
-  padding: 5px;
-  background: transparent;
-  color: white;
-  border: 2px solid white;
-  border-radius: 5px;
-  font-size: 1em;
-  font-family: "Rubik", sans-serif;
-  text-align: center;
-  outline: none;
-  text-decoration: none;
-  margin-top: 15px;
-  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.ghost-button:hover,
-.ghost-button-dark:hover {
-  border-color: orange;
-  /* color: orange; */
-}
-
-.ghost-button:focus,
-.ghost-button-dark:focus {
-  border-color: orange;
-  /* color: orange; */
-}
-
-.ghost-button-dark {
-  cursor: pointer;
-  display: inline-block;
-  width: 100px;
-  padding: 5px;
-  background: transparent;
-  color: black;
-  border: 2px solid black;
-  border-radius: 5px;
-  font-size: 1em;
-  font-family: "Rubik", sans-serif;
-  text-align: center;
-  outline: none;
-  text-decoration: none;
-  margin-top: 15px;
-  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
 .animated-fade-in {
   animation: opac 0.8s;
 }

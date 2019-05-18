@@ -6,6 +6,7 @@
    border-radius: 4px;
    padding: 0 16px;
    min-width: 64px;
+   max-width: 1000px;
    height: 36px;
    vertical-align: middle;
    text-align: center;

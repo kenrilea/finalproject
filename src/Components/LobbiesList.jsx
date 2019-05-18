@@ -15,7 +15,9 @@ class UnconnectedLobbiesList extends Component {
    constructor(props) {
       super(props)
       this.state = {
-         lobbies: []
+         lobbies: [],
+         lobbyCount: 0,
+         fullLobbies: 0
       }
    }
 
@@ -26,7 +28,9 @@ class UnconnectedLobbiesList extends Component {
       socket.on("lobby-list-data", data => {
          console.log("Socket: receiving data from backend: ", data)
          this.setState({
-            lobbies: data
+            lobbies: data.lobbies,
+            lobbyCount: data.lobbyCount,
+            fullLobbies: data.fullLobbies
          })
       })
 
@@ -98,6 +102,7 @@ class UnconnectedLobbiesList extends Component {
 
                <div className="card-top-cont">
                   <h3 className="card-top-label">Lobbies</h3>
+                  <label className="card-top-sub-label"> Active: {this.state.fullLobbies} / {this.state.lobbyCount} </label>
                   <button className="round-button" onClick={this.createLobby}>+</button>
                </div>
                <div className="card-scrollable-cont">
