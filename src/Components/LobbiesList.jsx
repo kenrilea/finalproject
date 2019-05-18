@@ -10,8 +10,6 @@ import socket from "./SocketSettings.jsx"
 
 import { AnimateGroup } from "react-animate-mount"
 
-import "../css/lobbiesList.css";
-
 class UnconnectedLobbiesList extends Component {
 
    constructor(props) {
@@ -98,11 +96,11 @@ class UnconnectedLobbiesList extends Component {
          <div className="lobbies-list-background">
             <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
 
-               <div className="lobbies-list-button-cont">
-                  <h3 className="lobbies-label">Lobbies</h3>
+               <div className="card-top-cont">
+                  <h3 className="card-top-label">Lobbies</h3>
                   <button className="round-button" onClick={this.createLobby}>+</button>
                </div>
-               <div className="lobbies-list-container">
+               <div className="card-scrollable-cont">
                   <AnimateGroup>
                      {this.state.lobbies.map(elem => {
                         return (

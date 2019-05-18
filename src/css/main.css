@@ -139,6 +139,33 @@ div {
    max-height:100%;
  }
 
+ .card-top-label {
+   font-size: 3em;
+   font-weight: bold;
+}
+
+.card-top-cont {
+   display: flex;
+   justify-content: space-between;
+   width: 55vw;
+   /* border: 1px solid black; */
+   margin: 10px auto 10px auto;
+   border: 2px solid transparent;
+   border-bottom-color: black;
+   padding-bottom: 10px;
+ }
+
+ .card-scrollable-cont {
+   overflow-y: auto;
+   height: 50vh;
+   padding-bottom: 10vh;
+ }
+
+ .material-shadow {
+   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+ }
+ 
+
 .ghost-button {
   cursor: pointer;
   display: inline-block;
@@ -254,4 +281,8 @@ div {
 
 .App {
   z-index: 100000;
+}
+
+.left-marge {
+   margin-left: 20px;
 }
