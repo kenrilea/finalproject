@@ -88,6 +88,7 @@ app.post("/signup", upload.none(), function (req, res) {
             profilePic: "/assets/default-user.jpg",
             status: "playing Super Chess II",
             bio: "Super Chess II player",
+            army: gameData.defaultArmy,
             joinedDate: req.body.joinedDate
          };
          usersCollection.insertOne(newUser, (err, result) => {
@@ -249,7 +250,72 @@ app.post("/change-user-profile", upload.none(), function (req, res) {
             });
       });
 });
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//************ ARMY AND MAP EDITOR ************//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+app.get("/get-player-army", upload.none(), (req, res) => {
+  if (req.cookies.sid === undefined) {
+    res.send({ success: false, err: "not logged in" });
+  }
+  sessionsCollection
+    .find({ sessionId: req.cookies.sid })
+    .toArray((err, result) => {
+      usersCollection
+        .find({ username: result[0].user })
+        .toArray((err, result) => {
+          res.send(JSON.stringify(result[0].army));
+        });
+    });
+});
 
+app.post("/set-army", upload.none(), (req, res) => {
+  if (req.cookies.sid === undefined) {
+    res.send({ success: false, err: "not logged in" });
+  }
+  let newArmy = req.body.armyString;
+  newArmy = newArmy;
+  if (typeof newArmy === "string") {
+    newArmy = newArmy.split("_");
+    if (newArmy.length === 3) {
+      newArmy = newArmy.map(row => {
+        return row.split(" ");
+      });
+    }
+  }
+  console.log(newArmy);
+  let setNewArmy = [];
+  for (let row = 0; row < 3; row++) {
+    let arrRow = [];
+    for (let col = 0; col < 8; col++) {
+      if (newArmy[row]) arrRow.push(newArmy[row][col]);
+    }
+    setNewArmy.push(arrRow);
+  }
+  console.log(setNewArmy);
+  sessionsCollection
+    .find({ sessionId: req.cookies.sid })
+    .toArray((err, result) => {
+      if (result !== undefined) {
+        usersCollection
+          .find({ username: result[0].user })
+          .toArray((err, result) => {
+            usersCollection.update(
+              { _id: result[0]._id },
+              {
+                $set: {
+                  army: setNewArmy
+                }
+              },
+              (err, result) => {
+                if (err) throw err;
+                console.log(`DB: editing user information: ${"username"}`);
+                res.send(JSON.stringify({ success: true }));
+              }
+            );
+          });
+      }
+    });
+});
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ LEADERBOARD & LOBBY RELATED ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -662,19 +728,29 @@ io.on("connection", socket => {
             return;
          }
          lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
-            let originLobby = result[0];
-            let newGameId = gameEngine.createGameInst(
-               originLobby.playerOne,
-               originLobby.playerTwo,
-               army,
-               army,
-               lobbyId
-            );
-            UserGameAssoc[originLobby.playerOne] = newGameId;
-            UserGameAssoc[originLobby.playerTwo] = newGameId;
-            console.log("new Game Id: ", newGameId);
-            io.in(lobbyId).emit("game-created", "game started");
-         });
+          let originLobby = result[0];
+          usersCollection
+            .find({ username: originLobby.playerOne })
+            .toArray((err, result) => {
+              let userOne = result[0];
+              usersCollection
+                .find({ username: originLobby.playerTwo })
+                .toArray((err, result) => {
+                  let userTwo = result[0];
+                  let newGameId = gameEngine.createGameInst(
+                    userOne.username,
+                    userTwo.username,
+                    userOne.army,
+                    userTwo.army,
+                    lobbyId
+                  );
+                  UserGameAssoc[userOne.username] = newGameId;
+                  UserGameAssoc[userTwo.username] = newGameId;
+                  console.log("new Game Id: ", newGameId);
+                  io.in(lobbyId).emit("game-created", "game started");
+                });
+            });
+        });
       } else {
          io.in(lobbyId).emit("game-created", "game started");
       }
@@ -796,7 +872,6 @@ const { spawn } = require("child_process");
 const chokidar = require("chokidar");
 
 let pollServer = `let __version = undefined
-
 let delay = t => new Promise((res, rej) => setTimeout(() => res(), t))
 let checkVersion = async () => {
     await fetch('/__version')
@@ -805,7 +880,6 @@ let checkVersion = async () => {
             __version = v
         })
         
-
     while (true) {
         await delay(300)
         try {

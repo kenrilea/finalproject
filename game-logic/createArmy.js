@@ -14,7 +14,6 @@ let createArmy = (army, team, side) => {
       yIndex = -yIndex;
     }
     armyRow.forEach((char, index) => {
-      console.log(side + yIndex);
       let newChar = { ...data.unitTypes[char] };
       newChar.pos = { ...newChar.pos, x: index, y: side + yIndex };
       army.push(newChar);

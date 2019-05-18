@@ -134,7 +134,8 @@ let defaultArmy = [
     "legionary",
     "pawn",
     "legionary"
-  ]
+  ],
+  ["", "", "", "", "", "", "", ""]
 ];
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };
 module.exports = {

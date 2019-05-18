@@ -2,14 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./../css/armyBuilder.css";
 
+let charTypes = ["pawn", "knight", "archer", "catapult", "legionary"];
+
 class UnconnectedArmyBuilder extends Component {
   constructor(props) {
     super(props);
     this.state = {
       army: [
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""]
+        ["none", "none", "none", "none", "none", "none", "none", "none"],
+        ["none", "none", "none", "none", "none", "none", "none", "none"],
+        ["none", "none", "none", "none", "none", "none", "none", "none"]
       ],
       width: 8,
       height: 8,
@@ -20,13 +22,27 @@ class UnconnectedArmyBuilder extends Component {
     };
   }
   componentDidMount = () => {
+    console.log("yup");
     fetch("/get-player-army")
       .then(resHeader => {
-        resHeader.text();
+        return resHeader.text();
       })
       .then(resBody => {
-        let playerArmy = JSON.parse(resBody);
-        this.setState({ army: playerArmy });
+        if (resBody === "") {
+          return;
+        }
+        let parsedBody = JSON.parse(resBody);
+        console.log(parsedBody);
+        let playerArmy = parsedBody;
+        if (
+          playerArmy !== undefined &&
+          playerArmy.length === 3 &&
+          playerArmy[0].length === this.state.width
+        ) {
+          this.setState({ army: playerArmy });
+        } else {
+          console.log("army sent is bad");
+        }
       });
   };
   handlerClickTileElem = event => {
@@ -68,7 +84,14 @@ class UnconnectedArmyBuilder extends Component {
     this.setState({ isTileSelected: false });
   };
   handlerClickSetArmy = event => {
-    console.log(this.state.army);
+    let data = new FormData();
+    let stringArmy = this.state.army.map(row => {
+      return row.join(" ");
+    });
+    stringArmy = stringArmy.join("_");
+    console.log(stringArmy);
+    data.append("armyString", stringArmy);
+    fetch("/set-army", { method: "Post", body: data });
   };
   renderSelectChar = () => {
     if (this.state.isTileSelected) {
@@ -142,7 +165,23 @@ class UnconnectedArmyBuilder extends Component {
             </div>
           );
         }
-
+        if (row >= this.state.width - this.state.army.length) {
+          let charAtTile = this.state.army[this.state.width - 1 - row][col];
+          if (charTypes.includes(charAtTile)) {
+            console.log(charAtTile);
+            tileElem = (
+              <div>
+                <img
+                  onClick={this.handlerClickTileElem}
+                  key={"tileElem_" + row + "_" + col}
+                  id={"armyBuilderTile_" + row + "_" + col}
+                  className={"ArmyBuilderTileImg"}
+                  src={"/assets/char-" + charAtTile + "-blue.png"}
+                />
+              </div>
+            );
+          }
+        }
         colActors.push(tileElem);
       }
 
@@ -159,14 +198,24 @@ class UnconnectedArmyBuilder extends Component {
     );
   };
   render = () => {
+    if (this.props.loggedIn !== true) {
+      return (
+        <div className={"armyBuilderMainDiv"}>
+          <p>please log in</p>
+        </div>
+      );
+    }
     return (
       <div className={"armyBuilderMainDiv"}>
         {this.renderMap()}
         {this.renderSelectChar()}
-        <button onClick={this.handlerClickSetArmy} />
+        <button onClick={this.handlerClickSetArmy}>save army</button>
       </div>
     );
   };
 }
-let ArmyBuilder = connect()(UnconnectedArmyBuilder);
+let mapStateToProps = state => {
+  return { loggedIn: state.loggedIn };
+};
+let ArmyBuilder = connect(mapStateToProps)(UnconnectedArmyBuilder);
 export default ArmyBuilder;
