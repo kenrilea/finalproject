@@ -142,6 +142,7 @@ div {
  .card-top-label {
    font-size: 3em;
    font-weight: bold;
+   line-height: 6vh;
 }
 
 .card-top-sub-label {

@@ -164,12 +164,13 @@ class UnconnectedLobby extends Component {
    }
 
    leaveLobby = () => {
-      this.props.dispatch({
-         type: "LEAVE-LOBBY"
-      })
 
       socket.emit("leave-lobby", { lobbyId: this.props.currentLobbyId, currentUser: this.props.currentUser }, () => {
          socket.emit("refresh-lobby-list")
+      })
+
+      this.props.dispatch({
+         type: "LEAVE-LOBBY"
       })
 
    }

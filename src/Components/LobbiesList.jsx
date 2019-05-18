@@ -87,6 +87,35 @@ class UnconnectedLobbiesList extends Component {
          });
    };
 
+   renderElems = () => {
+      if (this.state.lobbies === undefined) {
+         socket.emit("refresh-lobby-list", () => {
+            return this.state.lobbies.map(elem => {
+               return (
+                  <LobbiesListElem
+                     key={elem._id}
+                     lobbyId={elem._id}
+                     playerOne={elem.playerOne}
+                     playerTwo={elem.playerTwo}
+                  />
+               );
+            })
+         })
+      }
+      else {
+         return this.state.lobbies.map(elem => {
+            return (
+               <LobbiesListElem
+                  key={elem._id}
+                  lobbyId={elem._id}
+                  playerOne={elem.playerOne}
+                  playerTwo={elem.playerTwo}
+               />
+            );
+         })
+      }
+   }
+
    render = () => {
       if (!this.props.loggedIn) {
          return <Redirect to="/" />;
@@ -107,16 +136,9 @@ class UnconnectedLobbiesList extends Component {
                </div>
                <div className="card-scrollable-cont">
                   <AnimateGroup>
-                     {this.state.lobbies.map(elem => {
-                        return (
-                           <LobbiesListElem
-                              key={elem._id}
-                              lobbyId={elem._id}
-                              playerOne={elem.playerOne}
-                              playerTwo={elem.playerTwo}
-                           />
-                        );
-                     })}
+                     {
+                        this.renderElems()
+                     }
                   </AnimateGroup>
                </div>
             </div>
