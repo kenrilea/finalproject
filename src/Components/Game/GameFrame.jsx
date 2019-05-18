@@ -56,14 +56,12 @@ class GameFrame extends Component {
     if (!this.state.loaded) {
       socket.open();
     }
-    socket.emit("join-game", this.props.match.params.gameId);
-    socket.emit("get-game-data", {
-      gameId: this.props.match.params.gameId
-    });
+
     socket.on("game-data", data => {
+      console.log("________________GAME DATA______________");
+      console.log(data);
       const width = 100 / data.width;
       const height = 100 / data.height;
-
       if (data.playerWon !== undefined) {
         console.log(data.playerWon + " won!");
         this.props.dispatch(
@@ -104,6 +102,11 @@ class GameFrame extends Component {
 
       updateAnimationPhase(changes);
     });
+    socket.on("game-created", msg => {
+      console.log("game is created loading game");
+      socket.emit("get-game-data", { gameId: this.props.match.params.gameId });
+    });
+    socket.emit("join-game", this.props.match.params.gameId);
   };
 
   getActorElements = () => {

@@ -577,6 +577,8 @@ io.on("connection", socket => {
     );
     console.log("join game recieved: ", lobbyId);
     socket.join(lobbyId);
+    console.log("-- game INST --");
+    console.log(gameEngine.getGameInst(lobbyId));
     if (gameEngine.getGameInst(lobbyId) === undefined) {
       console.log("creating game instance: ", lobbyId);
       if (lobbyId === undefined) {
@@ -591,51 +593,47 @@ io.on("connection", socket => {
       }
       lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
         let originLobby = result[0];
-        console.log("-- origin lobby --");
-        console.log(originLobby[0]);
-        if (originLobby !== undefined) {
-          console.log("-- duplicate --");
-          console.log(originLobby[0]);
-
-          let newGameId = gameEngine.createGameInst(
-            originLobby.playerOne,
-            originLobby.playerTwo,
-            army,
-            army,
-            lobbyId
-          );
-          UserGameAssoc[originLobby.playerOne] = newGameId;
-          UserGameAssoc[originLobby.playerTwo] = newGameId;
-          console.log("new Game Id: ", newGameId);
-        } else {
-          console.log("origin Lobby undefined");
-        }
-        //_________________________
+        let newGameId = gameEngine.createGameInst(
+          originLobby.playerOne,
+          originLobby.playerTwo,
+          army,
+          army,
+          lobbyId
+        );
+        UserGameAssoc[originLobby.playerOne] = newGameId;
+        UserGameAssoc[originLobby.playerTwo] = newGameId;
+        console.log("new Game Id: ", newGameId);
+        io.in(lobbyId).emit("game-created", "game started");
       });
+    } else {
+      io.in(lobbyId).emit("game-created", "game started")
     }
-    console.log("game in session, sending game");
-    io.in(lobbyId).emit("game-data", gameEngine.getGameInst(lobbyId + ""));
+    io.in(lobbyId).emit("test-socket-game", "cool ");
   });
 
   socket.on("get-game-data", message => {
     console.log("get data request");
     console.log(message.gameId + "");
-
-    let gameData = gameEngine.getGameInst(message.gameId + ""); //temporary gameId for testing, use collection later...
+    let gameData = gameEngine.getGameInst(message.gameId + "");
     if (gameData !== undefined) {
       console.log(gameData.map[0].actorId);
     } else {
       console.log("game is undefined in get-game-data");
     }
-    io.emit("game-data", gameData);
+    io.in(message.gameId).emit("game-data", gameData);
   });
 
   socket.on("game-input", input => {
     console.log("user assoc");
     console.log(UserGameAssoc);
     console.log("userCookie: ", socket.request.headers.cookie);
+    if (socket.request.headers.cookie === undefined) {
+      socket.emit({ success: false });
+      return;
+    }
     let usercookie = cookie.parse(socket.request.headers.cookie);
     console.log("userCookie: ", usercookie.sid);
+
     sessionsCollection
       .find({ sessionId: usercookie.sid })
       .toArray((err, result) => {
@@ -646,13 +644,13 @@ io.on("connection", socket => {
           return;
         }
         console.log("input from user: ", result[0].user);
-
+        let gameId = UserGameAssoc[result[0].user];
         let changes = gameEngine.handlerUserInput({
-          gameId: UserGameAssoc[result[0].user],
+          gameId: gameId,
           action: input,
           team: result[0].user
         });
-        socket.emit("game-state-change", changes);
+        io.in(gameId).emit("game-state-change", changes);
       });
   });
 
