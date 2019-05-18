@@ -143,4 +143,17 @@ li {
    transition: all 0.3s ease-in-out;
 }
 
+.line1-close {
+   transform: rotate(0deg) translate(0px, 0px);
+   transition: all 0.3s ease-in-out;
+}
+
+.line2-close {
+   opacity: 1;
+   transition: all 0.3s ease-in-out;
+}
+.line3-close {
+   transform: rotate(0deg) translate(0px, 0px);
+   transition: all 0.3s ease-in-out;
+}
 

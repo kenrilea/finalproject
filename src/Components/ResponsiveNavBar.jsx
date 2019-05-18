@@ -45,9 +45,9 @@ class ResponsiveNavBar extends Component {
             </ul>
 
             <div className="burger" onClick={this.handleSlide}>
-               <div className={this.state.slide ? "line1" : "NONE"}></div>
-               <div className={this.state.slide ? "line2" : "NONE"}></div>
-               <div className={this.state.slide ? "line3" : "NONE"}></div>
+               <div className={this.state.slide ? "line1" : "line1-close"}></div>
+               <div className={this.state.slide ? "line2" : "line2-close"}></div>
+               <div className={this.state.slide ? "line3" : "line3-close"}></div>
             </div>
 
          </nav>
