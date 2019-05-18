@@ -31,23 +31,23 @@ class ResponsiveNavBar extends Component {
 
             <ul className={this.state.slide ? "nav-active" : "nav-links"}>
                <li>
-                  <Link className="nav-link" to={"/"} onClick={this.handleSlide}>Lobbies</Link>
+                  <Link className={this.state.slide ? "nav-link-show" : "nav-link-hide"} to={"/"} onClick={this.handleSlide}>Lobbies</Link>
                </li>
                <li>
-                  <Link className="nav-link" to={"/leaderboard"} onClick={this.handleSlide}>Leaderboard</Link>
+                  <Link className={this.state.slide ? "nav-link-show" : "nav-link-hide"} to={"/leaderboard"} onClick={this.handleSlide}>Leaderboard</Link>
                </li>
                <li>
-                  <Link className="nav-link" to={"/how-to-play"} onClick={this.handleSlide}>How to Play</Link>
+                  <Link className={this.state.slide ? "nav-link-show" : "nav-link-hide"} to={"/how-to-play"} onClick={this.handleSlide}>How to Play</Link>
                </li>
                <li>
-                  <Link className="nav-link" to={"/about"} onClick={this.handleSlide}>About</Link>
+                  <Link className={this.state.slide ? "nav-link-show" : "nav-link-hide"} to={"/about"} onClick={this.handleSlide}>About</Link>
                </li>
             </ul>
 
             <div className="burger" onClick={this.handleSlide}>
-               <div className="line1"></div>
-               <div className="line2"></div>
-               <div className="line3"></div>
+               <div className={this.state.slide ? "line1" : "NONE"}></div>
+               <div className={this.state.slide ? "line2" : "NONE"}></div>
+               <div className={this.state.slide ? "line3" : "NONE"}></div>
             </div>
 
          </nav>
