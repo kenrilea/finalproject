@@ -47,6 +47,37 @@ export const updatePositionAtSpeed = (
   return newPos;
 };
 
+export const updatePositionInArc = (
+  position,
+  start,
+  end,
+  direction,
+  distance,
+  speed,
+  arcMult
+) => {
+  let newPos = {
+    x: (position.x += direction.x * speed),
+    y: (position.y += direction.y * speed)
+  };
+
+  let centerPos = getCenterPoint(start, end);
+  let fullDist = getLengthBetweenPoints(start, end);
+  let currDist = getLengthBetweenPoints(centerPos, newPos);
+  let rel = getRelativeValue(currDist, 0, fullDist, 0.5, 1);
+
+  newPos.y = newPos.y * rel;
+
+  if (getSquaredLengthBetweenPoints(start, position) >= distance) {
+    newPos = {
+      x: end.x,
+      y: end.y
+    };
+  }
+
+  return newPos;
+};
+
 export const getIsometricFrontendPos = coord => {
   const width = store.getState().gameData.width;
   const height = store.getState().gameData.height / 2;
@@ -107,6 +138,10 @@ export const getSquaredLengthBetweenPoints = (start, end) => {
   return Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2);
 };
 
+export const getLengthBetweenPoints = (start, end) => {
+  return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+};
+
 export const normalizedDirectionBetweenPoints = (start, end) => {
   let length = getSquaredLengthBetweenPoints(start, end);
   return {
@@ -120,6 +155,30 @@ export const multiplyDirectionVector = (vector, mult) => {
     x: vector.x * mult,
     y: vector.y * mult
   };
+};
+
+export const getCenterPoint = (point1, point2) => {
+  return {
+    x: (point1.x + point2.x) / 2,
+    y: (point1.y + point2.y) / 2
+  };
+};
+
+export const getRelativeValue = (
+  input,
+  inputMin,
+  inputMax,
+  outputMin,
+  outputMax
+) => {
+  if (input > inputMax) {
+    input = inputMax;
+  } else if (input < inputMin) {
+    input = inputMin;
+  }
+
+  let position = (input - inputMin) / (inputMax - inputMin);
+  return position * (outputMax - outputMin) + outputMin;
 };
 
 export const getDistance = (origin, dest) => {
