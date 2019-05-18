@@ -36,6 +36,15 @@ class GameFrame extends Component {
     return state === this.props.gameState.type;
   };
 
+  handleOverworldClick = event => {
+    event.stopPropagation;
+    if (this.isGameState(STATES.SELECT_TILE)) {
+      // if actor is part of the unit in action's team,
+      // change game state back to SELECT_UNIT
+      resetToSelectUnitState();
+    }
+  };
+
   componentDidMount = () => {
     this.props.dispatch({
       type: "JOIN-LOBBY",
@@ -46,13 +55,11 @@ class GameFrame extends Component {
     console.log(this.props.match.params.gameId);
     if (!this.state.loaded) {
       socket.open();
-      socket.emit("join-game", this.props.match.params.gameId);
-      socket.emit("get-game-data", {
-        gameId: this.props.match.params.gameId
-      });
-      socket.emit("get-game-data", { gameId: this.props.match.params.gameId });
     }
-
+    socket.emit("join-game", this.props.match.params.gameId);
+    socket.emit("get-game-data", {
+      gameId: this.props.match.params.gameId
+    });
     socket.on("game-data", data => {
       const width = 100 / data.width;
       const height = 100 / data.height;
@@ -127,7 +134,7 @@ class GameFrame extends Component {
     ) : null;
 
     return (
-      <div className="wrapper">
+      <div className="wrapper" onClick={this.handleOverworldClick}>
         <div className="gameframe wrapper">
           <svg
             className="svg-canvas"

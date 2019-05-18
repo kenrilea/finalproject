@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActionMenu, setGameData, setGameState } from "./../../../Actions";
 import { STATES } from "./../../../GameStates";
-import {
-  resetToSelectUnitState,
-  updateAnimationPhase
-} from "./../../../Helpers/GameStateHelpers.js";
-import { ACTOR_HIGHLIGHT } from "./../../../AssetConstants";
+import { resetToSelectUnitState } from "./../../../Helpers/GameStateHelpers.js";
+import { getIsometricFrontendPos } from "./../../../Helpers/calcs.js";
+import { ACTOR_HIGHLIGHT, ASSET_TILE } from "./../../../AssetConstants";
 import socket from "./../../SocketSettings.jsx";
 
 class Tile extends Component {
@@ -72,52 +70,74 @@ class Tile extends Component {
   };
 
   render = () => {
-    const xFrontend = this.props.actorData.pos.x * this.props.gameData.width;
-    const yFrontend = this.props.actorData.pos.y * this.props.gameData.height;
+    const x = this.props.actorData.pos.x;
+    const y = this.props.actorData.pos.y;
+    const width = this.props.gameData.width;
+    const height = this.props.gameData.height / 2;
 
-    const fill = "#fff";
-    const stroke = "#42f4eb";
-
-    const style = {
-      fill: fill,
-      //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
-      stroke: stroke,
-      strokeWidth: "0.1",
-      strokeLinecap: "square",
-      width: this.props.gameData.width,
-      height: this.props.gameData.height
-    };
+    const isoPos = getIsometricFrontendPos({ x, y });
+    const xFrontend = isoPos.x;
+    const yFrontend = isoPos.y;
 
     const id = "actorId" + this.props.actorData.actorId;
 
     const highlighted = this.props.actorData.highlighted;
     const onTarget = this.props.actorData.onTarget;
 
+    const fill = onTarget
+      ? ACTOR_HIGHLIGHT.TILE_TARGET
+      : ACTOR_HIGHLIGHT.TILE_ON_PATH;
+    const stroke = "#fff";
+
+    const style = {
+      fill: fill,
+      //transform: "rotate3d(0.6, -0.2, 0.2, 75deg)"
+      stroke: stroke,
+      strokeWidth: "0.1",
+      strokeLinecap: "square"
+      // width: height,
+      // height: height
+    };
+
+    const polyPoints = [
+      [xFrontend + width / 2, yFrontend], // top
+      [xFrontend + width, yFrontend + height / 2], // right
+      [xFrontend + width / 2, yFrontend + height], // bottom
+      [xFrontend, yFrontend + height / 2] // left
+    ];
     const animate =
       highlighted || onTarget ? (
-        <animate
-          xlinkHref={"#" + id}
-          attributeName="fill"
-          from={fill}
-          to={
-            onTarget
-              ? ACTOR_HIGHLIGHT.TILE_TARGET
-              : ACTOR_HIGHLIGHT.TILE_ON_PATH
-          }
-          begin="0s"
-          dur="1s"
-          repeatCount="indefinite"
-        />
-      ) : null;
-
-    return (
-      <g>
-        <rect
-          id={id}
+        <polygon
+          points={polyPoints.map(inner => inner.join(",")).join(" ")}
+          id={"rect" + id}
           style={style}
           x={xFrontend}
           y={yFrontend}
           onClick={this.handleClick}
+        >
+          <animate
+            xlinkHref={"#rect" + id}
+            attributeName="opacity"
+            from="0"
+            to="1"
+            begin="0s"
+            dur="1s"
+            repeatCount="indefinite"
+          />
+        </polygon>
+      ) : null;
+
+    return (
+      <g>
+        <image
+          id={id}
+          xlinkHref={ASSET_TILE.REGULAR}
+          x={xFrontend}
+          y={yFrontend}
+          width={width}
+          height={height}
+          pointerEvents={"none"}
+          // onClick={this.handleClick}
         />
         {animate}
       </g>

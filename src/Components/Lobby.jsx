@@ -109,10 +109,10 @@ class UnconnectedLobby extends Component {
     let buttonClass = "lobbyButtonNotReady";
     if (this.props.currentUser === this.state.playerOne) {
       if (this.state.readyPlayerOne === true) {
-        buttonClass = "lobbyButtonReady";
+        buttonClass = "pure-material-button-contained red";
       }
       if (this.state.readyPlayerOne === false) {
-        buttonClass = "lobbyButtonNotReady";
+        buttonClass = "pure-material-button-contained green";
       }
       return (
         <button className={buttonClass} onClick={this.handlerReadyButton}>
@@ -126,10 +126,10 @@ class UnconnectedLobby extends Component {
     let buttonClass = "lobbyButtonNotReady";
     if (this.props.currentUser === this.state.playerTwo) {
       if (this.state.readyPlayerTwo === true) {
-        buttonClass = "lobbyButtonReady";
+        buttonClass = "pure-material-button-contained red";
       }
       if (this.state.readyPlayerTwo === false) {
-        buttonClass = "lobbyButtonNotReady";
+        buttonClass = "pure-material-button-contained green";
       }
       return (
         <button className={buttonClass} onClick={this.handlerReadyButton}>
@@ -187,7 +187,7 @@ class UnconnectedLobby extends Component {
         <div>Lobby id: {this.props.currentLobbyId}</div>
         <div
           className={
-            "MainLobbyDiv animated-fade-in animated-grow-bounce lobbies-list-foreground material-shadow"
+            "MainLobbyDiv animated-fade-in animated-grow-bounce card-container material-shadow"
           }
         >
           <div className={"PlayerOneLobbyDiv"}>
@@ -205,8 +205,11 @@ class UnconnectedLobby extends Component {
             </div>
           </div>
           <div>
-            <button className="lobbyButtonNotReady" onClick={this.leaveLobby}>
-              Leave lobby
+            <button
+              className="pure-material-button-contained"
+              onClick={this.leaveLobby}
+            >
+              Leave
             </button>
           </div>
         </div>

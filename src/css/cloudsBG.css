@@ -1,5 +1,5 @@
 #background-wrap {
-   bottom: 0;
+  bottom: 0;
   left: 0;
   padding-top: 50px;
   position: fixed;
@@ -12,30 +12,30 @@
 /* KEYFRAMES */
 
 @-webkit-keyframes animateCloud {
-   0% {
-       margin-left: -1000px;
-   }
-   100% {
-       margin-left: 100%;
-   }
+  0% {
+    margin-left: -1000px;
+  }
+  100% {
+    margin-left: 100%;
+  }
 }
 
 @-moz-keyframes animateCloud {
-   0% {
-       margin-left: -1000px;
-   }
-   100% {
-       margin-left: 100%;
-   }
+  0% {
+    margin-left: -1000px;
+  }
+  100% {
+    margin-left: 100%;
+  }
 }
 
 @keyframes animateCloud {
-   0% {
-       margin-left: -1000px;
-   }
-   100% {
-       margin-left: 100%;
-   }
+  0% {
+    margin-left: -1000px;
+  }
+  100% {
+    margin-left: 100%;
+  }
 }
 
 /* ANIMATIONS */
@@ -44,7 +44,7 @@
   -webkit-animation: animateCloud 35s linear infinite;
   -moz-animation: animateCloud 35s linear infinite;
   animation: animateCloud 35s linear infinite;
-  
+
   -webkit-transform: scale(0.65);
   -moz-transform: scale(0.65);
   transform: scale(0.65);
@@ -55,7 +55,7 @@
   -webkit-animation: animateCloud 20s linear infinite;
   -moz-animation: animateCloud 20s linear infinite;
   animation: animateCloud 20s linear infinite;
-  
+
   -webkit-transform: scale(0.3);
   -moz-transform: scale(0.3);
   transform: scale(0.3);
@@ -65,7 +65,7 @@
   -webkit-animation: animateCloud 30s linear infinite;
   -moz-animation: animateCloud 30s linear infinite;
   animation: animateCloud 30s linear infinite;
-  
+
   -webkit-transform: scale(0.5);
   -moz-transform: scale(0.5);
   transform: scale(0.5);
@@ -75,7 +75,7 @@
   -webkit-animation: animateCloud 18s linear infinite;
   -moz-animation: animateCloud 18s linear infinite;
   animation: animateCloud 18s linear infinite;
-  
+
   -webkit-transform: scale(0.4);
   -moz-transform: scale(0.4);
   transform: scale(0.4);
@@ -85,7 +85,7 @@
   -webkit-animation: animateCloud 25s linear infinite;
   -moz-animation: animateCloud 25s linear infinite;
   animation: animateCloud 25s linear infinite;
-  
+
   -webkit-transform: scale(0.55);
   -moz-transform: scale(0.55);
   transform: scale(0.55);
@@ -94,19 +94,25 @@
 /* OBJECTS */
 
 .cloud {
+  background: #f1f1f1;
+  background: -moz-linear-gradient(top, #fff 5%, #f1f1f1 100%);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(5%, #fff),
+    color-stop(100%, #f1f1f1)
+  );
+  background: -webkit-linear-gradient(top, #fff 5%, #f1f1f1 100%);
+  background: -o-linear-gradient(top, #fff 5%, #f1f1f1 100%);
+  background: -ms-linear-gradient(top, #fff 5%, #f1f1f1 100%);
   background: #fff;
-  background: -moz-linear-gradient(top,  #fff 5%, #f1f1f1 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#fff), color-stop(100%,#f1f1f1));
-  background: -webkit-linear-gradient(top,  #fff 5%,#f1f1f1 100%);
-  background: -o-linear-gradient(top,  #fff 5%,#f1f1f1 100%);
-  background: -ms-linear-gradient(top,  #fff 5%,#f1f1f1 100%);
-  background: linear-gradient(top,  #fff 5%,#f1f1f1 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#f1f1f1',GradientType=0 );
-  
+
   -webkit-border-radius: 100px;
   -moz-border-radius: 100px;
   border-radius: 100px;
-  
+
   -webkit-box-shadow: 0 8px 5px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0 8px 5px rgba(0, 0, 0, 0.1);
   box-shadow: 0 8px 5px rgba(0, 0, 0, 0.1);
@@ -116,11 +122,12 @@
   width: 350px;
 }
 
-.cloud:after, .cloud:before {
-   background: #fff;
-  content: '';
+.cloud:after,
+.cloud:before {
+  background: #fff;
+  content: "";
   position: absolute;
-  z-indeX: 5000;
+  z-index: 3;
 }
 
 .cloud:after {
