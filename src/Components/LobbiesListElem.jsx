@@ -55,7 +55,7 @@ class UnconnectedLobbiesListElem extends Component {
          <div className="lobbies-list-elem-container">
 
 
-            <div className="player-label">
+            <div className="player-label letter-spacing1">
                {this.props.lobbyId}
             </div>
 
