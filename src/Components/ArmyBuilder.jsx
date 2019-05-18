@@ -209,7 +209,7 @@ class UnconnectedArmyBuilder extends Component {
       <div className={"armyBuilderMainDiv"}>
         {this.renderMap()}
         {this.renderSelectChar()}
-        <button onClick={this.handlerClickSetArmy} />
+        <button onClick={this.handlerClickSetArmy}>save army</button>
       </div>
     );
   };
