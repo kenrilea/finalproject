@@ -80,7 +80,7 @@ class UnconnectedLogin extends Component {
                      onChange={this.handleUsername}
                      required={true}
                   />
-                  <span />
+                  <span className="span-effect" />
                </div>
                <div>
                   <div className="login-label">Password</div>
@@ -90,7 +90,7 @@ class UnconnectedLogin extends Component {
                      onChange={this.handlePassword}
                      required={true}
                   />
-                  <span />
+                  <span className="span-effect" />
                </div>
                <div>
                   <input
