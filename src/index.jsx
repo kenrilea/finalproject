@@ -9,7 +9,9 @@ import HomePage from "./Components/HomePage.jsx";
 import GameFrame from "./Components/Game/GameFrame.jsx";
 import AnimatedMessage from "./Components/AnimatedMessage.jsx";
 import Oops from "./Components/Oops.jsx";
-import TopBar from "./Components/TopBar.jsx";
+
+import ResponsiveNavBar from "./Components/ResponsiveNavBar.jsx"
+
 import SideBar from "./Components/SideBar.jsx";
 import Leaderboard from "./Components/Leaderboard.jsx";
 import Signup from "./Components/Signup.jsx";
@@ -30,7 +32,7 @@ let root = (
             <CloudsBG />
             <Route exact={false} path="/" component={AutoLogin} />
             <Route exact={false} path="/" component={AnimatedMessage} />
-            <TopBar />
+            <ResponsiveNavBar />
             <div className="sidebar-and-game-container">
                <SideBar />
                <div className="main-div">

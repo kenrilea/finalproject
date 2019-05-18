@@ -65,6 +65,9 @@ class UnconnectedHowToPlay extends Component {
       }
       return (
          <div className="card-container animated-grow-bounce animated-fade-in material-shadow">
+            <div className="card-top-cont">
+               <h3 className="card-top-label">How to Play</h3>
+            </div>
             <div onKeyPress={this.handlerkeyPress}>
                {this.props.match.params.step}
                <button onClick={this.handlerPrev}>Prev</button>

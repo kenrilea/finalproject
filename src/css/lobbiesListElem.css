@@ -19,6 +19,15 @@
    text-align: center;
 }
 
+.vs-label {
+   font-size: 1.3em;
+   /* border: 2px solid black; */
+   width: 5vw;
+   text-align: center;
+   font-weight: bold;
+   letter-spacing: 4px;
+}
+
 .letter-spacing1 {
    letter-spacing: 1px;
 }
@@ -27,6 +36,8 @@
    height: 100%;
    width: 5vw;
 }
+
+
 
 
 

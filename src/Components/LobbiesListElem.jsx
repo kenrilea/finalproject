@@ -55,15 +55,15 @@ class UnconnectedLobbiesListElem extends Component {
          <div className="lobbies-list-elem-container">
 
 
-            <div className="player-label letter-spacing1">
-               {this.props.lobbyId}
+            <div className="vs-label letter-spacing1">
+               {this.props.lobbyId.slice(-5)}
             </div>
 
             <div className="player-label">
                {this.props.playerOne}
             </div>
 
-            <div className="player-label">
+            <div className="vs-label">
                VS
             </div>
 
@@ -71,7 +71,7 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
             </div>
 
-            <button className="pure-material-button-contained square bottom-pad" disabled={this.props.playerTwo ? true : false} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
+            <button className="pure-material-button-contained square bottom-pad big-button-font" disabled={this.props.playerTwo ? true : false} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
                {this.props.playerTwo ? "FULL" : "JOIN!"}
             </button>
 
