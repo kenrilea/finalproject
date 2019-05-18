@@ -3,6 +3,7 @@
 }
 .profileFormDiv {
   text-align: center;
+  z-index: 500;
 }
 .profileFormMiniPic {
   height: 50px;

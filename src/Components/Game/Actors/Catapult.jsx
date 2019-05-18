@@ -8,9 +8,17 @@ import {
 } from "./../../../Helpers/GameStateHelpers.js";
 import {
   updatePosition,
+  updatePositionInArc,
+  degreesBetweenPoints,
+  getSquaredLengthBetweenPoints,
+  getLengthBetweenPoints,
+  normalizedDirectionBetweenPoints,
+  multiplyDirectionVector,
   isInRange,
   isTileOccupied,
-  getIsometricFrontendPos
+  getIsometricFrontendPos,
+  getCenterPoint,
+  getRelativeValue
 } from "./../../../Helpers/calcs.js";
 import {
   ASSET_ACTOR_TYPE,
@@ -33,10 +41,17 @@ class Catapult extends Component {
         x: 900,
         y: 900
       },
+      cannonballDest: {
+        x: 100,
+        y: 100
+      },
+      cannonballDirection: {},
+      cannonballTravelDistance: {},
       cannonballDimensions: {
         width: this.props.gameData.width,
         height: this.props.gameData.height / 2
-      }
+      },
+      centerPointOfTravel: {}
     };
   }
 
@@ -113,16 +128,71 @@ class Catapult extends Component {
   };
 
   updateBombard = () => {
-    let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
+    const startPos = this.state.frontendPos;
 
-    //console.log("positions: ", this.state.frontendPos, dest);
+    if (this.state.cannonballPos.x === 900) {
+      let dest = {};
+      let direction = 0;
 
-    let newPos =
-      this.state.cannonballPos.x === 900
-        ? this.state.frontendPos
-        : updatePosition(this.state.cannonballPos, dest, 0.15);
+      if (this.props.actorData.action.target === undefined) {
+        dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
-    if (newPos.x === dest.x && newPos.y === dest.y) {
+        direction = normalizedDirectionBetweenPoints(
+          this.state.frontendPos,
+          dest
+        );
+
+        dest = multiplyDirectionVector(direction, 30000);
+      } else {
+        dest = getIsometricFrontendPos({
+          ...this.props.actorData.action.target
+        });
+        direction = normalizedDirectionBetweenPoints(
+          this.state.frontendPos,
+          dest
+        );
+      }
+
+      this.setState({
+        cannonballPos: { ...startPos },
+        cannonballDest: {
+          x: dest.x,
+          y: dest.y
+        },
+        arrowDirection: direction,
+        arrowTravelDistance: getSquaredLengthBetweenPoints(startPos, dest),
+        centerPointOfTravel: getCenterPoint(startPos, {
+          x: dest.x,
+          y: dest.y
+        })
+      });
+
+      cancelAnimationFrame(this.animationBombard);
+      this.animationBombard = requestAnimationFrame(() => {
+        this.updateBombard();
+      });
+      return;
+    }
+
+    let newPos = updatePositionInArc(
+      this.state.cannonballPos,
+      startPos,
+      this.state.cannonballDest,
+      this.state.arrowDirection,
+      this.state.arrowTravelDistance,
+      2,
+      3
+    );
+
+    let dist = Math.abs(
+      getLengthBetweenPoints(this.state.centerPointOfTravel, newPos)
+    );
+    console.log("dist: ", dist);
+    // newPos.y *= getRelativeValue(dist, 0, 10, 0, 1);
+
+    //console.log("positions: ", newPos, this.state.cannonballDest);
+
+    if (newPos.x === this.state.cannonballDest.x) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationBombard);
@@ -131,6 +201,10 @@ class Catapult extends Component {
         cannonballPos: {
           x: 900,
           y: 900
+        },
+        cannonballDest: {
+          x: 100,
+          y: 100
         }
       });
       return;
@@ -368,13 +442,33 @@ class Catapult extends Component {
         </polygon>
       ) : null;
 
+    let rotation =
+      "rotate(" +
+      parseFloat(
+        degreesBetweenPoints(
+          {
+            x: xFrontend + width / 2,
+            y: yFrontend + height / 2
+          },
+          {
+            x: this.state.cannonballDest.x + width,
+            y: this.state.cannonballDest.y + height / 2
+          }
+        )
+      ) +
+      " " +
+      parseFloat(this.state.cannonballPos.x + width) +
+      " " +
+      parseFloat(this.state.cannonballPos.y + height / 2) +
+      ")";
+    //console.log("ROTATION: ", rotation);
     const cannonball = (
       <image
         xlinkHref={ASSET_ACTOR_TYPE.CATAPULT + ASSET_ITEM.CANNONBALL}
         x={this.state.cannonballPos.x}
         y={this.state.cannonballPos.y}
         width={this.state.cannonballDimensions.width}
-        height={this.state.cannonballDimensions.height / 2}
+        height={this.state.cannonballDimensions.height}
       />
     );
 

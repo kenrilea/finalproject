@@ -7,6 +7,7 @@ class UnconnectedProfileForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: "",
       statusMessage: "",
       bio: "",
       profilePic: "/assets/default-user.png",
@@ -14,6 +15,9 @@ class UnconnectedProfileForm extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.fetchProfile();
+  };
   handlerSubmit = event => {
     console.log("submitted");
   };
@@ -134,7 +138,37 @@ class UnconnectedProfileForm extends Component {
       );
     }
   };
+  fetchProfile = () => {
+    let data = new FormData();
+    data.append("username", "sos236");
+    fetch("/get-user-profile", { method: "Post", body: data })
+      .then(resHeader => {
+        return resHeader.text();
+      })
+      .then(resBody => {
+        let userProfile = JSON.parse(resBody);
+        this.setState({
+          statusMessage: userProfile.statusMessage,
+          bio: userProfile.bio,
+          profilePic: userProfile.profilePic
+        });
+      });
+  };
+  handlerClickSaveChanges = () => {
+    let data = new FormData();
+    data.append("statusMessage", this.state.statusMessage);
+    data.append("bio", this.state.bio);
+    data.append("profilePic", this.state.profilePic);
+    fetch("/change-user-profile", { method: "Post", body: data });
+  };
   render = () => {
+    if (this.props.loggedIn !== true) {
+      return (
+        <div className={"profileFormDiv"}>
+          <p>please log in</p>
+        </div>
+      );
+    }
     return (
       <div className={"profileFormDiv"}>
         <div onClick={this.handlerOnClickCurrentPic}>
@@ -156,12 +190,15 @@ class UnconnectedProfileForm extends Component {
             {this.renderBio()}
           </div>
         </div>
+        <div>
+          <button onClick={this.handlerClickSaveChanges}>Save changes</button>
+        </div>
       </div>
     );
   };
 }
 let mapStateToProps = state => {
-  return { username: state.currentUser };
+  return { username: state.currentUser, loggedIn: state.loggedIn };
 };
 
 let ProfileForm = connect(mapStateToProps)(UnconnectedProfileForm);

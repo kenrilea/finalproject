@@ -442,13 +442,13 @@ class Archer extends Component {
             y: yFrontend + height / 2
           },
           {
-            x: this.state.arrowDest.x + width / 2,
+            x: this.state.arrowDest.x + width,
             y: this.state.arrowDest.y + height / 2
           }
         )
       ) +
       " " +
-      parseFloat(this.state.arrowPos.x + width / 2) +
+      parseFloat(this.state.arrowPos.x + width) +
       " " +
       parseFloat(this.state.arrowPos.y + height / 2) +
       ")";
@@ -456,7 +456,7 @@ class Archer extends Component {
     const arrow = (
       <image
         xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
-        x={this.state.arrowPos.x}
+        x={this.state.arrowPos.x + width / 2}
         y={this.state.arrowPos.y}
         width={width}
         height={height}

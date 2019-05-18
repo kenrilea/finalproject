@@ -87,7 +87,7 @@ class Tile extends Component {
     const fill = onTarget
       ? ACTOR_HIGHLIGHT.TILE_TARGET
       : ACTOR_HIGHLIGHT.TILE_ON_PATH;
-    const stroke = "#42f4eb";
+    const stroke = "#fff";
 
     const style = {
       fill: fill,

@@ -33,6 +33,7 @@ let usersCollection;
 let sessionsCollection;
 let lobbiesCollection;
 let gamesCollection;
+let chatsCollection;
 let gameIdAssociation; // in database as collection "GameIdAssociation"
 
 //Connection to DB, do not close!
@@ -47,6 +48,7 @@ let gameIdAssociation; // in database as collection "GameIdAssociation"
       usersCollection = finalProjectDB.collection("Users");
       sessionsCollection = finalProjectDB.collection("Sessions");
       lobbiesCollection = finalProjectDB.collection("Lobbies");
+      chatsCollection = finalProjectDB.collection("Chats");
    });
 })();
 
@@ -82,6 +84,10 @@ app.post("/signup", upload.none(), function (req, res) {
             country: req.body.country,
             wins: 0,
             losses: 0,
+            points: 0,
+            profilePic: "/assets/default-user.jpg",
+            status: "playing Super Chess II",
+            bio: "Super Chess II player",
             joinedDate: req.body.joinedDate
          };
          usersCollection.insertOne(newUser, (err, result) => {
@@ -98,25 +104,10 @@ app.post("/signup", upload.none(), function (req, res) {
                { sessionId: newSessionId, user: req.body.username },
                (err, result) => {
                   if (err) throw err;
-                  console.log(
-                     `DB: Successfully inserted user ${
-                     req.body.username
-                     } into Users collection`
-                  );
-
-                  const newSessionId = generateId();
-                  sessionsCollection.insertOne(
-                     { sessionId: newSessionId, user: req.body.username },
-                     (err, result) => {
-                        if (err) throw err;
-                        console.log(
-                           "DB: Successfully added entry to Sessions collection"
-                        );
-                        res.cookie("sid", newSessionId);
-                        res.send(
-                           JSON.stringify({ success: true, username: req.body.username })
-                        );
-                     }
+                  console.log("DB: Successfully added entry to Sessions collection");
+                  res.cookie("sid", newSessionId);
+                  res.send(
+                     JSON.stringify({ success: true, username: req.body.username })
                   );
                }
             );
@@ -192,6 +183,72 @@ app.get("/verify-cookie", function (req, res) {
          res.send(JSON.stringify({ success: true, username: result[0].user }));
       });
 });
+//***************************GET USER PROFILE*************************************8 */
+app.post("/get-user-profile", upload.none(), function (req, res) {
+   if (req.body.username === undefined) {
+      res.send({ success: false });
+   }
+   if (usersCollection === undefined) {
+      res.send({ success: false });
+   }
+   let reqUsername = req.body.username;
+   usersCollection.find({ username: reqUsername }).toArray((err, result) => {
+      console.log("user profile lookup");
+      console.log(result);
+      let userProfile = {
+         username: result[0].username,
+         statusMessage: result[0].statusMessage,
+         bio: result[0].bio,
+         profilePic: result[0].profilePic
+      };
+      if (userProfile.profilePic === undefined) {
+         userProfile.profilePic = "/assets/default-user.png";
+      }
+      if (userProfile.statusMessage === undefined) {
+         userProfile.statusMessage = "";
+      }
+      if (userProfile.bio === undefined) {
+         userProfile.bio = "";
+      }
+      console.log("user profile lookup");
+      console.log(userProfile);
+      userProfile = JSON.stringify(userProfile);
+      res.send(userProfile);
+   });
+});
+//***************************CHANGE USER PROFILE**************************************/
+app.post("/change-user-profile", upload.none(), function (req, res) {
+   console.log(req.cookies.sid);
+   if (req.cookies.sid === undefined) {
+      return { success: false };
+   }
+   let newInfo = req.body;
+   sessionsCollection
+      .find({ sessionId: req.cookies.sid })
+      .toArray((err, result) => {
+         console.log(result[0]);
+         usersCollection
+            .find({ username: result[0].user })
+            .toArray((err, result) => {
+               console.log(result[0]);
+               usersCollection.update(
+                  { _id: result[0]._id },
+                  {
+                     $set: {
+                        statusMessage: newInfo.statusMessage,
+                        bio: newInfo.bio,
+                        profilePic: newInfo.profilePic
+                     }
+                  },
+                  (err, result) => {
+                     if (err) throw err;
+                     console.log(`DB: editing user information: ${"username"}`);
+                     res.send(JSON.stringify({ success: true }));
+                  }
+               );
+            });
+      });
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ LEADERBOARD & LOBBY RELATED ************//
@@ -213,8 +270,9 @@ app.get("/get-leaderboard", upload.none(), function (req, res) {
 //************ CREATE LOBBY ************//
 app.post("/create-lobby", upload.none(), function (req, res) {
    //Lobby to be inserted
+   let newLobbyId = generateId();
    const newLobby = {
-      _id: generateId(),
+      _id: newLobbyId,
       playerOne: req.body.currentUser,
       playerTwo: "",
       readyPlayerOne: false,
@@ -224,7 +282,6 @@ app.post("/create-lobby", upload.none(), function (req, res) {
 
    //Insert lobby into the database
    lobbiesCollection.insertOne(newLobby, (err, result) => {
-      //Add new user to remote database
       if (err) {
          res.send(JSON.stringify({ success: false }));
          throw err;
@@ -235,12 +292,53 @@ app.post("/create-lobby", upload.none(), function (req, res) {
          } into lobby collection`
       );
       console.log(`New LobbyId: ${newLobby._id}`);
-      //use this result to get the _Id from the lobby object
-      // console.log(result);
+   });
+
+   //We are now creating the lobby chat right after creating the lobby.
+   const newLobbyChat = {
+      _id: newLobbyId,
+      messageList: [],
+      creator: req.body.currentUser,
+      creationTime: new Date().toLocaleString()
+   };
+
+   //Insert lobby chat into the database
+   chatsCollection.insertOne(newLobbyChat, (err, result) => {
+      if (err) {
+         res.send(JSON.stringify({ success: false }));
+         throw err;
+      }
+      console.log(
+         `DB: Successfully added lobby chat created by ${
+         newLobbyChat.currentUser
+         } into lobby chat collection`
+      );
+      console.log(
+         `The added chats ID, ${newLobbyChat._id}, is the same as the LobbyId, ${
+         req.body.lobbyId
+         }.`
+      );
+
+      //The newLobby._id will also be used for the LobbyChat id
       res.send(JSON.stringify({ success: true, lobbyId: newLobby._id }));
-      //res.send(JSON.stringify(result));
    });
 });
+
+//************ GET LOBBY CHAT ************//
+// app.post("/get-lobby-chat", upload.none(), function(req, res) {
+//    const currentLobbyId = req.body.currentLobbyId;
+
+//    chatsCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
+//      if (err) throw err;
+//      if (result[0] === undefined) {
+//        res.send(JSON.stringify({ success: false }));
+//        return;
+//      }
+
+//      //Send back lobby object in response
+//      res.send(JSON.stringify(result[0]));
+//    });
+//  });
 
 //************ GET LOBBIES ************//
 app.get("/get-lobbies", upload.none(), function (req, res) {
@@ -418,7 +516,7 @@ io.on("connection", socket => {
          .sort({ wins: -1, losses: 1 })
          .toArray((err, result) => {
             if (err) throw err;
-            // console.log("Leaderboard:", result);
+            console.log("Leaderboard:", result);
             io.emit("leaderboard-data", result);
          });
    });
@@ -428,6 +526,43 @@ io.on("connection", socket => {
          // console.log("Lobbies from socket: ", result)
          io.emit("lobby-list-data", result);
       });
+   });
+
+   ///bookmark
+   socket.on("refresh-lobby-chat", lobbyId => {
+      chatsCollection.find({ _id: lobbyId }).toArray((err, result) => {
+         if (err) throw err;
+         if (result[0] === undefined) {
+            return;
+         }
+         console.log("REFRESHING LOBBYCHAT.");
+         //result[0] is a chat object that has messageList
+         io.in(lobbyId).emit("lobby-chat", result[0].messageList);
+      });
+   });
+
+   socket.on("sent-message", data => {
+      console.log("!!!!!!!!!!!!!!My data", data);
+      console.log(Object.values(data));
+      let messageToBeAdded = data.message;
+
+      chatsCollection.updateOne(
+         { _id: data.lobbyId },
+         { $push: { messageList: { ...messageToBeAdded } } },
+         (err, result) => {
+            if (err) throw err;
+            console.log(`DB: Updating message list for chat id: ${data.lobbyId}`);
+
+            //THIS MIGHT WORK INSTEAD OF BELOW, TRY WHEN CHAT IS WORKING: io.emit("refresh-lobby-chat", data.lobbyId);
+            chatsCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+               if (err) throw err;
+               if (result[0] === undefined) {
+                  return;
+               }
+               io.in(data.lobbyId).emit("lobby-chat", result[0].messageList);
+            });
+         }
+      );
    });
 
    socket.on("leave-lobby", data => {
@@ -512,6 +647,8 @@ io.on("connection", socket => {
       );
       console.log("join game recieved: ", lobbyId);
       socket.join(lobbyId);
+      console.log("-- game INST --");
+      console.log(gameEngine.getGameInst(lobbyId));
       if (gameEngine.getGameInst(lobbyId) === undefined) {
          console.log("creating game instance: ", lobbyId);
          if (lobbyId === undefined) {
@@ -526,51 +663,46 @@ io.on("connection", socket => {
          }
          lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
             let originLobby = result[0];
-            console.log("-- origin lobby --");
-            console.log(originLobby[0]);
-            if (originLobby !== undefined) {
-               console.log("-- duplicate --");
-               console.log(originLobby[0]);
-
-               let newGameId = gameEngine.createGameInst(
-                  originLobby.playerOne,
-                  originLobby.playerTwo,
-                  army,
-                  army,
-                  lobbyId
-               );
-               UserGameAssoc[originLobby.playerOne] = newGameId;
-               UserGameAssoc[originLobby.playerTwo] = newGameId;
-               console.log("new Game Id: ", newGameId);
-            } else {
-               console.log("origin Lobby undefined");
-            }
-            //_________________________
+            let newGameId = gameEngine.createGameInst(
+               originLobby.playerOne,
+               originLobby.playerTwo,
+               army,
+               army,
+               lobbyId
+            );
+            UserGameAssoc[originLobby.playerOne] = newGameId;
+            UserGameAssoc[originLobby.playerTwo] = newGameId;
+            console.log("new Game Id: ", newGameId);
+            io.in(lobbyId).emit("game-created", "game started");
          });
+      } else {
+         io.in(lobbyId).emit("game-created", "game started");
       }
-      console.log("game in session, sending game");
-      io.in(lobbyId).emit("game-data", gameEngine.getGameInst(lobbyId + ""));
    });
 
    socket.on("get-game-data", message => {
       console.log("get data request");
       console.log(message.gameId + "");
-
-      let gameData = gameEngine.getGameInst(message.gameId + ""); //temporary gameId for testing, use collection later...
+      let gameData = gameEngine.getGameInst(message.gameId + "");
       if (gameData !== undefined) {
          console.log(gameData.map[0].actorId);
       } else {
          console.log("game is undefined in get-game-data");
       }
-      io.emit("game-data", gameData);
+      io.in(message.gameId).emit("game-data", gameData);
    });
 
    socket.on("game-input", input => {
       console.log("user assoc");
       console.log(UserGameAssoc);
       console.log("userCookie: ", socket.request.headers.cookie);
+      if (socket.request.headers.cookie === undefined) {
+         socket.emit({ success: false });
+         return;
+      }
       let usercookie = cookie.parse(socket.request.headers.cookie);
       console.log("userCookie: ", usercookie.sid);
+
       sessionsCollection
          .find({ sessionId: usercookie.sid })
          .toArray((err, result) => {
@@ -581,13 +713,13 @@ io.on("connection", socket => {
                return;
             }
             console.log("input from user: ", result[0].user);
-
+            let gameId = UserGameAssoc[result[0].user];
             let changes = gameEngine.handlerUserInput({
-               gameId: UserGameAssoc[result[0].user],
+               gameId: gameId,
                action: input,
                team: result[0].user
             });
-            socket.emit("game-state-change", changes);
+            io.in(gameId).emit("game-state-change", changes);
          });
    });
 
