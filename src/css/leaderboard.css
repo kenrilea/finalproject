@@ -26,7 +26,7 @@
 }
 
 .leader-header {
-  background-color: orange;
+  background-color: rgba(33,150,243,0.7)
 }
 
 .leader-body {
@@ -43,7 +43,7 @@
 }
 
 .leader-row:hover {
-  background-color: orange;
+  background-color: rgba(33,150,243,0.7)
 }
 
 .center-text {
@@ -54,7 +54,7 @@
   height: 90vh;
   width: 100%;
   overflow: auto;
-  padding-bottom: 35vh;
+  padding-bottom: 50vh;
 }
 #scrolltable table {
   border-collapse: collapse;

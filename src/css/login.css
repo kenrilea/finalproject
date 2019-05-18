@@ -43,7 +43,7 @@
  }
  
  .coolInput:focus ~ span {
-   transform: translate(-50%, 0) scaleX(1);
+   transform: translate(-50%, 0) scaleX(0.9);
    opacity: 1;
  }
 

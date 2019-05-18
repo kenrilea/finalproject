@@ -9,12 +9,12 @@ class TopBar extends Component {
    render = () => {
 
       return (
-         <nav className="topBar material-shadow">
+         <div className="topBar material-shadow">
             <Link className="link" to={"/"}>SUPER CHESS II</Link>
             <Link className="link" to={"/leaderboard"}>Leaderboard</Link>
-            <Link className="link" to={"/rules"}>How to Play</Link>
+            <Link className="link" to={"/how-to-play"}>How to Play</Link>
             <Link className="link" to={"/about"}>About</Link>
-         </nav>
+         </div>
       )
    }
 }

@@ -10,14 +10,14 @@ import socket from "./SocketSettings.jsx"
 
 import { AnimateGroup } from "react-animate-mount"
 
-import "../css/lobbiesList.css";
-
 class UnconnectedLobbiesList extends Component {
 
    constructor(props) {
       super(props)
       this.state = {
-         lobbies: []
+         lobbies: [],
+         lobbyCount: 0,
+         fullLobbies: 0
       }
    }
 
@@ -28,7 +28,9 @@ class UnconnectedLobbiesList extends Component {
       socket.on("lobby-list-data", data => {
          console.log("Socket: receiving data from backend: ", data)
          this.setState({
-            lobbies: data
+            lobbies: data.lobbies,
+            lobbyCount: data.lobbyCount,
+            fullLobbies: data.fullLobbies
          })
       })
 
@@ -85,6 +87,35 @@ class UnconnectedLobbiesList extends Component {
          });
    };
 
+   renderElems = () => {
+      if (this.state.lobbies === undefined) {
+         socket.emit("refresh-lobby-list", () => {
+            return this.state.lobbies.map(elem => {
+               return (
+                  <LobbiesListElem
+                     key={elem._id}
+                     lobbyId={elem._id}
+                     playerOne={elem.playerOne}
+                     playerTwo={elem.playerTwo}
+                  />
+               );
+            })
+         })
+      }
+      else {
+         return this.state.lobbies.map(elem => {
+            return (
+               <LobbiesListElem
+                  key={elem._id}
+                  lobbyId={elem._id}
+                  playerOne={elem.playerOne}
+                  playerTwo={elem.playerTwo}
+               />
+            );
+         })
+      }
+   }
+
    render = () => {
       if (!this.props.loggedIn) {
          return <Redirect to="/" />;
@@ -98,22 +129,16 @@ class UnconnectedLobbiesList extends Component {
          <div className="lobbies-list-background">
             <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
 
-               <div className="lobbies-list-button-cont">
-                  <h3 className="lobbies-label">Lobbies</h3>
+               <div className="card-top-cont">
+                  <h3 className="card-top-label">Lobbies</h3>
+                  <label className="card-top-sub-label"> Active: {this.state.fullLobbies} / {this.state.lobbyCount} </label>
                   <button className="round-button" onClick={this.createLobby}>+</button>
                </div>
-               <div className="lobbies-list-container">
+               <div className="card-scrollable-cont">
                   <AnimateGroup>
-                     {this.state.lobbies.map(elem => {
-                        return (
-                           <LobbiesListElem
-                              key={elem._id}
-                              lobbyId={elem._id}
-                              playerOne={elem.playerOne}
-                              playerTwo={elem.playerTwo}
-                           />
-                        );
-                     })}
+                     {
+                        this.renderElems()
+                     }
                   </AnimateGroup>
                </div>
             </div>
