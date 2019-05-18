@@ -84,6 +84,10 @@ app.post("/signup", upload.none(), function(req, res) {
         country: req.body.country,
         wins: 0,
         losses: 0,
+        points: 0,
+        profilePic: "/assets/default-user.jpg",
+        status: "playing Super Chess II",
+        bio: "Super Chess II player",
         joinedDate: req.body.joinedDate
       };
       usersCollection.insertOne(newUser, (err, result) => {
@@ -177,6 +181,72 @@ app.get("/verify-cookie", function(req, res) {
       }
       // console.log("Username found in db from sessionId: ", result[0].user)
       res.send(JSON.stringify({ success: true, username: result[0].user }));
+    });
+});
+//***************************GET USER PROFILE*************************************8 */
+app.post("/get-user-profile", upload.none(), function(req, res) {
+  if (req.body.username === undefined) {
+    res.send({ success: false });
+  }
+  if (usersCollection === undefined) {
+    res.send({ success: false });
+  }
+  let reqUsername = req.body.username;
+  usersCollection.find({ username: reqUsername }).toArray((err, result) => {
+    console.log("user profile lookup");
+    console.log(result);
+    let userProfile = {
+      username: result[0].username,
+      statusMessage: result[0].statusMessage,
+      bio: result[0].bio,
+      profilePic: result[0].profilePic
+    };
+    if (userProfile.profilePic === undefined) {
+      userProfile.profilePic = "/assets/default-user.png";
+    }
+    if (userProfile.statusMessage === undefined) {
+      userProfile.statusMessage = "";
+    }
+    if (userProfile.bio === undefined) {
+      userProfile.bio = "";
+    }
+    console.log("user profile lookup");
+    console.log(userProfile);
+    userProfile = JSON.stringify(userProfile);
+    res.send(userProfile);
+  });
+});
+//***************************CHANGE USER PROFILE**************************************/
+app.post("/change-user-profile", upload.none(), function(req, res) {
+  console.log(req.cookies.sid);
+  if (req.cookies.sid === undefined) {
+    return { success: false };
+  }
+  let newInfo = req.body;
+  sessionsCollection
+    .find({ sessionId: req.cookies.sid })
+    .toArray((err, result) => {
+      console.log(result[0]);
+      usersCollection
+        .find({ username: result[0].user })
+        .toArray((err, result) => {
+          console.log(result[0]);
+          usersCollection.update(
+            { _id: result[0]._id },
+            {
+              $set: {
+                statusMessage: newInfo.statusMessage,
+                bio: newInfo.bio,
+                profilePic: newInfo.profilePic
+              }
+            },
+            (err, result) => {
+              if (err) throw err;
+              console.log(`DB: editing user information: ${"username"}`);
+              res.send(JSON.stringify({ success: true }));
+            }
+          );
+        });
     });
 });
 
@@ -606,9 +676,8 @@ io.on("connection", socket => {
         io.in(lobbyId).emit("game-created", "game started");
       });
     } else {
-      io.in(lobbyId).emit("game-created", "game started")
+      io.in(lobbyId).emit("game-created", "game started");
     }
-    io.in(lobbyId).emit("test-socket-game", "cool ");
   });
 
   socket.on("get-game-data", message => {
