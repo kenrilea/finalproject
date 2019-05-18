@@ -5,6 +5,7 @@ import { Redirect } from "react-router-dom";
 import socket from "./SocketSettings.jsx"
 
 import "../css/lobby.css";
+import LobbyChat from "./LobbyChat.jsx";
 
 class UnconnectedLobby extends Component {
 
@@ -193,7 +194,7 @@ class UnconnectedLobby extends Component {
             <div className={"animated-fade-in animated-grow-bounce card-container material-shadow"}>
 
                <div className="card-top-cont">
-                  <div className="card-top-label"> Lobby id: {this.props.currentLobbyId} </div>
+                  <div className="card-top-label"> Lobby <label className="card-top-sub-label2"> id: {this.props.currentLobbyId} </label></div>
                   <button className="pure-material-button-contained" onClick={this.leaveLobby}>Leave</button>
                </div>
 
@@ -218,6 +219,7 @@ class UnconnectedLobby extends Component {
                </div>
 
             </div>
+            <LobbyChat className="chatComponent" />
          </div>
       );
    };

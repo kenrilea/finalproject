@@ -143,12 +143,19 @@ div {
    font-size: 3em;
    font-weight: bold;
    line-height: 6vh;
+   display: flex;
 }
 
 .card-top-sub-label {
    font-size: 1.5em;
    vertical-align: bottom;
    line-height: 8vh;
+}
+
+.card-top-sub-label2 {
+   font-size: 0.5em;
+   line-height: 8vh;
+   margin-left: 20px;
 }
 
 .card-top-cont {
