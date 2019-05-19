@@ -7,6 +7,8 @@ import mockLeaderboardData from "./mockLeaderboardData.jsx";
 
 import socket from "./SocketSettings.jsx"
 
+import Spinner from "./Spinner.jsx"
+
 class Leaderboard extends Component {
    constructor(props) {
       super(props);
@@ -34,15 +36,14 @@ class Leaderboard extends Component {
       {
          console.log("State : ", this.state);
       }
-      // {
-      //    if (this.state.leaderboard.length === 0) {
-      //       return (
-      //          <div className="lobbies-list-background">
-      //             <div className="card-container">Loading...</div>
-      //          </div>
-      //       );
-      //    }
-      // }
+
+      {
+         if (this.state.leaderboard.length === 0) {
+            return (
+               <Spinner />
+            );
+         }
+      }
 
       return (
 
