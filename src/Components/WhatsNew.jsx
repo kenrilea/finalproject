@@ -8,8 +8,8 @@ class WhatsNew extends Component {
 
    render = () => {
       return (
-         <div className="news-container">
-            <h3 className="news-label">What's new?</h3>
+         <div className="card-container-narrow animated-grow-bounce material-shadow vert-scroll">
+            <h3 className="card-top-label">What's new?</h3>
             <ul>
                <li className="news-element">05/16/19: Version 1.5 is here - We can't wait to release this game for y'all!</li>
                <li className="news-element">05/11/19: Version 1.0 begins! Stay tuned for future updates</li>
