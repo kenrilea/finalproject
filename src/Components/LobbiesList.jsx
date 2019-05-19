@@ -34,7 +34,7 @@ class UnconnectedLobbiesList extends Component {
       //Delay to allow for proper animation on load
       setTimeout(() => {
          socket.emit("refresh-lobby-list")
-      }, 600)
+      }, 700)
 
       // this.getLobbies()
    }
@@ -88,12 +88,8 @@ class UnconnectedLobbiesList extends Component {
    };
 
    renderElems = () => {
-      if (this.state.lobbies === undefined) {
-         return (
-            <Spinner />
-         )
-      }
-      else {
+
+      {
          return this.state.lobbies.map(elem => {
             return (
                <LobbiesListElem
@@ -114,6 +110,12 @@ class UnconnectedLobbiesList extends Component {
 
       if (this.props.inLobby) {
          return <Redirect to={"lobby/" + this.props.lobbyToJoinId} />;
+      }
+
+      if (this.state.lobbies === undefined) {
+         return (
+            <Spinner />
+         )
       }
 
       return (
