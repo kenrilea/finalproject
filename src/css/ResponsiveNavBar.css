@@ -15,7 +15,8 @@ li {
 .logo {
    color: rgba(50,50,50,1);
    letter-spacing: 5px;
-   font-size: 20px;
+   font-size: 25px;
+   font-weight: 800;
 }
 
 .nav-links {
@@ -37,7 +38,7 @@ li {
    text-decoration: none;
    letter-spacing: 3px;
    font-weight: bold;
-   font-size: 14px;
+   font-size: 16px;
    
 }
 
@@ -46,7 +47,7 @@ li {
    text-decoration: none;
    letter-spacing: 3px;
    font-weight: bold;
-   font-size: 14px;
+   font-size: 16px;
    
 }
 
@@ -58,8 +59,8 @@ li {
 
 .burger div {
    width: 25px;
-   height: 3px;
-   margin: 2px;
+   height: 4px;
+   margin: 3px;
    background-color: rgba(50,50,50,1);
 
 }
@@ -70,7 +71,7 @@ li {
 @media screen and (max-width:1024px) {
    .nav-links {
       display: flex;
-      width: 60%;
+      width: 65%;
       justify-content: space-around;
       z-index: 1001;
    }
@@ -78,7 +79,7 @@ li {
 
 /* ///////////////////////////////////////////////////// */
 
-@media screen and (max-width:768px) {
+@media screen and (max-width: 768px) {
    
    .nav-links {
       position: absolute;
@@ -97,13 +98,96 @@ li {
    }
 
    .nav-link-hide {
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
+      /* opacity: 0; */
+      transform: translateX(1000px);
+      transition: all 1.5s ease-out 1.5;
    }
 
    .nav-link-show {
       opacity: 1;
-      transition: opacity 1.5s ease-in-out;
+      transform: translateX(0px);
+      transition: all 1.8s ease-out 1.5s;
+   }
+
+   .burger {
+      display: block;
+   }
+   
+   .nav-active {
+      position: absolute;
+      right: 0px;
+      height: 90vh;
+      top:10vh;
+      background-color: rgba(250, 250, 250, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50%;
+      transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+      animation: slide-bounce 0.5s ease-in-out;
+      opacity: 1;
+
+   }
+
+}
+
+@keyframes slide-bounce {
+   0% {
+      transform: translateX(100%)
+   }
+   65% {
+      transform: translateX(0%)
+   }
+   80% {
+      transform: translateX(5%)
+   }  
+   100% {
+      transform: translateX(3%)
+   }
+}
+
+/* iPhone 8 rendered pixel width */
+@media screen and (device-width:375px) {
+
+   .burger div {
+      width: 50px;
+      height: 8px;
+      margin: 6px;
+      
+   }
+
+   .logo {
+      font-size: 50px;
+   }
+   
+   .nav-links {
+      position: absolute;
+      right: 0px;
+      height: 90vh;
+      top:10vh;
+      background-color: rgba(250, 250, 250, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50%;
+      transform: translateX(100%);
+      opacity: 0.4;
+      transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+      z-index: 1001;
+   }
+
+   .nav-link-hide {
+      /* opacity: 0; */
+      transform: translateX(1000px);
+      transition: all 1.5s ease-out 1.5;
+      font-size: 30px;
+   }
+
+   .nav-link-show {
+      opacity: 1;
+      transform: translateX(0px);
+      transition: all 1.8s ease-out 1.5s;
+      font-size: 30px;
    }
 
    .burger {
