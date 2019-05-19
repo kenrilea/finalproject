@@ -137,11 +137,13 @@ let defaultArmy = [
   ],
   ["", "", "", "", "", "", "", ""]
 ];
+let charTypes = ["pawn", "knight", "archer", "catapult", "legionary"];
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };
 module.exports = {
   moveinput,
   defaultArmyA,
   defaultArmyB,
   unitTypes,
-  defaultArmy
+  defaultArmy,
+  charTypes
 };

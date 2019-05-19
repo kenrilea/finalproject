@@ -36,6 +36,7 @@ let endGame = (gameId, team) => {
   return winner;
 };
 let editGameData = (gameId, mods) => {
+  console.log("editing game data");
   let gameTurn =
     gameInstances[gameId]["players"][
       parseInt(gameInstances[gameId]["turn"]) %
@@ -349,8 +350,6 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 let handlerUserInput = input => {
   let changes = [];
   let success = true;
-  console.log("input");
-  console.log(input);
   if (input.action === undefined) {
     return { changes, successs: false };
   }

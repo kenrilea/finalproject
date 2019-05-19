@@ -5,7 +5,6 @@ let createArmy = (army, team, side) => {
   if (side > 0) {
     side = side - 1;
   }
-  console.log("side: " + side);
   let addArmyMod = [];
   let armyTemp = army;
   army = [];
@@ -20,7 +19,10 @@ let createArmy = (army, team, side) => {
     });
   });
   army = army.filter(char => {
-    return char !== undefined;
+    if (char === undefined) {
+      return false;
+    }
+    return char.charType !== undefined;
   });
   army.forEach(char => {
     let newActorMod = actorUtils.dispatch({
@@ -36,6 +38,8 @@ let createArmy = (army, team, side) => {
     addArmyMod.push(newActorMod);
     addArmyMod.push(newCharMod);
   });
+
+  console.log("army mod length: " + addArmyMod.length);
   return addArmyMod;
 };
 
