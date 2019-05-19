@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./../css/armyBuilder.css";
 
+import { Redirect } from "react-router-dom";
+
 let charTypes = ["pawn", "knight", "archer", "catapult", "legionary"];
 
 class UnconnectedArmyBuilder extends Component {
@@ -19,7 +21,8 @@ class UnconnectedArmyBuilder extends Component {
          selectedTile: { x: -1, y: -1 },
          isTileSelected: false,
          selectedTileRef: undefined,
-         previousImg: undefined
+         previousImg: undefined,
+         set: false
       };
    }
 
@@ -98,13 +101,18 @@ class UnconnectedArmyBuilder extends Component {
       stringArmy = stringArmy.join("_");
       console.log(stringArmy);
       data.append("armyString", stringArmy);
-      fetch("/set-army", { method: "Post", body: data });
+      fetch("/set-army", { method: "Post", body: data })
+         .then(() => {
+            this.setState({
+               set: true
+            })
+         })
    };
 
    renderSelectChar = () => {
       // if (this.state.isTileSelected) {
       return (
-         <div className={"armyBuildCharDiv"}>
+         <div className={"armyBuildCharDiv material-shadow2"}>
             <img
                onClick={this.handlerClickChar}
                id={"pawn"}
@@ -215,12 +223,17 @@ class UnconnectedArmyBuilder extends Component {
             </div>
          );
       }
+      if (this.state.set) {
+         return (
+            <Redirect to="/lobbies-list" />
+         )
+      }
       return (
          <div className={"card-container-army-builder material-shadow animated-grow-bounce animated-fade-in"}>
             <div className="army-builder-top-cont">
                <h3 className="card-top-label">Build your army</h3>
             </div>
-            <label className="army-sub-label">Select tile to add a character</label>
+            <label className="army-sub-label">Select a grass tile to add a character</label>
             <div className="army-map-and-selector">
                {this.renderMap()}
                {this.renderSelectChar()}

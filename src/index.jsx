@@ -43,7 +43,7 @@ let root = (
                      <Route exact={true} path="/signup" component={Signup} />
                      <Route
                         exact={true}
-                        path="/lobbies_list"
+                        path="/lobbies-list"
                         component={LobbiesList}
                      />
                      <Route exact={true} path="/lobby/:lobbyId" component={Lobby} />

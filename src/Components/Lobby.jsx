@@ -180,7 +180,7 @@ class UnconnectedLobby extends Component {
 
       //Redirect to lobby list if !props.inLobby
       if (!this.props.inLobby) {
-         return <Redirect to={"/lobbies_list"} />
+         return <Redirect to={"/lobbies-list"} />
       }
 
       //If both players have pressed ready, redirect to the appropriate game page

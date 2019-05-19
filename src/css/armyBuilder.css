@@ -44,7 +44,10 @@
   align-content: center;
   min-height: 350px;
   height: 400px;
-  width: 55px;
+  width: 75px;
+  background: #BDBDBD;
+  padding: 5px;
+  border-radius: 5px;
 }
 .armyBuilderMainDiv {
   z-index: 500;
@@ -159,6 +162,7 @@
       min-width: 330px;
       height: 52vh;
       justify-content: space-between;
+      margin: 0 auto;
       margin-bottom: 30px;
    }
    

@@ -33,6 +33,7 @@ class UnconnectedSideBar extends Component {
       return (
          <div className="sideBar animated-fade-in material-shadow">
             <Profile />
+            <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
             <button className="material-button signout-button top-marge" onClick={this.signout} >
                Sign Out
             </button>
