@@ -17,18 +17,19 @@ li {
    letter-spacing: 5px;
    font-size: 25px;
    font-weight: 800;
+
 }
 
 .nav-links {
    display: flex;
-   width: 45%;
+   width: 55%;
    justify-content: space-around;
    z-index: 1001;
 }
 
 .nav-active {
    display: flex;
-   width: 45%;
+   width: 55%;
    justify-content: space-around;
    z-index: 1001;
 }
