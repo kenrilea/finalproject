@@ -189,8 +189,7 @@ class UnconnectedLobby extends Component {
       }
 
       return (
-         <div className="lobbies-list-background">
-
+         <div>
             <div className={"animated-fade-in animated-grow-bounce card-container material-shadow"}>
 
                <div className="card-top-cont">
@@ -200,18 +199,18 @@ class UnconnectedLobby extends Component {
 
                <div className="players-div" >
 
-                  <div className={"PlayerOneLobbyDiv"}>
+                  <div className={"player-div"}>
                      <img src={this.renderAvatar(this.state.readyPlayerOne, true)} />
                      <div className={"lobbyCenterContent"}>
-                        <p>{this.state.playerOne + " " + this.renderReadyLabel(true)}</p>
+                        <label>{this.state.playerOne + " " + this.renderReadyLabel(true)}</label>
                         {this.renderReadyButtonOne()}
                      </div>
                   </div>
 
-                  <div className={"PlayerTwoLobbyDiv"}>
+                  <div className={"player-div"}>
                      <img src={this.renderAvatar(this.state.readyPlayerTwo, false)} />
                      <div className={"lobbyCenterContent"}>
-                        <p>{this.state.playerTwo + " " + this.renderReadyLabel(false)}</p>
+                        <label>{this.state.playerTwo + " " + this.renderReadyLabel(false)}</label>
                         {this.renderReadyButtonTwo()}
                      </div>
                   </div>
