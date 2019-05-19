@@ -28,7 +28,9 @@ class Leaderboard extends Component {
          })
       })
 
-      socket.emit("refresh-leaderboard-data")
+      setTimeout(() => {
+         socket.emit("refresh-leaderboard-data")
+      }, 600)
 
    };
 

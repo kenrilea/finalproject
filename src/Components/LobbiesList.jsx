@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import mockLobbies from "./mockLobbies.jsx";
-
 import LobbiesListElem from "./LobbiesListElem.jsx";
-
 import socket from "./SocketSettings.jsx"
-
 import { AnimateGroup } from "react-animate-mount"
+import Spinner from "./Spinner.jsx"
+
 
 class UnconnectedLobbiesList extends Component {
 
@@ -33,8 +31,10 @@ class UnconnectedLobbiesList extends Component {
             fullLobbies: data.fullLobbies
          })
       })
-
-      socket.emit("refresh-lobby-list")
+      //Delay to allow for proper animation on load
+      setTimeout(() => {
+         socket.emit("refresh-lobby-list")
+      }, 600)
 
       // this.getLobbies()
    }
@@ -89,18 +89,9 @@ class UnconnectedLobbiesList extends Component {
 
    renderElems = () => {
       if (this.state.lobbies === undefined) {
-         socket.emit("refresh-lobby-list", () => {
-            return this.state.lobbies.map(elem => {
-               return (
-                  <LobbiesListElem
-                     key={elem._id}
-                     lobbyId={elem._id}
-                     playerOne={elem.playerOne}
-                     playerTwo={elem.playerTwo}
-                  />
-               );
-            })
-         })
+         return (
+            <Spinner />
+         )
       }
       else {
          return this.state.lobbies.map(elem => {
