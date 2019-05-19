@@ -7,48 +7,21 @@
 
 .players-div {
    display: flex;
+   justify-content: space-around;
+   padding-top: 20px;
 }
 
-.PlayerOneLobbyDiv {
+.player-div{
+
 }
-.PlayerTwoLobbyDiv {
-  justify-content: end;
-  margin-left: auto;
-}
+
 .lobbyCenterContent {
+   display: flex;
+   flex-direction: column;
   text-align: center;
+  align-items: center;
+  height: 15vh;
+  justify-content: space-around;
 }
-.lobbyButtonNotReady {
-  display: inline-block;
-  width: 100px;
-  padding: 5px;
-  background: transparent;
-  color: black;
-  border: 2px solid black;
-  border-radius: 5px;
-  font-size: 1em;
-  font-family: "Rubik", sans-serif;
-  text-align: center;
-  outline: none;
-  text-decoration: none;
-  margin-top: 15px;
-  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  border-color: red;
-}
-.lobbyButtonReady {
-  display: inline-block;
-  width: 100px;
-  padding: 5px;
-  background: transparent;
-  color: black;
-  border: 2px solid black;
-  border-radius: 5px;
-  font-size: 1em;
-  font-family: "Rubik", sans-serif;
-  text-align: center;
-  outline: none;
-  text-decoration: none;
-  margin-top: 15px;
-  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  border-color: green;
-}
+
+
