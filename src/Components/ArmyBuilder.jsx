@@ -5,6 +5,7 @@ import "./../css/armyBuilder.css";
 let charTypes = ["pawn", "knight", "archer", "catapult", "legionary"];
 
 class UnconnectedArmyBuilder extends Component {
+
    constructor(props) {
       super(props);
       this.state = {
@@ -21,6 +22,7 @@ class UnconnectedArmyBuilder extends Component {
          previousImg: undefined
       };
    }
+
    componentDidMount = () => {
       //  console.log("yup");
 
@@ -47,6 +49,7 @@ class UnconnectedArmyBuilder extends Component {
          });
 
    };
+
    handlerClickTileElem = event => {
       if (this.state.selectedTileRef !== undefined) {
          console.log(this.state.selectedTileRef);
@@ -69,6 +72,7 @@ class UnconnectedArmyBuilder extends Component {
          selectedTile: { x: parseInt(tilePos[1]), y: parseInt(tilePos[2]) }
       });
    };
+
    handlerClickChar = event => {
       let changeArmy = this.state.army;
 
@@ -85,6 +89,7 @@ class UnconnectedArmyBuilder extends Component {
       }
       this.setState({ isTileSelected: false });
    };
+
    handlerClickSetArmy = event => {
       let data = new FormData();
       let stringArmy = this.state.army.map(row => {
@@ -95,50 +100,52 @@ class UnconnectedArmyBuilder extends Component {
       data.append("armyString", stringArmy);
       fetch("/set-army", { method: "Post", body: data });
    };
+
    renderSelectChar = () => {
-      if (this.state.isTileSelected) {
-         return (
-            <div className={"armyBuildCharDiv"}>
-               <img
-                  onClick={this.handlerClickChar}
-                  id={"pawn"}
-                  className={"armyBuilderCharSelect"}
-                  src="/assets/char-pawn-blue.png"
-               />
-               <img
-                  id={"legionary"}
-                  onClick={this.handlerClickChar}
-                  className={"armyBuilderCharSelect"}
-                  src="/assets/char-legionary-blue.png"
-               />
-               <img
-                  id={"archer"}
-                  onClick={this.handlerClickChar}
-                  className={"armyBuilderCharSelect"}
-                  src="/assets/char-archer-blue.png"
-               />
-               <img
-                  id={"knight"}
-                  onClick={this.handlerClickChar}
-                  className={"armyBuilderCharSelect"}
-                  src="/assets/char-knight-blue.png"
-               />
-               <img
-                  id={"catapult"}
-                  onClick={this.handlerClickChar}
-                  className={"armyBuilderCharSelect"}
-                  src="/assets/char-catapult-blue.png"
-               />
-               <img
-                  id={""}
-                  onClick={this.handlerClickChar}
-                  className={"armyBuilderCharSelect"}
-                  src="/assets/army-builder-tile.png"
-               />
-            </div>
-         );
-      }
+      // if (this.state.isTileSelected) {
+      return (
+         <div className={"armyBuildCharDiv"}>
+            <img
+               onClick={this.handlerClickChar}
+               id={"pawn"}
+               className={"armyBuilderCharSelect"}
+               src="/assets/char-pawn-blue.png"
+            />
+            <img
+               id={"legionary"}
+               onClick={this.handlerClickChar}
+               className={"armyBuilderCharSelect"}
+               src="/assets/char-legionary-blue.png"
+            />
+            <img
+               id={"archer"}
+               onClick={this.handlerClickChar}
+               className={"armyBuilderCharSelect"}
+               src="/assets/char-archer-blue.png"
+            />
+            <img
+               id={"knight"}
+               onClick={this.handlerClickChar}
+               className={"armyBuilderCharSelect"}
+               src="/assets/char-knight-blue.png"
+            />
+            <img
+               id={"catapult"}
+               onClick={this.handlerClickChar}
+               className={"armyBuilderCharSelect"}
+               src="/assets/char-catapult-blue.png"
+            />
+            <img
+               id={""}
+               onClick={this.handlerClickChar}
+               className={"armyBuilderCharSelect"}
+               src="/assets/army-builder-tile.png"
+            />
+         </div>
+      );
+      // }
    };
+
    renderMap = () => {
       let allActors = [];
       for (let row = 0; row < this.state.width; row++) {
@@ -199,6 +206,7 @@ class UnconnectedArmyBuilder extends Component {
          </div>
       );
    };
+
    render = () => {
       if (this.props.loggedIn !== true) {
          return (
@@ -208,13 +216,20 @@ class UnconnectedArmyBuilder extends Component {
          );
       }
       return (
-         <div className={"armyBuilderMainDiv"}>
-            {this.renderMap()}
-            {this.renderSelectChar()}
-            <button onClick={this.handlerClickSetArmy}>save army</button>
+         <div className={"card-container-army-builder material-shadow animated-grow-bounce animated-fade-in"}>
+            <div className="army-builder-top-cont">
+               <h3 className="card-top-label">Build your army</h3>
+            </div>
+            <label className="army-sub-label">Select tile to add a character</label>
+            <div className="army-map-and-selector">
+               {this.renderMap()}
+               {this.renderSelectChar()}
+            </div>
+            <button className="material-button center-button" onClick={this.handlerClickSetArmy}>save army</button>
          </div>
       );
    };
+
 }
 let mapStateToProps = state => {
    return { loggedIn: state.loggedIn };

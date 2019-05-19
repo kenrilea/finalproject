@@ -73,7 +73,7 @@ class UnconnectedSignup extends Component {
    render = () => {
       return (
          <Popup
-            trigger={<button className="pure-material-button-contained">Sign up!</button>}
+            trigger={<button className="material-button">Sign up!</button>}
             position="bottom center"
             modal
          >
@@ -103,7 +103,7 @@ class UnconnectedSignup extends Component {
                   />
                   <div>
                      <input
-                        className="pure-material-button-contained bottom-margin"
+                        className="material-button bottom-margin"
                         type="submit"
                         value="I'm Ready!"
                      />

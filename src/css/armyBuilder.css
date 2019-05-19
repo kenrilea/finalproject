@@ -4,9 +4,7 @@
   background-color: rgb(45, 142, 34);
   display: block;
 }
-.ArmyBuilderTileImg {
-  width: 50px;
-}
+
 .ArmyBuilderTileDiv {
   width: 50px;
   border: black;
@@ -34,12 +32,19 @@
   width: 5%;
 }
 .armyBuilderCharSelect {
-  width: 6.6%;
+  width: auto;
+  height: 55px;
 }
 .armyBuildCharDiv {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
   text-align: center;
   align-items: center;
   align-content: center;
+  min-height: 350px;
+  height: 400px;
+  width: 55px;
 }
 .armyBuilderMainDiv {
   z-index: 500;
@@ -47,3 +52,118 @@
   align-items: center;
   align-content: center;
 }
+
+.army-map-and-selector {
+   display: flex;
+   width: 100%;
+   min-width: 370px;
+   justify-content: space-around;
+}
+
+.card-container-army-builder {
+   overflow: hidden;
+   /* margin: 0 auto; */
+   min-width: 375px;
+   max-width: 45vw;
+   height: 75vh;
+   background-color: rgba(250, 250, 250, 0.9);
+   padding: 20px;
+   border-radius: 3px;
+   z-index: 1000;
+   right: 0;
+   left: 0;
+   top: 60px;
+   bottom: 0;
+   margin: auto;
+   position: fixed;
+}
+
+.army-builder-top-cont {
+   display: flex;
+   justify-content: space-between;
+   min-width: 375px;
+   height: 7vh;
+   /* border: 1px solid black; */
+   margin: 10px auto 10px auto;
+   border: 2px solid transparent;
+   /* border-bottom-color: black; */
+ }
+
+ .center-button {
+    margin: 15px auto 0 auto;
+    display: block;
+ }
+
+ .army-sub-label {
+    padding-left: 10px;
+    padding-bottom: 10px;
+ }
+
+ @media screen and (max-width: 1024px) {
+
+   .card-container-army-builder { 
+      width: 55vw;
+   }
+
+   .army-builder-top-cont { 
+      height: 4vh;
+   }
+
+   .ArmyBuilderTileImg {
+      width: 40px;
+      height: auto;
+      background-color: rgb(45, 142, 34);
+      display: block;
+    }
+    
+
+    .ArmyBuilderTileDiv {
+      width: 25px;
+      border: black;
+      border-width: 5px;
+      border-style: solid;
+    }
+    .ArmyBuilderTileDivSelected {
+      width: 25px;
+      border: grey;
+      border-width: 2px;
+      border-style: solid;
+    }
+
+    .armyBuilderBoard {
+      text-align: center;
+      justify-self: center;
+      margin: 10%;
+      margin: 1%;
+      width: 200px;
+      height: 200px;
+      background-color: rgb(45, 142, 34);
+    }
+
+    .armyBuildCharDiv {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+     text-align: center;
+     align-items: center;
+     align-content: center;
+     min-height: 55px;
+     height: 50px;
+     width: 100%;
+   }
+
+   .army-map-and-selector {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      min-width: 330px;
+      height: 52vh;
+      justify-content: space-between;
+      margin-bottom: 30px;
+   }
+   
+   .center-button {
+      margin: 0 auto;
+      display: block;
+   }
+} 

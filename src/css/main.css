@@ -162,11 +162,11 @@ div {
    display: flex;
    justify-content: space-between;
    width: 55vw;
-   height: 10vh;
+   height: 7vh;
    /* border: 1px solid black; */
-   margin: 10px auto 10px auto;
+   margin: 0;
    border: 2px solid transparent;
-   border-bottom-color: black;
+   /* border-bottom-color: black; */
  }
 
 .card-top-label {

@@ -1,5 +1,5 @@
 
-.pure-material-button-contained {
+.material-button {
    position: relative;
    display: inline-block;
    box-sizing: border-box;
@@ -62,7 +62,7 @@
 }
 
 /* Overlay */
-.pure-material-button-contained::before, .round-button::before {
+.material-button::before, .round-button::before {
    content: "";
    position: absolute;
    top: 0;
@@ -75,7 +75,7 @@
 }
 
 /* Ripple */
-.pure-material-button-contained::after , .round-button::after {
+.material-button::after , .round-button::after {
    content: "";
    position: absolute;
    left: 50%;
@@ -91,35 +91,35 @@
 }
 
 /* Hover, Focus */
-.pure-material-button-contained:hover,
-.pure-material-button-contained:focus,
+.material-button:hover,
+.material-button:focus,
 .round-button:hover,
 .round-button:focus {
    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
-.pure-material-button-contained:hover::before,
+.material-button:hover::before,
 .round-button:hover::before {
    opacity: 0.08;
 }
 
-.pure-material-button-contained:focus::before,
+.material-button:focus::before,
 .round-button:focus::before {
    opacity: 0.24;
 }
 
-.pure-material-button-contained:hover:focus::before
+.material-button:hover:focus::before
 .round-button:hover:focus::before {
    opacity: 0.3;
 }
 
 /* Active */
-.pure-material-button-contained:active,
+.material-button:active,
 .round-button:active {
    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-.pure-material-button-contained:active::after,
+.material-button:active::after,
 .round-button:active::after {
    opacity: 0.32;
    transform: translate(-50%, -50%) scale(0);
@@ -127,18 +127,18 @@
 }
 
 /* Disabled */
-.pure-material-button-contained:disabled {
+.material-button:disabled {
    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.12);
    box-shadow: none;
    cursor: initial;
 }
 
-.pure-material-button-contained:disabled::before {
+.material-button:disabled::before {
    opacity: 0;
 }
 
-.pure-material-button-contained:disabled::after {
+.material-button:disabled::after {
    opacity: 0;
 }
 

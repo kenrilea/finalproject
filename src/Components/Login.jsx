@@ -94,7 +94,7 @@ class UnconnectedLogin extends Component {
                </div>
                <div>
                   <input
-                     className="pure-material-button-contained top-margin bottom-margin"
+                     className="material-button top-margin bottom-margin"
                      type="submit"
                      value="Login!"
                   />

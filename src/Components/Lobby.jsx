@@ -117,10 +117,10 @@ class UnconnectedLobby extends Component {
       let buttonClass = "lobbyButtonNotReady";
       if (this.props.currentUser === this.state.playerOne) {
          if (this.state.readyPlayerOne === true) {
-            buttonClass = "pure-material-button-contained red";
+            buttonClass = "material-button red";
          }
          if (this.state.readyPlayerOne === false) {
-            buttonClass = "pure-material-button-contained green";
+            buttonClass = "material-button green";
          }
          return (
             <button className={buttonClass} onClick={this.handlerReadyButton}>
@@ -135,10 +135,10 @@ class UnconnectedLobby extends Component {
       if (this.props.currentUser === this.state.playerTwo) {
 
          if (this.state.readyPlayerTwo === true) {
-            buttonClass = "pure-material-button-contained red";
+            buttonClass = "material-button red";
          }
          if (this.state.readyPlayerTwo === false) {
-            buttonClass = "pure-material-button-contained green";
+            buttonClass = "material-button green";
          }
          return (
             <button className={buttonClass} onClick={this.handlerReadyButton}>
@@ -194,7 +194,7 @@ class UnconnectedLobby extends Component {
 
                <div className="card-top-cont">
                   <div className="card-top-label"> Lobby <label className="card-top-sub-label2"> id: {this.props.currentLobbyId} </label></div>
-                  <button className="pure-material-button-contained" onClick={this.leaveLobby}>Leave</button>
+                  <button className="material-button" onClick={this.leaveLobby}>Leave</button>
                </div>
 
                <div className="players-div" >
