@@ -656,9 +656,7 @@ io.on("connection", socket => {
             result[0].playerTwo === ""
          ) {
             lobbiesCollection.remove({ _id: data.lobbyId });
-            lobbiesCollection.find().toArray((err, result) => {
-               io.emit("lobby-list-data", result);
-            });
+           
          }
 
          //If playerTwo is alone in lobby, remove it as well!
@@ -668,7 +666,7 @@ io.on("connection", socket => {
          ) {
             lobbiesCollection.remove({ _id: data.lobbyId });
             lobbiesCollection.find().toArray((err, result) => {
-               io.emit("lobby-list-data", result);
+               // io.emit("lobby-list-data", result);
             });
          }
 
@@ -688,9 +686,7 @@ io.on("connection", socket => {
                      .find({ _id: data.lobbyId })
                      .toArray((err, result) => {
                         io.in(data.lobbyId).emit("lobby-data", result[0]);
-                        lobbiesCollection.find().toArray((err, result) => {
-                           io.emit("lobby-list-data", result);
-                        });
+                        
                      });
                }
             );
