@@ -14,7 +14,7 @@ class UnconnectedSideBar extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         show: false,
+         show: true,
          show2: false
       };
    }

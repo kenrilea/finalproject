@@ -75,34 +75,43 @@ class UnconnectedSignup extends Component {
 
          <div className="signup-container">
             <form className="" onSubmit={this.handleSubmit}>
-               <div className="signup-label">Create an account</div>
-               <div className="signup-label">Username</div>
-               <input
-                  className="signup-input"
-                  type="text"
-                  onChange={this.handleUsername}
-                  required={true}
-               />
-               <div className="signup-label">Password</div>
-               <input
-                  className="signup-input"
-                  type="text"
-                  onChange={this.handlePassword}
-                  required={true}
-               />
-               <div className="signup-label">Country</div>
-               <input
-                  className="signup-input"
-                  type="text"
-                  onChange={this.handleCountry}
-                  required={true}
-               />
+               <div>
+                  <div className="login-label">Username</div>
+                  <input
+                     className="cool-input"
+                     type="text"
+                     onChange={this.handleUsername}
+                     required={true}
+                  />
+                  <span className="span-effect" />
+               </div>
+               <div>
+                  <div className="login-label">Password</div>
+                  <input
+                     className="cool-input"
+                     type="text"
+                     onChange={this.handlePassword}
+                     required={true}
+                  />
+                  <span className="span-effect" />
+               </div>
+               <div>
+                  <div className="login-label">Country</div>
+                  <input
+                     className="cool-input"
+                     type="text"
+                     onChange={this.handleCountry}
+                     required={true}
+                  />
+                  <span className="span-effect" />
+               </div>
                <div>
                   <input
-                     className="material-button bottom-margin"
+                     className="material-button bottom-margin top-margin"
                      type="submit"
                      value="I'm Ready!"
                   />
+                  <span className="span-effect" />
                </div>
             </form>
          </div>
