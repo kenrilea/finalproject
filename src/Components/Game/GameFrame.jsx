@@ -174,6 +174,13 @@ class GameFrame extends Component {
       });
    };
 
+   handleSurrender = () => {
+      socket.emit("game-input", {
+         type: "leave"
+      });
+      console.log("leave");
+   };
+
    render = () => {
       if (!this.state.loaded) return null;
 
@@ -207,6 +214,7 @@ class GameFrame extends Component {
                playerOne={this.state.playerOne}
                playerTwo={this.state.playerTwo}
             />
+            <button className="material-button red surrender-button" onClick={this.handleSurrender}>Surrender</button>
          </div>
       );
    };

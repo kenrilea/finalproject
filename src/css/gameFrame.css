@@ -34,3 +34,10 @@
   /* height: 80vw;
   width: 80vw; */
 }
+
+.surrender-button {
+   position: absolute;
+   left: 150px;
+   top: 31px;
+   z-index: 1001;
+}
