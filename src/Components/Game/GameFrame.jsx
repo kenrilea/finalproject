@@ -17,7 +17,7 @@ import { STATES } from "./../../GameStates";
 import {
   resetToSelectUnitState,
   updateAnimationPhase,
-  assignAnimationToActor
+  goToOpponentState
 } from "./../../Helpers/GameStateHelpers.js";
 import socket from "./../SocketSettings.jsx";
 
@@ -60,12 +60,19 @@ class GameFrame extends Component {
     socket.on("game-data", data => {
       console.log("________________GAME DATA______________");
       console.log(data);
+
       const width = 100 / data.width;
       const height = 100 / data.height;
+
       if (data.playerWon !== undefined) {
         console.log(data.playerWon + " won!");
         this.props.dispatch(
-          setGameData({ ...data, actors: data.map, width, height })
+          setGameData({
+            ...data,
+            actors: data.map,
+            width,
+            height
+          })
         );
         this.setState({
           gameOver: true,
@@ -76,19 +83,30 @@ class GameFrame extends Component {
       }
 
       let actors = data.map.slice();
-
       console.log("actors: ", actors);
-      this.props.dispatch(
-        setGameData({ ...data, actors: data.map, width, height })
-      );
 
       let player = data.players[parseInt(data.turn) % data.players.length];
       console.log("Player turn: ", player);
+
+      this.props.dispatch(
+        setGameData({
+          ...data,
+          actors: data.map,
+          width,
+          height
+        })
+      );
 
       this.setState({
         loaded: true,
         currentTurnPlayer: player
       });
+
+      if (player === this.props.currentUser) {
+        resetToSelectUnitState();
+      } else {
+        goToOpponentState();
+      }
     });
 
     socket.on("game-state-change", data => {
@@ -143,7 +161,7 @@ class GameFrame extends Component {
             className="svg-canvas"
             id="chess-2-canvas"
             /*preserveAspectRatio="xMaxYMax none"*/
-            viewBox="0 0 100 100"
+            viewBox="0 0 100 50"
           >
             {this.getActorElements()}
           </svg>
@@ -161,6 +179,7 @@ class GameFrame extends Component {
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.currentUser,
     actionMenuOptions: state.actionMenu.options,
     gameData: state.gameData,
     gameState: state.gameState,

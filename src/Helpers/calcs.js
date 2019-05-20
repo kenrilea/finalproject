@@ -7,7 +7,7 @@ export const updatePosition = (start, end, mult) => {
   // newPos.y = (1 - mult) * start.y + mult * end.y;
   newPos.x = start.x + mult * (end.x - start.x);
   newPos.y = start.y + mult * (end.y - start.y);
-  console.log("DISTANCES: ", newPos.x - end.x, newPos.y - end.y);
+  console.log("DISTANCES: ", getDistance(newPos, end));
 
   if (Math.abs(newPos.x - end.x) < 0.5) {
   }
@@ -83,7 +83,7 @@ export const getIsometricFrontendPos = coord => {
   const height = store.getState().gameData.height / 2;
   return {
     x: (coord.x - coord.y) * height - width / 2 + 50,
-    y: ((coord.x + coord.y) * height) / 2 + 25
+    y: ((coord.x + coord.y) * height) / 2 + 5
   };
 };
 

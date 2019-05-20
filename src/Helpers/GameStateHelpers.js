@@ -1,6 +1,6 @@
 import store from "./../store.js";
 import { setGameData, setGameState } from "./../Actions";
-import { selectUnit, updateAnimations } from "./../GameStates";
+import { selectUnit, opponentTurn, updateAnimations } from "./../GameStates";
 import socket from "./../Components/SocketSettings.jsx";
 
 export const resetToSelectUnitState = () => {
@@ -19,8 +19,26 @@ export const resetToSelectUnitState = () => {
   );
 };
 
+export const goToOpponentState = () => {
+  store.dispatch(setGameState(opponentTurn()));
+  store.dispatch(
+    setGameData({
+      ...store.getState().gameData,
+      actors: store.getState().gameData.actors.map(actor => {
+        return {
+          ...actor,
+          onTarget: false,
+          highlighted: false
+        };
+      })
+    })
+  );
+};
+
 export const updateAnimationPhase = actionList => {
   let action = actionList[0];
+
+  console.log("action: ", action);
 
   store.dispatch(
     setGameData({
@@ -43,48 +61,38 @@ export const updateAnimationPhase = actionList => {
 };
 
 export const assignAnimationToActor = () => {
-  if (store.getState().gameState.actionList.length <= 0) {
-    /*store.dispatch(
-      setGameData(
-        store.getState().gameData.actors.map(actor => {
-          return {
-            ...actor,
-            action: undefined
-          };
-        }),
-        store.getState().gameData.width,
-        store.getState().gameData.height
-      )
-    );*/
-    socket.emit("get-game-data", {
-      gameId: store.getState().currentLobbyId
-    });
+  setTimeout(() => {
+    if (store.getState().gameState.actionList === undefined) return;
 
-    // Change the following to opponent turn later:
-    resetToSelectUnitState();
-    return;
-  }
+    if (store.getState().gameState.actionList.length <= 0) {
+      socket.emit("get-game-data", {
+        gameId: store.getState().currentLobbyId
+      });
+      return;
+    }
 
-  let action = store.getState().gameState.actionList[0];
+    let action = store.getState().gameState.actionList[0];
 
-  console.log("action: ", action);
+    console.log("action: ", action);
 
-  store.dispatch(
-    setGameData({
-      ...store.getState().gameData,
-      actors: store.getState().gameData.actors.map(actor => {
-        if (action.actorId === actor.actorId) {
-          return {
-            ...actor,
-            action
-          };
-        }
+    store.dispatch(
+      setGameData({
+        ...store.getState().gameData,
+        actors: store.getState().gameData.actors.map(actor => {
+          if (action.actorId === actor.actorId) {
+            return {
+              ...actor,
+              action
+            };
+          }
 
-        return actor;
+          return actor;
+        })
       })
-    })
-  );
+    );
 
-  let actionList = store.getState().gameState.actionList;
-  store.dispatch(setGameState(updateAnimations(actionList.slice(1))));
+    let actionList = store.getState().gameState.actionList;
+    console.log("change state", actionList);
+    store.dispatch(setGameState(updateAnimations(actionList.slice(1))));
+  }, 200);
 };
