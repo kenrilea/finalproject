@@ -58,7 +58,11 @@ let root = (
                 path="/army-builder"
                 component={ArmyBuilder}
               />
-              <Route exact={true} path="/how-to-play" component={HowToPlay} />
+              <Route
+                exact={true}
+                path="/how-to-play/:step"
+                component={HowToPlay}
+              />
               <Route
                 render={props => (
                   <Oops {...props} message={"This page doesn't exist... yet"} />
