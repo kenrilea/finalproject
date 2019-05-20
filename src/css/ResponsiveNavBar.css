@@ -9,6 +9,7 @@ nav {
 
 .nav-li {
   list-style: none;
+  z-index: 999;
 }
 
 .logo {
@@ -22,7 +23,7 @@ nav {
   display: flex;
   width: 45%;
   justify-content: space-around;
-  z-index: 1001;
+  z-index: 999;
 }
 
 .nav-active {
@@ -38,6 +39,7 @@ nav {
   letter-spacing: 3px;
   font-weight: bold;
   font-size: 16px;
+  z-index: 999;
 }
 
 .nav-link-hide {
@@ -46,6 +48,7 @@ nav {
   letter-spacing: 3px;
   font-weight: bold;
   font-size: 16px;
+  z-index: 1001;
 }
 
 .burger {
@@ -96,6 +99,7 @@ nav {
     /* opacity: 0; */
     transform: translateX(1000px);
     transition: all 1.5s ease-out 1.5;
+    z-index: 1001;
   }
 
   .nav-link-show {
@@ -172,6 +176,7 @@ nav {
     transform: translateX(1000px);
     transition: all 1.5s ease-out 1.5;
     font-size: 30px;
+    z-index: 1001;
   }
 
   .nav-link-show {
