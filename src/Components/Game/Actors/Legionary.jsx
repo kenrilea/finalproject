@@ -29,16 +29,19 @@ class Legionary extends Component {
         x: this.props.actorData.pos.x,
         y: this.props.actorData.pos.y
       }),
-      lastBlockTime: 0,
+      lastAnimTime: 0,
       isBlocking: false
     };
   }
 
   componentDidMount = () => {
     console.log("Legionary did mount");
+    this.hasMounted = true;
   };
 
   updateMove = () => {
+    if (!this.hasMounted) return;
+
     if (this.props.actorData.action === undefined) {
       cancelAnimationFrame(this.animationMove);
       this.setState({
@@ -86,24 +89,27 @@ class Legionary extends Component {
   };
 
   updateDied = () => {
+    if (!this.hasMounted) return;
     cancelAnimationFrame(this.animationDied);
+
+    const currentTime = new Date().getTime();
+
+    let dest = {
+      x: this.state.frontendPos.x,
+      y: 110
+    };
 
     if (this.props.actorData.action === undefined) {
       cancelAnimationFrame(this.animationDied);
       this.setState({
         isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
+          x: dest.x,
+          y: dest.y
         }
       });
       return;
     }
-
-    let dest = {
-      x: this.state.frontendPos.x,
-      y: 110
-    };
 
     console.log(
       "positions: ",
@@ -117,13 +123,20 @@ class Legionary extends Component {
 
     let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
+    if (
+      newPos.x >= 100 ||
+      newPos.x <= 0 ||
+      newPos.y >= 100 ||
+      newPos.y <= 0 ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 500)
+    ) {
       console.log("cancelled anim");
       this.setState({
         isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
+          x: dest.x,
+          y: dest.y
         }
       });
       cancelAnimationFrame(this.animationDied);
@@ -136,7 +149,10 @@ class Legionary extends Component {
       frontendPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     this.animationDied = requestAnimationFrame(() => {
@@ -145,11 +161,13 @@ class Legionary extends Component {
   };
 
   updateBlockArrow = () => {
+    if (!this.hasMounted) return;
+
     if (this.props.actorData.action === undefined) {
       cancelAnimationFrame(this.animationBlockArrow);
       this.setState({
         isAnimating: false,
-        lastBlockTime: 0,
+        lastAnimTime: 0,
         isBlocking: false
       });
       return;
@@ -160,13 +178,13 @@ class Legionary extends Component {
     console.log("Blocking arrow!");
 
     if (
-      this.state.lastBlockTime !== 0 &&
-      currentTime - this.state.lastBlockTime > 500
+      this.state.lastAnimTime !== 0 &&
+      currentTime - this.state.lastAnimTime > 500
     ) {
       console.log("cancelled blocking arrow");
       this.setState({
         isAnimating: false,
-        lastBlockTime: 0,
+        lastAnimTime: 0,
         isBlocking: false
       });
       cancelAnimationFrame(this.animationBlockArrow);
@@ -177,7 +195,7 @@ class Legionary extends Component {
     if (!this.state.isBlocking) {
       this.setState({
         isAnimating: true,
-        lastBlockTime: currentTime,
+        lastAnimTime: currentTime,
         isBlocking: true
       });
     }
@@ -188,12 +206,14 @@ class Legionary extends Component {
     });
   };
 
-  componentDidUpdate = () => {
+  componentDidUpdate = (prevProps, prevState) => {
     // console.log("state: ", this.props.gameState.type);
+    // console.log("PREV STATE: ", prevState);
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined &&
-      !this.state.isAnimating
+      !this.state.isAnimating &&
+      this.hasMounted
     ) {
       if (this.props.actorData.action.type === "move") {
         cancelAnimationFrame(this.animationMove);
