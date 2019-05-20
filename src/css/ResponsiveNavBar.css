@@ -15,8 +15,9 @@ nav {
 .logo {
   color: rgba(50, 50, 50, 1);
   letter-spacing: 5px;
-  font-size: 25px;
-  font-weight: 800;
+  font-family: 'Scope One', serif;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .nav-links {

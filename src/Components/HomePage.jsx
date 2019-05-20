@@ -23,7 +23,6 @@ class UnconnectedHomePage extends Component {
 
       return (
          <div className="animated-fade-in">
-            <CloudHud />
             <WhatsNew />
          </div>
       );
