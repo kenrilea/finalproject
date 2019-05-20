@@ -7,7 +7,8 @@ export const ASSET_ACTOR_TYPE = {
 };
 
 export const ASSET_TILE = {
-  REGULAR: "/assets/land.png"
+  REGULAR: "/assets/iso-tile-top.png",
+  REGULAR_SIDE: "/assets/iso-tile-sides.png"
 };
 
 export const ASSET_TEAM = {

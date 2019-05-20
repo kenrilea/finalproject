@@ -133,6 +133,14 @@ class Tile extends Component {
     return (
       <g>
         <image
+          xlinkHref={ASSET_TILE.REGULAR_SIDE}
+          x={xFrontend}
+          y={yFrontend}
+          width={width}
+          // height={height}
+          pointerEvents={"none"}
+        />
+        <image
           id={id}
           xlinkHref={ASSET_TILE.REGULAR}
           x={xFrontend}
