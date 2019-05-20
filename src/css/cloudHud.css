@@ -1,8 +1,7 @@
 .cloud-hud-cont {
-   width: 125px;
    position: absolute;
-   top: 15px;
-   right: 192px;
+   top: 25px;
+   right: 25px;
    z-index: 1001;
    transition: transform 0.3s ease-in-out;
    transform: scale(1)
@@ -15,18 +14,18 @@
 
 .cloud-label1 {
    position: absolute;
-   left: 69px;
-   bottom: 42px;
-   font-size: 34px;
+   left: 40px;
+   bottom: 27px;
+   font-size: 24px;
    font-weight: 100;
    color: rgb(245,245,245)
 }
 
 .cloud-label2 {
    position: absolute;
-   left: 165px;
-   bottom: 42px;
-   font-size: 34px;
+   left: 103px;
+   bottom: 27px;
+   font-size: 24px;
    font-weight: 100;
    color: rgb(245,245,245)
 }
@@ -34,11 +33,10 @@
 .turn-label {
    position: absolute;
    width: 180px;
-   left: 78px;
-   bottom: 95px;
-   font-family: 'Scope One', serif;
-   font-size: 26px;
+   left: 40px;
+   bottom: 60px;
+   font-family: 'Scope One';
+   font-size: 22px;
    font-weight: bolder;
-   letter-spacing: 2px;
    color: rgb(10,10,10)
 }
