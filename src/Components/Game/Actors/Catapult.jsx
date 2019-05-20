@@ -270,7 +270,7 @@ class Catapult extends Component {
                 if (
                   actor.actorType !== "char" &&
                   isInRange(catapultRange, catapultPos, actor.pos) &&
-                  !isTileOccupied(actor, this.props.gameData.actors)
+                  !isTileOccupied(actor, this.props.gameData.actors).success
                 ) {
                   return {
                     ...actor,
