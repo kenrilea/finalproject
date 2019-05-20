@@ -7,7 +7,7 @@ export const updatePosition = (start, end, mult) => {
   // newPos.y = (1 - mult) * start.y + mult * end.y;
   newPos.x = start.x + mult * (end.x - start.x);
   newPos.y = start.y + mult * (end.y - start.y);
-  console.log("DISTANCES: ", newPos.x - end.x, newPos.y - end.y);
+  console.log("DISTANCES: ", getDistance(newPos, end));
 
   if (Math.abs(newPos.x - end.x) < 0.5) {
   }

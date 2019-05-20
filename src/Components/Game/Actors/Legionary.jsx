@@ -24,6 +24,7 @@ class Legionary extends Component {
     super(props);
 
     this.state = {
+      isAnimating: false,
       frontendPos: getIsometricFrontendPos({
         x: this.props.actorData.pos.x,
         y: this.props.actorData.pos.y
@@ -38,18 +39,10 @@ class Legionary extends Component {
   };
 
   updateMove = () => {
-    let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
-
-    //console.log("positions: ", this.state.frontendPos, dest);
-
-    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
-
-    if (newPos.x === dest.x && newPos.y === dest.y) {
-      console.log("cancelled anim");
-      this.props.actorData.action = undefined;
+    if (this.props.actorData.action === undefined) {
       cancelAnimationFrame(this.animationMove);
-      assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         frontendPos: {
           x: newPos.x,
           y: newPos.y
@@ -58,7 +51,28 @@ class Legionary extends Component {
       return;
     }
 
+    let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
+
+    //console.log("positions: ", this.state.frontendPos, dest);
+
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
+
+    if (newPos.x === dest.x && newPos.y === dest.y) {
+      console.log("cancelled anim");
+      this.setState({
+        isAnimating: false,
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
+      });
+      cancelAnimationFrame(this.animationMove);
+      assignAnimationToActor();
+      return;
+    }
+
     this.setState({
+      isAnimating: true,
       frontendPos: {
         x: newPos.x,
         y: newPos.y
@@ -72,21 +86,12 @@ class Legionary extends Component {
   };
 
   updateDied = () => {
-    let dest = {
-      x: this.state.frontendPos.x,
-      y: 110
-    };
+    cancelAnimationFrame(this.animationDied);
 
-    console.log("positions: ", this.state.frontendPos, dest);
-
-    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
-
-    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
-      console.log("cancelled anim");
-      this.props.actorData.action = undefined;
+    if (this.props.actorData.action === undefined) {
       cancelAnimationFrame(this.animationDied);
-      assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         frontendPos: {
           x: newPos.x,
           y: newPos.y
@@ -95,20 +100,61 @@ class Legionary extends Component {
       return;
     }
 
+    let dest = {
+      x: this.state.frontendPos.x,
+      y: 110
+    };
+
+    console.log(
+      "positions: ",
+      this.state.frontendPos,
+      dest,
+      " actor: ",
+      this.props.actorData,
+      " state: ",
+      this.state
+    );
+
+    let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
+
+    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
+      console.log("cancelled anim");
+      this.setState({
+        isAnimating: false,
+        frontendPos: {
+          x: newPos.x,
+          y: newPos.y
+        }
+      });
+      cancelAnimationFrame(this.animationDied);
+      assignAnimationToActor();
+      return;
+    }
+
     this.setState({
+      isAnimating: true,
       frontendPos: {
         x: newPos.x,
         y: newPos.y
       }
     });
 
-    cancelAnimationFrame(this.animationDied);
     this.animationDied = requestAnimationFrame(() => {
       this.updateDied();
     });
   };
 
   updateBlockArrow = () => {
+    if (this.props.actorData.action === undefined) {
+      cancelAnimationFrame(this.animationBlockArrow);
+      this.setState({
+        isAnimating: false,
+        lastBlockTime: 0,
+        isBlocking: false
+      });
+      return;
+    }
+
     const currentTime = new Date().getTime();
 
     console.log("Blocking arrow!");
@@ -118,18 +164,19 @@ class Legionary extends Component {
       currentTime - this.state.lastBlockTime > 500
     ) {
       console.log("cancelled blocking arrow");
-      this.props.actorData.action = undefined;
-      cancelAnimationFrame(this.animationBlockArrow);
-      assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         lastBlockTime: 0,
         isBlocking: false
       });
+      cancelAnimationFrame(this.animationBlockArrow);
+      assignAnimationToActor();
       return;
     }
 
     if (!this.state.isBlocking) {
       this.setState({
+        isAnimating: true,
         lastBlockTime: currentTime,
         isBlocking: true
       });
@@ -142,25 +189,33 @@ class Legionary extends Component {
   };
 
   componentDidUpdate = () => {
-    console.log("state: ", this.props.gameState.type);
+    // console.log("state: ", this.props.gameState.type);
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
-      this.props.actorData.action !== undefined
+      this.props.actorData.action !== undefined &&
+      !this.state.isAnimating
     ) {
       if (this.props.actorData.action.type === "move") {
+        cancelAnimationFrame(this.animationMove);
         this.animationMove = requestAnimationFrame(() => {
           this.updateMove();
         });
       } else if (this.props.actorData.action.type === "died") {
+        cancelAnimationFrame(this.animationDied);
         this.animationDied = requestAnimationFrame(() => {
           this.updateDied();
         });
       } else if (this.props.actorData.action.type === "block-arrow") {
+        cancelAnimationFrame(this.animationBlockArrow);
         this.animationBlockArrow = requestAnimationFrame(() => {
           this.updateBlockArrow();
         });
       }
     }
+  };
+
+  componentWillUnmount = () => {
+    console.log(this.props.actorData, " will unmount!");
   };
 
   isGameState = state => {
@@ -218,9 +273,15 @@ class Legionary extends Component {
       " team: " + this.props.actorData.team
     );
 
-    if (this.isGameState(STATES.SHOW_ANIMATIONS)) return;
+    if (
+      this.isGameState(STATES.SHOW_ANIMATIONS) ||
+      this.isGameState(STATES.OPPONENT_TURN)
+    )
+      return;
 
     if (this.isGameState(STATES.SELECT_UNIT)) {
+      if (this.props.currentUser !== this.props.actorData.team) return;
+
       // Show or hide action menu
       if (this.props.actionMenuVisible) {
         this.props.dispatch(setActionMenu(false, 0, 0, []));

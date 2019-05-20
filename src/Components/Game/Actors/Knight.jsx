@@ -108,12 +108,12 @@ class Knight extends Component {
   };
 
   componentDidUpdate = () => {
-    console.log(
-      "state: ",
-      this.props.gameState.type,
-      " action: ",
-      this.props.actorData.action
-    );
+    // console.log(
+    //   "state: ",
+    //   this.props.gameState.type,
+    //   " action: ",
+    //   this.props.actorData.action
+    // );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined
@@ -216,9 +216,15 @@ class Knight extends Component {
       " team: " + this.props.actorData.team
     );
 
-    if (this.isGameState(STATES.SHOW_ANIMATIONS)) return;
+    if (
+      this.isGameState(STATES.SHOW_ANIMATIONS) ||
+      this.isGameState(STATES.OPPONENT_TURN)
+    )
+      return;
 
     if (this.isGameState(STATES.SELECT_UNIT)) {
+      if (this.props.currentUser !== this.props.actorData.team) return;
+
       // Show or hide action menu
       if (this.props.actionMenuVisible) {
         this.props.dispatch(setActionMenu(false, 0, 0, []));

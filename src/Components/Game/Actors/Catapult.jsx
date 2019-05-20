@@ -8,7 +8,7 @@ import {
 } from "./../../../Helpers/GameStateHelpers.js";
 import {
   updatePosition,
-  updatePositionInArc,
+  updatePositionAtSpeed,
   degreesBetweenPoints,
   getSquaredLengthBetweenPoints,
   getLengthBetweenPoints,
@@ -174,25 +174,27 @@ class Catapult extends Component {
       return;
     }
 
-    let newPos = updatePositionInArc(
+    let newPos = updatePositionAtSpeed(
       this.state.cannonballPos,
       startPos,
       this.state.cannonballDest,
       this.state.arrowDirection,
       this.state.arrowTravelDistance,
-      2,
-      3
+      100
     );
 
-    let dist = Math.abs(
-      getLengthBetweenPoints(this.state.centerPointOfTravel, newPos)
-    );
-    console.log("dist: ", dist);
+    // let dist = Math.abs(
+    //   getLengthBetweenPoints(this.state.centerPointOfTravel, newPos)
+    // );
+    // console.log("dist: ", dist);
     // newPos.y *= getRelativeValue(dist, 0, 10, 0, 1);
 
     //console.log("positions: ", newPos, this.state.cannonballDest);
 
-    if (newPos.x === this.state.cannonballDest.x) {
+    if (
+      newPos.x === this.state.cannonballDest.x &&
+      newPos.y === this.state.cannonballDest.y
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationBombard);
@@ -224,12 +226,12 @@ class Catapult extends Component {
   };
 
   componentDidUpdate = () => {
-    console.log(
-      "state: ",
-      this.props.gameState.type,
-      " action: ",
-      this.props.actorData.action
-    );
+    // console.log(
+    //   "state: ",
+    //   this.props.gameState.type,
+    //   " action: ",
+    //   this.props.actorData.action
+    // );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined
@@ -332,9 +334,15 @@ class Catapult extends Component {
       " team: " + this.props.actorData.team
     );
 
-    if (this.isGameState(STATES.SHOW_ANIMATIONS)) return;
+    if (
+      this.isGameState(STATES.SHOW_ANIMATIONS) ||
+      this.isGameState(STATES.OPPONENT_TURN)
+    )
+      return;
 
     if (this.isGameState(STATES.SELECT_UNIT)) {
+      if (this.props.currentUser !== this.props.actorData.team) return;
+
       // Show or hide action menu
       if (this.props.actionMenuVisible) {
         this.props.dispatch(setActionMenu(false, 0, 0, []));

@@ -214,12 +214,12 @@ class Archer extends Component {
   };
 
   componentDidUpdate = () => {
-    console.log(
-      "state: ",
-      this.props.gameState.type,
-      " action: ",
-      this.props.actorData.action
-    );
+    // console.log(
+    //   "state: ",
+    //   this.props.gameState.type,
+    //   " action: ",
+    //   this.props.actorData.action
+    // );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
       this.props.actorData.action !== undefined
@@ -238,6 +238,12 @@ class Archer extends Component {
         });
       }
     }
+  };
+
+  componentWillUnmount = () => {
+    cancelAnimationFrame(this.animationMove);
+    cancelAnimationFrame(this.animationDied);
+    cancelAnimationFrame(this.animationRangedShot);
   };
 
   isGameState = state => {
@@ -322,9 +328,15 @@ class Archer extends Component {
       " team: " + this.props.actorData.team
     );
 
-    if (this.isGameState(STATES.SHOW_ANIMATIONS)) return;
+    if (
+      this.isGameState(STATES.SHOW_ANIMATIONS) ||
+      this.isGameState(STATES.OPPONENT_TURN)
+    )
+      return;
 
     if (this.isGameState(STATES.SELECT_UNIT)) {
+      if (this.props.currentUser !== this.props.actorData.team) return;
+
       // Show or hide action menu
       if (this.props.actionMenuVisible) {
         this.props.dispatch(setActionMenu(false, 0, 0, []));
@@ -452,7 +464,7 @@ class Archer extends Component {
       " " +
       parseFloat(this.state.arrowPos.y + height / 2) +
       ")";
-    console.log("ROTATION: ", rotation);
+    // console.log("ROTATION: ", rotation);
     const arrow = (
       <image
         xlinkHref={ASSET_ACTOR_TYPE.ARCHER + ASSET_ITEM.ARROW}
