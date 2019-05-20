@@ -72,45 +72,40 @@ class UnconnectedSignup extends Component {
 
    render = () => {
       return (
-         <Popup
-            trigger={<button className="material-button">Sign up!</button>}
-            position="bottom center"
-            modal
-         >
-            <div className="signup-container">
-               <form className="" onSubmit={this.handleSubmit}>
-                  <div className="signup-label">Create an account</div>
-                  <div className="signup-label">Username</div>
+
+         <div className="signup-container">
+            <form className="" onSubmit={this.handleSubmit}>
+               <div className="signup-label">Create an account</div>
+               <div className="signup-label">Username</div>
+               <input
+                  className="signup-input"
+                  type="text"
+                  onChange={this.handleUsername}
+                  required={true}
+               />
+               <div className="signup-label">Password</div>
+               <input
+                  className="signup-input"
+                  type="text"
+                  onChange={this.handlePassword}
+                  required={true}
+               />
+               <div className="signup-label">Country</div>
+               <input
+                  className="signup-input"
+                  type="text"
+                  onChange={this.handleCountry}
+                  required={true}
+               />
+               <div>
                   <input
-                     className="signup-input"
-                     type="text"
-                     onChange={this.handleUsername}
-                     required={true}
+                     className="material-button bottom-margin"
+                     type="submit"
+                     value="I'm Ready!"
                   />
-                  <div className="signup-label">Password</div>
-                  <input
-                     className="signup-input"
-                     type="text"
-                     onChange={this.handlePassword}
-                     required={true}
-                  />
-                  <div className="signup-label">Country</div>
-                  <input
-                     className="signup-input"
-                     type="text"
-                     onChange={this.handleCountry}
-                     required={true}
-                  />
-                  <div>
-                     <input
-                        className="material-button bottom-margin"
-                        type="submit"
-                        value="I'm Ready!"
-                     />
-                  </div>
-               </form>
-            </div>
-         </Popup>
+               </div>
+            </form>
+         </div>
       );
    };
 }
