@@ -1,6 +1,8 @@
 .outerbar {
   background: #f00;
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
   margin: 0px;
   z-index: 500;
 }
@@ -37,97 +39,4 @@
 .outerbar button {
   border-color: blue;
   border-width: 10px;
-}
-
-@media (orientation: landscape) {
-  .outerbar {
-    height: 100%;
-    width: 20vh;
-    display: flex;
-    justify-content: space-evenly;
-    flex-flow: column;
-  }
-
-  .outerbar-turn-display {
-  }
-
-  .outerbar-player-turn {
-    text-align: center;
-    margin-bottom: 15px;
-  }
-
-  .outerbar-turns-total {
-    text-align: center;
-  }
-
-  .outerbar-points-section {
-  }
-
-  .outerbar-point-label {
-    text-align: center;
-    margin-bottom: 15px;
-  }
-
-  .outerbar-points-container {
-    display: flex;
-    justify-content: space-around;
-  }
-
-  .outerbar-points-players {
-  }
-
-  .outerbar-player-names {
-  }
-
-  .outerbar-points {
-  }
-
-  .outerbar button {
-  }
-}
-
-@media (orientation: portrait) {
-  .outerbar {
-    height: 20vh;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    flex-flow: row;
-  }
-
-  .outerbar-turn-display {
-  }
-
-  .outerbar-player-turn {
-  }
-
-  .outerbar-turns-total {
-  }
-
-  .outerbar-points-section {
-  }
-
-  .outerbar-point-label {
-    margin: auto 0;
-    padding-right: 15px;
-  }
-
-  .outerbar-points-container {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: row;
-  }
-
-  .outerbar-points-players {
-    padding-top: 15px;
-  }
-
-  .outerbar-player-names {
-  }
-
-  .outerbar-points {
-  }
-
-  .outerbar button {
-  }
 }

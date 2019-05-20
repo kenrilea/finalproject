@@ -83,7 +83,7 @@ export const getIsometricFrontendPos = coord => {
   const height = store.getState().gameData.height / 2;
   return {
     x: (coord.x - coord.y) * height - width / 2 + 50,
-    y: ((coord.x + coord.y) * height) / 2 + 25
+    y: ((coord.x + coord.y) * height) / 2 + 5
   };
 };
 
