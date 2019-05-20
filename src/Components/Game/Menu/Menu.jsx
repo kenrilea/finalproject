@@ -6,34 +6,43 @@ class Menu extends Component {
   render = () => {
     if (!this.props.actionMenu.visible) return null;
 
+    const menuWidthPx = 120;
+
     const style = {
       position: "absolute",
       zIndex: 1000,
       margin: 0,
       //paddingTop: "10px",
-      width: "120px",
+      width: menuWidthPx + "px",
       height: "auto",
       background: "#000000"
     };
 
-    const xPercent = this.props.actionMenu.xPos;
+    const gameframeElem = this.props.getGameFrameElem().current;
+    const gameframeDim = {
+      width: gameframeElem.offsetWidth,
+      height: gameframeElem.offsetHeight
+    };
+
+    // console.log("ACTION MENU DIM: ", gameframeElem, gameframeDim);
+
+    const xClickPos = this.props.actionMenu.xPos;
+    const xPercent = (xClickPos / gameframeDim.width) * 100;
     if (xPercent < 50) {
-      style.left = parseFloat(xPercent + this.props.dimensions.w * 0.7) + "%";
+      style.left =
+        parseFloat(((xClickPos + 10) / gameframeDim.width) * 100) + "%";
     } else {
-      style.right =
-        parseFloat(
-          100 -
-            xPercent -
-            this.props.dimensions.w +
-            this.props.dimensions.w * 0.7
-        ) + "%";
+      style.left =
+        parseFloat((xClickPos - menuWidthPx - 10) / gameframeDim.width) * 100 +
+        "%";
     }
 
-    const yPercent = this.props.actionMenu.yPos + this.props.dimensions.h;
+    const yClickPos = this.props.actionMenu.yPos;
+    const yPercent = (yClickPos / gameframeDim.height) * 100;
     if (yPercent < 50) {
       style.top = yPercent + "%";
     } else {
-      style.bottom = parseFloat(100 - yPercent - this.props.dimensions.h) + "%";
+      style.bottom = parseFloat(100 - yPercent) + "%";
     }
 
     return (

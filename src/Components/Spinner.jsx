@@ -7,7 +7,7 @@ class Spinner extends Component {
    render = () => {
       return (
          // <div className="card-spinner">
-         <div class="lds-roller">
+         <div className="lds-roller">
             <div></div>
             <div></div>
             <div></div>

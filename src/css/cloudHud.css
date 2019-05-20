@@ -1,0 +1,44 @@
+.cloud-hud-cont {
+   width: 125px;
+   position: absolute;
+   top: 15px;
+   right: 192px;
+   z-index: 1001;
+   transition: transform 0.3s ease-in-out;
+   transform: scale(1)
+}
+
+.cloud-hud-cont:hover {
+   transform: scale(1.03);
+}
+
+
+.cloud-label1 {
+   position: absolute;
+   left: 69px;
+   bottom: 42px;
+   font-size: 34px;
+   font-weight: 100;
+   color: rgb(245,245,245)
+}
+
+.cloud-label2 {
+   position: absolute;
+   left: 165px;
+   bottom: 42px;
+   font-size: 34px;
+   font-weight: 100;
+   color: rgb(245,245,245)
+}
+
+.turn-label {
+   position: absolute;
+   width: 180px;
+   left: 80px;
+   bottom: 95px;
+   font-family: 'Scope One', serif;
+   font-size: 24px;
+   font-weight: bolder;
+   letter-spacing: 2px;
+   color: rgb(10,10,10)
+}
