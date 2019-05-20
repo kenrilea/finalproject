@@ -20,6 +20,7 @@ import {
   goToOpponentState
 } from "./../../Helpers/GameStateHelpers.js";
 import socket from "./../SocketSettings.jsx";
+import LobbyChat from "./../LobbyChat.jsx";
 
 class GameFrame extends Component {
   constructor(props) {
@@ -28,7 +29,9 @@ class GameFrame extends Component {
       loaded: false,
       currentTurnPlayer: "",
       gameOver: false,
-      winner: ""
+      winner: "",
+      playerOne: "",
+      playerTwo: ""
     };
   }
 
@@ -125,6 +128,22 @@ class GameFrame extends Component {
       socket.emit("get-game-data", { gameId: this.props.match.params.gameId });
     });
     socket.emit("join-game", this.props.match.params.gameId);
+
+    socket.on("lobby-data", lobby => {
+      console.log("Recieved player data from lobby: ", lobby);
+      this.setState({
+        ...this.state,
+        playerOne: lobby.playerOne,
+        playerTwo: lobby.playerTwo
+      });
+    });
+
+    console.log("Getting Lobby data for player data:");
+    socket.emit("refresh-lobby", this.props.match.params.gameId);
+    console.log("Gamestate Props:");
+    console.log(this.props);
+    console.log("Getting chat data...");
+    socket.emit("refresh-lobby-chat", this.props.match.params.gameId);
   };
 
   getActorElements = () => {
@@ -161,7 +180,7 @@ class GameFrame extends Component {
             className="svg-canvas"
             id="chess-2-canvas"
             /*preserveAspectRatio="xMaxYMax none"*/
-            viewBox="0 0 100 50"
+            viewBox="0 0 100 55"
           >
             {this.getActorElements()}
           </svg>
@@ -171,6 +190,11 @@ class GameFrame extends Component {
         <OuterBar
           gameOver={this.state.gameOver}
           currentTurnPlayer={this.state.currentTurnPlayer}
+        />
+        <LobbyChat
+          className="chatComponent"
+          playerOne={this.state.playerOne}
+          playerTwo={this.state.playerTwo}
         />
       </div>
     );

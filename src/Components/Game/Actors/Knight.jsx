@@ -11,6 +11,7 @@ import {
   isInRange,
   lineRange,
   lineTarget,
+  isTileOccupied,
   getIsometricFrontendPos
 } from "./../../../Helpers/calcs.js";
 import {
@@ -150,9 +151,16 @@ class Knight extends Component {
                 let knightPos = this.props.actorData.pos;
                 let knightRange = this.props.actorData.moveSpeed;
                 if (isInRange(knightRange, knightPos, actor.pos)) {
+                  const occupiedTile = isTileOccupied(
+                    actor,
+                    this.props.gameData.actors
+                  );
                   return {
                     ...actor,
-                    highlighted: true
+                    highlighted: true,
+                    occupiedByEnemy: occupiedTile.success
+                      ? occupiedTile.actor.team !== this.props.actorData.team
+                      : undefined
                   };
                 }
 
@@ -177,18 +185,29 @@ class Knight extends Component {
                 let knightPos = this.props.actorData.pos;
                 let knightRange = this.props.actorData.range;
 
+                const occupiedTile = isTileOccupied(
+                  actor,
+                  this.props.gameData.actors
+                );
+
                 if (lineTarget(knightRange, knightPos, actor.pos)) {
                   return {
                     ...actor,
                     onTarget: true,
-                    highlighted: true
+                    highlighted: true,
+                    occupiedByEnemy: occupiedTile.success
+                      ? occupiedTile.actor.team !== this.props.actorData.team
+                      : undefined
                   };
                 }
 
                 if (lineRange(knightRange, knightPos, actor.pos)) {
                   return {
                     ...actor,
-                    highlighted: true
+                    highlighted: true,
+                    occupiedByEnemy: occupiedTile.success
+                      ? occupiedTile.actor.team !== this.props.actorData.team
+                      : undefined
                   };
                 }
 
@@ -273,7 +292,7 @@ class Knight extends Component {
     const height = this.props.gameData.height / 2;
     const isoPos = this.state.frontendPos;
     const xFrontend = isoPos.x + width / 2;
-    const yFrontend = isoPos.y;
+    const yFrontend = isoPos.y - height / 3;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -298,11 +317,12 @@ class Knight extends Component {
         />
       ) : null;
 
+    const tileY = yFrontend + height / 3;
     const polyPoints = [
-      [xFrontend + width / 2, yFrontend], // top
-      [xFrontend + width + width / 2, yFrontend + height / 2], // right
-      [xFrontend + width / 2, yFrontend + height], // bottom
-      [xFrontend - width / 2, yFrontend + height / 2] // left
+      [xFrontend + width / 2, tileY], // top
+      [xFrontend + width + width / 2, tileY + height / 2], // right
+      [xFrontend + width / 2, tileY + height], // bottom
+      [xFrontend - width / 2, tileY + height / 2] // left
     ];
     const animateOtherUnits =
       this.props.actorData.highlighted &&
@@ -333,7 +353,7 @@ class Knight extends Component {
       ) : null;
     return (
       <g>
-        {animateOtherUnits}
+        {/* {animateOtherUnits} */}
         <image
           id={id}
           xlinkHref={

@@ -234,19 +234,19 @@ class Legionary extends Component {
                 let legionaryPos = this.props.actorData.pos;
                 let legionaryRange = this.props.actorData.moveSpeed;
                 if (isInRange(legionaryRange, legionaryPos, actor.pos)) {
-                  if (
-                    (actor.actorType !== "char" &&
-                      !isTileOccupied(actor, this.props.gameData.actors)) ||
-                    actor.actorType === "char"
-                  ) {
-                    // If actor is a tile but isn't occupied, highlight
-                    // If in range, highlight
-                    return {
-                      ...actor,
-                      onTarget: true,
-                      highlighted: true
-                    };
-                  }
+                  const occupiedTile = isTileOccupied(
+                    actor,
+                    this.props.gameData.actors
+                  );
+
+                  return {
+                    ...actor,
+                    onTarget: true,
+                    highlighted: true,
+                    occupiedByEnemy: occupiedTile.success
+                      ? occupiedTile.actor.team !== this.props.actorData.team
+                      : undefined
+                  };
                 }
 
                 return actor;
@@ -330,7 +330,7 @@ class Legionary extends Component {
     const height = this.props.gameData.height / 2;
     const isoPos = this.state.frontendPos;
     const xFrontend = isoPos.x + width / 2;
-    const yFrontend = isoPos.y;
+    const yFrontend = isoPos.y - height / 3;
 
     const id = "actorId" + this.props.actorData.actorId;
 
@@ -355,11 +355,12 @@ class Legionary extends Component {
         />
       ) : null;
 
+    const tileY = yFrontend + height / 3;
     const polyPoints = [
-      [xFrontend + width / 2, yFrontend], // top
-      [xFrontend + width + width / 2, yFrontend + height / 2], // right
-      [xFrontend + width / 2, yFrontend + height], // bottom
-      [xFrontend - width / 2, yFrontend + height / 2] // left
+      [xFrontend + width / 2, tileY], // top
+      [xFrontend + width + width / 2, tileY + height / 2], // right
+      [xFrontend + width / 2, tileY + height], // bottom
+      [xFrontend - width / 2, tileY + height / 2] // left
     ];
     const animateOtherUnits =
       this.props.actorData.highlighted &&
@@ -410,7 +411,7 @@ class Legionary extends Component {
     ) : null;
     return (
       <g>
-        {animateOtherUnits}
+        {/* {animateOtherUnits} */}
         <image
           id={id}
           xlinkHref={
