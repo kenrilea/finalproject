@@ -3,8 +3,7 @@ import WhatsNew from "./WhatsNew.jsx"
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-
-
+import CloudHud from "./CloudHud.jsx"
 
 import "../css/main.css"
 
@@ -24,7 +23,7 @@ class UnconnectedHomePage extends Component {
 
       return (
          <div className="animated-fade-in">
-
+            <CloudHud />
             <WhatsNew />
          </div>
       );

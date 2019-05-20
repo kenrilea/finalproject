@@ -1,0 +1,21 @@
+.cloud-hud-cont {
+   width: 300px;
+}
+
+.label1 {
+   position: absolute;
+   left: 75px;
+   bottom: 40px;
+   font-size: 38px;
+   font-weight: 100;
+   color: rgb(245,245,245)
+}
+
+.label2 {
+   position: absolute;
+   left: 165px;
+   bottom: 40px;
+   font-size: 38px;
+   font-weight: 100;
+   color: rgb(245,245,245)
+}
