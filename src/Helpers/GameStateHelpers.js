@@ -42,6 +42,15 @@ export const updateAnimationPhase = actionList => {
 
   console.log("action: ", action);
 
+  if (action.type === "game-over") {
+    setTimeout(() => {
+      socket.emit("get-game-data", {
+        gameId: store.getState().currentLobbyId
+      });
+    }, 2);
+    return;
+  }
+
   store.dispatch(
     setGameData({
       ...store.getState().gameData,
@@ -90,6 +99,15 @@ export const assignAnimationToActor = () => {
     let action = store.getState().gameState.actionList[0];
 
     console.log("action: ", action);
+
+    if (action.type === "game-over") {
+      setTimeout(() => {
+        socket.emit("get-game-data", {
+          gameId: store.getState().currentLobbyId
+        });
+      }, 2);
+      return;
+    }
 
     store.dispatch(
       setGameData({
