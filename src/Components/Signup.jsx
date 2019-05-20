@@ -72,45 +72,49 @@ class UnconnectedSignup extends Component {
 
    render = () => {
       return (
-         <Popup
-            trigger={<button className="material-button">Sign up!</button>}
-            position="bottom center"
-            modal
-         >
-            <div className="signup-container">
-               <form className="" onSubmit={this.handleSubmit}>
-                  <div className="signup-label">Create an account</div>
-                  <div className="signup-label">Username</div>
+
+         <div className="signup-container">
+            <form className="" onSubmit={this.handleSubmit}>
+               <div>
+                  <div className="login-label">Username</div>
                   <input
-                     className="signup-input"
+                     className="cool-input"
                      type="text"
                      onChange={this.handleUsername}
                      required={true}
                   />
-                  <div className="signup-label">Password</div>
+                  <span className="span-effect" />
+               </div>
+               <div>
+                  <div className="login-label">Password</div>
                   <input
-                     className="signup-input"
+                     className="cool-input"
                      type="text"
                      onChange={this.handlePassword}
                      required={true}
                   />
-                  <div className="signup-label">Country</div>
+                  <span className="span-effect" />
+               </div>
+               <div>
+                  <div className="login-label">Country</div>
                   <input
-                     className="signup-input"
+                     className="cool-input"
                      type="text"
                      onChange={this.handleCountry}
                      required={true}
                   />
-                  <div>
-                     <input
-                        className="material-button bottom-margin"
-                        type="submit"
-                        value="I'm Ready!"
-                     />
-                  </div>
-               </form>
-            </div>
-         </Popup>
+                  <span className="span-effect" />
+               </div>
+               <div>
+                  <input
+                     className="material-button bottom-margin top-margin"
+                     type="submit"
+                     value="I'm Ready!"
+                  />
+                  <span className="span-effect" />
+               </div>
+            </form>
+         </div>
       );
    };
 }

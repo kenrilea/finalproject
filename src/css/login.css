@@ -11,7 +11,7 @@
 }
 
  
- .coolInput {
+ .cool-input {
    text-align: center;
    font-size: inherit;
    background-color: transparent;
@@ -21,11 +21,11 @@
    /* padding-top: 10px; */
  }
  
- .coolInput:focus {
+ .cool-input:focus {
    outline: none;
  }
  
- .coolInput::placeholder {
+ .cool-input::placeholder {
    color: hsla(0, 0%, 100%, 0.6);
  }
  
@@ -42,7 +42,7 @@
    transition: all 0.3s ease;
  }
  
- .coolInput:focus ~ span {
+ .cool-input:focus ~ span {
    transform: translate(-50%, 0) scaleX(0.9);
    opacity: 1;
  }

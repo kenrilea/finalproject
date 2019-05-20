@@ -7,7 +7,7 @@ let utils = require(__dirname + "/engine-utils.js");
 let gameInstances = {};
 let endGame = (gameId, team) => {
   gameInstances[gameId]["points"][team] =
-    gameInstances[gameId]["points"][team] - 50;
+    gameInstances[gameId]["points"][team] - 300;
 
   let winner = undefined;
   let winnerPoints = undefined;
@@ -357,6 +357,13 @@ let handlerUserInput = input => {
   if (gameInstances[input.gameId] === undefined) {
     return { changes, successs: false };
   }
+  if (gameInstances[input.gameId].playerWon !== undefined) {
+    changes = changes.concat({
+      type: "game-over",
+      winner: gameInstances[input.gameId].playerWon
+    });
+    return { changes, success: false };
+  }
   let players = gameInstances[input.gameId]["players"];
   let gameTurn =
     players[parseInt(gameInstances[input.gameId]["turn"]) % players.length];
@@ -390,8 +397,10 @@ let handlerUserInput = input => {
     }
   }
   if (input.action.type === "leave") {
-    let winner = endGame(input.gameId, input.team);
-    changes = changes.concat({ type: "game-over", winner: winner });
+    if (gameTurn === input.team) {
+      let winner = endGame(input.gameId, input.team);
+      changes = changes.concat({ type: "game-over", winner: winner });
+    }
   }
   if (changes.length > 0) {
     gameInstances[input.gameId]["turn"] =
