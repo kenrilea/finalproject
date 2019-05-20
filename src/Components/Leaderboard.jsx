@@ -30,7 +30,7 @@ class Leaderboard extends Component {
 
       setTimeout(() => {
          socket.emit("refresh-leaderboard-data")
-      }, 600)
+      }, 700)
 
    };
 

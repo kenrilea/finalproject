@@ -112,7 +112,7 @@ class UnconnectedLobbiesList extends Component {
          return <Redirect to={"lobby/" + this.props.lobbyToJoinId} />;
       }
 
-      if (this.state.lobbies === undefined) {
+      if (this.state.lobbies === undefined || this.state.lobbies.length === 0) {
          return (
             <Spinner />
          )
