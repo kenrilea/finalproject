@@ -180,7 +180,7 @@ class GameFrame extends Component {
             className="svg-canvas"
             id="chess-2-canvas"
             /*preserveAspectRatio="xMaxYMax none"*/
-            viewBox="0 0 100 50"
+            viewBox="0 0 100 55"
           >
             {this.getActorElements()}
           </svg>

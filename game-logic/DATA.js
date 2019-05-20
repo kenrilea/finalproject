@@ -82,7 +82,7 @@ let unitTypes = {
     actorType: "char",
     moveSpeed: 1,
     points: 120,
-    range: 150
+    range: 3
   },
   legionary: {
     charType: "legionary",
@@ -115,27 +115,9 @@ let unitTypes = {
   }
 };
 let defaultArmy = [
-  [
-    "knight",
-    "knight",
-    "archer",
-    "catapult",
-    "catapult",
-    "archer",
-    "knight",
-    "knight"
-  ],
-  [
-    "legionary",
-    "pawn",
-    "legionary",
-    "pawn",
-    "pawn",
-    "legionary",
-    "pawn",
-    "legionary"
-  ],
-  ["", "", "", "", "", "", "", ""]
+  ["", "", "", "", "", "", "", ""],
+  ["", "", "pawn", "archer", "catapult", "archer", "pawn", ""],
+  ["knight", "", "", "legionary", "", "legionary", "", "knight"]
 ];
 let charTypes = ["pawn", "knight", "archer", "catapult", "legionary"];
 let moveinput = { type: "move", actorId: "", dest: { x: 0, y: 0 } };

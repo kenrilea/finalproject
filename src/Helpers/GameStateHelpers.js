@@ -12,7 +12,8 @@ export const resetToSelectUnitState = () => {
         return {
           ...actor,
           onTarget: false,
-          highlighted: false
+          highlighted: false,
+          occupiedByEnemy: false
         };
       })
     })
@@ -28,7 +29,8 @@ export const goToOpponentState = () => {
         return {
           ...actor,
           onTarget: false,
-          highlighted: false
+          highlighted: false,
+          occupiedByEnemy: false
         };
       })
     })

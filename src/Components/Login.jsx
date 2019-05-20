@@ -75,7 +75,7 @@ class UnconnectedLogin extends Component {
                <div>
                   <div className="login-label">Username</div>
                   <input
-                     className="coolInput"
+                     className="cool-input"
                      type="text"
                      onChange={this.handleUsername}
                      required={true}
@@ -85,7 +85,7 @@ class UnconnectedLogin extends Component {
                <div>
                   <div className="login-label">Password</div>
                   <input
-                     className="coolInput"
+                     className="cool-input"
                      type="text"
                      onChange={this.handlePassword}
                      required={true}

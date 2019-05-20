@@ -8,7 +8,7 @@ class Menu extends Component {
 
     const style = {
       position: "absolute",
-      zIndex: 100,
+      zIndex: 1000,
       margin: 0,
       //paddingTop: "10px",
       width: "120px",
@@ -18,16 +18,22 @@ class Menu extends Component {
 
     const xPercent = this.props.actionMenu.xPos;
     if (xPercent < 50) {
-      style.left = xPercent + this.props.dimensions.w + "%";
+      style.left = parseFloat(xPercent + this.props.dimensions.w * 0.7) + "%";
     } else {
-      style.right = 100 - xPercent + "%";
+      style.right =
+        parseFloat(
+          100 -
+            xPercent -
+            this.props.dimensions.w +
+            this.props.dimensions.w * 0.7
+        ) + "%";
     }
 
-    const yPercent = this.props.actionMenu.yPos;
+    const yPercent = this.props.actionMenu.yPos + this.props.dimensions.h;
     if (yPercent < 50) {
       style.top = yPercent + "%";
     } else {
-      style.bottom = 100 - yPercent - this.props.dimensions.h + "%";
+      style.bottom = parseFloat(100 - yPercent - this.props.dimensions.h) + "%";
     }
 
     return (
