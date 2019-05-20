@@ -300,3 +300,20 @@ div {
    }
 
 } 
+
+.about-img-cont {
+   margin: 20px auto 20px auto;
+}
+
+.about-img-cont-row {
+   display: flex;
+   justify-content: space-between;
+   width: 45vw;
+   height: 15vh;
+   margin: 20px auto 0 auto;
+   overflow: hidden;
+}
+
+.about-img-cont img {
+   height: 15vh;
+}
