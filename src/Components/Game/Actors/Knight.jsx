@@ -251,8 +251,8 @@ class Knight extends Component {
         this.props.dispatch(
           setActionMenu(
             true,
-            this.state.frontendPos.x,
-            this.state.frontendPos.y,
+            event.offsetX,
+            event.offsetY,
             this.props.actorData.actions.map(action => {
               return {
                 text: action,
@@ -317,43 +317,8 @@ class Knight extends Component {
         />
       ) : null;
 
-    const tileY = yFrontend + height / 3;
-    const polyPoints = [
-      [xFrontend + width / 2, tileY], // top
-      [xFrontend + width + width / 2, tileY + height / 2], // right
-      [xFrontend + width / 2, tileY + height], // bottom
-      [xFrontend - width / 2, tileY + height / 2] // left
-    ];
-    const animateOtherUnits =
-      this.props.actorData.highlighted &&
-      this.props.gameState.unitInAction !== undefined &&
-      this.props.actorData.team !== this.props.gameState.unitInAction.team ? (
-        <polygon
-          points={polyPoints.map(inner => inner.join(",")).join(" ")}
-          id={"rect" + id}
-          stroke={"#42f4eb"}
-          strokeWidth="0.1"
-          strokeLinecap="square"
-          fill={ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET}
-          x={xFrontend}
-          y={yFrontend}
-          width={width}
-          height={height}
-        >
-          <animate
-            xlinkHref={"#rect" + id}
-            attributeName="opacity"
-            from="0"
-            to="1"
-            begin="0s"
-            dur="1s"
-            repeatCount="indefinite"
-          />
-        </polygon>
-      ) : null;
     return (
       <g>
-        {/* {animateOtherUnits} */}
         <image
           id={id}
           xlinkHref={
