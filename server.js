@@ -364,7 +364,6 @@ app.post("/create-lobby", upload.none(), function(req, res) {
   const newLobbyChat = {
     _id: newLobbyId,
     messageList: [],
-    creator: req.body.currentUser,
     creationTime: new Date().toLocaleString()
   };
 
@@ -538,6 +537,49 @@ let army = [
 //************ SOCKET IO STUFF ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//____________FUNCTIONS FOR SOCKET STUFF____________
+//Refresh the lobby chat
+let refreshLobbyChat = lobbyId => {
+  chatsCollection.find({ _id: lobbyId }).toArray((err, result) => {
+    if (err) throw err;
+    if (result[0] === undefined) {
+      return;
+    }
+    console.log("REFRESHING LOBBYCHAT.");
+    //result[0] is a chat object that has messageList
+    io.in(lobbyId).emit("lobby-chat", result[0].messageList);
+  });
+};
+
+//Reset the lobby chat
+let resetLobbyChat = lobbyId => {
+  console.log("Resetting lobby chat for chat id: ", lobbyId);
+  chatsCollection.updateOne(
+    { _id: lobbyId },
+    { $set: { messageList: [] } },
+    (err, result) => {
+      if (err) throw err;
+      console.log(`DB: Resetting message list for chat id: ${lobbyId}`);
+    }
+  );
+  refreshLobbyChat(lobbyId);
+};
+
+refreshLobby = lobbyId => {
+  console.log("Socket: Refresh lobby listener called");
+
+  lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
+    if (err) throw err;
+    if (result[0] === undefined) {
+      return;
+    }
+    //Send back lobby object in socket
+    io.in(lobbyId).emit("lobby-data", result[0]);
+  });
+};
+
+//____________END|FUNCTIONS FOR SOCKET STUFF____________
+
 io.on("connection", socket => {
   console.log("Connected to socket");
 
@@ -548,16 +590,7 @@ io.on("connection", socket => {
   });
 
   socket.on("refresh-lobby", currentLobbyId => {
-    console.log("Socket: Refresh lobby listener called");
-
-    lobbiesCollection.find({ _id: currentLobbyId }).toArray((err, result) => {
-      if (err) throw err;
-      if (result[0] === undefined) {
-        return;
-      }
-      //Send back lobby object in socket
-      io.in(currentLobbyId).emit("lobby-data", result[0]);
-    });
+    refreshLobby(currentLobbyId);
   });
 
   socket.on("refresh-leaderboard-data", () => {
@@ -595,21 +628,12 @@ io.on("connection", socket => {
     });
   });
 
-  ///bookmark
   socket.on("refresh-lobby-chat", lobbyId => {
-    chatsCollection.find({ _id: lobbyId }).toArray((err, result) => {
-      if (err) throw err;
-      if (result[0] === undefined) {
-        return;
-      }
-      console.log("REFRESHING LOBBYCHAT.");
-      //result[0] is a chat object that has messageList
-      io.in(lobbyId).emit("lobby-chat", result[0].messageList);
-    });
+    refreshLobbyChat(lobbyId);
   });
 
   socket.on("sent-message", data => {
-    console.log("!!!!!!!!!!!!!!My data", data);
+    console.log("Sent message data", data);
     console.log(Object.values(data));
     let messageToBeAdded = data.message;
 
@@ -619,15 +643,7 @@ io.on("connection", socket => {
       (err, result) => {
         if (err) throw err;
         console.log(`DB: Updating message list for chat id: ${data.lobbyId}`);
-
-        //THIS MIGHT WORK INSTEAD OF BELOW, TRY WHEN CHAT IS WORKING: io.emit("refresh-lobby-chat", data.lobbyId);
-        chatsCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-          if (err) throw err;
-          if (result[0] === undefined) {
-            return;
-          }
-          io.in(data.lobbyId).emit("lobby-chat", result[0].messageList);
-        });
+        refreshLobbyChat(data.lobbyId);
       }
     );
   });
@@ -655,9 +671,17 @@ io.on("connection", socket => {
         result[0].playerOne === data.currentUser &&
         result[0].playerTwo !== ""
       ) {
-        lobbiesCollection.update(
+        lobbiesCollection.updateOne(
           { _id: data.lobbyId },
-          { $set: { playerOne: "" } },
+          //PlayerTwo will become playerOne
+          {
+            $set: {
+              playerOne: result[0].playerTwo,
+              playerTwo: "",
+              readyPlayerOne: result[0].readyPlayerTwo,
+              readyPlayerTwo: false
+            }
+          },
           (err, result) => {
             if (err) throw err;
             console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
@@ -666,9 +690,13 @@ io.on("connection", socket => {
               .find({ _id: data.lobbyId })
               .toArray((err, result) => {
                 io.in(data.lobbyId).emit("lobby-data", result[0]);
+                lobbiesCollection.find().toArray((err, result) => {
+                  io.emit("lobby-list-data", result);
+                });
               });
           }
         );
+        resetLobbyChat(data.lobbyId);
       }
 
       //If playerTwo leaves and is not alone, also update lobby and emit!
@@ -693,8 +721,12 @@ io.on("connection", socket => {
               });
           }
         );
+        refreshLobby(data.lobbyId);
+        resetLobbyChat(data.lobbyId);
       }
     });
+    // messageList: [],
+    //io.emit("refresh-lobby-chat", data.lobbyId);
   });
 
   //_______________________GAME________________________________________________

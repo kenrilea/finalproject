@@ -49,16 +49,14 @@ class UnconnectedLobbyChat extends Component {
         messages
       );
       console.log("LobbyChat Props:", this.props);
-      this.setOpponentUsername();
-      if (messages.length !== 0) {
-        let povMessages = this.messagesFromUserPOV(messages);
 
-        this.setState({
-          ...this.state,
-          messageList: povMessages
-        });
-        console.log("User POV messages: ", povMessages);
-      }
+      this.setOpponentUsername();
+      let povMessages = this.messagesFromUserPOV(messages);
+      this.setState({
+        ...this.state,
+        messageList: povMessages
+      });
+      console.log("User POV messages: ", povMessages);
     });
     socket.emit("refresh-lobby-chat", this.props.currentLobbyId);
   }
