@@ -24,7 +24,7 @@ class Menu extends Component {
       height: gameframeElem.offsetHeight
     };
 
-    console.log("ACTION MENU DIM: ", gameframeElem, gameframeDim);
+    // console.log("ACTION MENU DIM: ", gameframeElem, gameframeDim);
 
     const xClickPos = this.props.actionMenu.xPos;
     const xPercent = (xClickPos / gameframeDim.width) * 100;

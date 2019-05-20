@@ -67,9 +67,23 @@ export const assignAnimationToActor = () => {
     if (store.getState().gameState.actionList === undefined) return;
 
     if (store.getState().gameState.actionList.length <= 0) {
-      socket.emit("get-game-data", {
-        gameId: store.getState().currentLobbyId
-      });
+      store.dispatch(
+        setGameData({
+          ...store.getState().gameData,
+          actors: store.getState().gameData.actors.map(actor => {
+            return {
+              ...actor,
+              action: undefined
+            };
+          })
+        })
+      );
+
+      setTimeout(() => {
+        socket.emit("get-game-data", {
+          gameId: store.getState().currentLobbyId
+        });
+      }, 2);
       return;
     }
 
