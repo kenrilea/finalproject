@@ -72,7 +72,7 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100
+    points: 25
   },
   archer: {
     charType: "archer",
@@ -81,8 +81,8 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100,
-    range: 3
+    points: 120,
+    range: 150
   },
   legionary: {
     charType: "legionary",
@@ -91,7 +91,7 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100
+    points: 45
   },
   knight: {
     charType: "knight",
@@ -100,7 +100,7 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100,
+    points: 120,
     range: 3
   },
   catapult: {
@@ -110,7 +110,7 @@ let unitTypes = {
     pos: { x: -1, y: -1 },
     actorType: "char",
     moveSpeed: 1,
-    points: 100,
+    points: 345,
     range: 3
   }
 };
