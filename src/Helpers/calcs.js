@@ -120,8 +120,8 @@ export const isTileOccupied = (tileActor, actorList) => {
       actor.pos.y === tileActor.pos.y
     );
   });
-  if (found === undefined) return false;
-  return true;
+  if (found === undefined) return { success: false };
+  return { success: true, actor: found };
 };
 
 export const radiansToDegrees = rad => {

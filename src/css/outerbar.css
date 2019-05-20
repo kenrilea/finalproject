@@ -4,7 +4,7 @@
   top: 0;
   right: 0;
   margin: 0px;
-  z-index: 500;
+  z-index: 999;
 }
 
 .outerbar-turn-display {

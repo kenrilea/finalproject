@@ -83,8 +83,11 @@ class Tile extends Component {
 
     const highlighted = this.props.actorData.highlighted;
     const onTarget = this.props.actorData.onTarget;
+    const occupiedByEnemy = this.props.actorData.occupiedByEnemy;
 
-    const fill = onTarget
+    const fill = occupiedByEnemy
+      ? ACTOR_HIGHLIGHT.ACTOR_ENEMY_ON_TARGET
+      : onTarget
       ? ACTOR_HIGHLIGHT.TILE_TARGET
       : ACTOR_HIGHLIGHT.TILE_ON_PATH;
     const stroke = "#fff";
