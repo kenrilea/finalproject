@@ -7,6 +7,7 @@ class UnconnectedLobbyChat extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      opponentUsername: "",
       messageList: []
     };
   }
@@ -17,11 +18,23 @@ class UnconnectedLobbyChat extends Component {
         message.author = "me";
       } else {
         message.author = "them";
-        message.data.text = message.username + ": \n" + message.data.text;
       }
       return message;
     });
     return povMessages;
+  };
+
+  setOpponentUsername = () => {
+    let username = "Waiting for opponent...";
+    if (this.props.playerOne == this.props.currentUser) {
+      username = this.props.playerTwo;
+    } else if (this.props.playerTwo == this.props.currentUser) {
+      username = this.props.playerOne;
+    }
+    this.setState({
+      ...this.state,
+      opponentUsername: username
+    });
   };
 
   componentDidMount() {
@@ -36,8 +49,10 @@ class UnconnectedLobbyChat extends Component {
         messages
       );
       console.log("LobbyChat Props:", this.props);
+      this.setOpponentUsername();
       if (messages.length !== 0) {
         let povMessages = this.messagesFromUserPOV(messages);
+
         this.setState({
           ...this.state,
           messageList: povMessages
@@ -67,32 +82,12 @@ class UnconnectedLobbyChat extends Component {
     socket.emit("sent-message", data);
   };
 
-  //   _sendMessage = text => {
-  //     if (text.length > 0) {
-  //       this.setState({
-  //         messageList: [
-  //           ...this.state.messageList,
-  //           {
-  //             author: currentUser,
-  //             type: "text",
-  //             data: { text }
-  //           }
-  //         ]
-  //       });
-  //     }
-  //   };
-
-  //   //this or the above?
-  //   message(chatroomName, msg, cb) {
-  //     socket.emit("message", { chatroomName, message: msg }, cb);
-  //   }
-
   render() {
     return (
       <div className="App">
         <Launcher
           agentProfile={{
-            teamName: "Chess 2 Chat!!!"
+            teamName: this.state.opponentUsername
             //imageUrl: "./../ninja.png"
           }}
           onMessageWasSent={this._onMessageWasSent.bind(this)}
