@@ -26,7 +26,7 @@ class CloudHud extends Component {
 
       return (
          <div className="cloud-hud-cont">
-            <img src="../../assets/cloud-hud.png" />
+            <img style={{ width: "200px" }} src="../../assets/cloud-hud.png" />
             <label className="cloud-label1" > {currentPlayerScore} </label>
             <label className="cloud-label2"> {opponentScore} </label>
             <label className="turn-label"> {turnLabel} </label>
