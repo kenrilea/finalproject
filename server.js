@@ -375,7 +375,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
     }
     console.log(
       `DB: Successfully added lobby chat created by ${
-        newLobbyChat.currentUser
+        req.body.currentUser
       } into lobby chat collection`
     );
     console.log(
@@ -605,7 +605,10 @@ io.on("connection", socket => {
       });
   });
   socket.on("refresh-lobby-list", () => {
-    console.log("REFRESHING  LOBBY LIST");
+    if (lobbiesCollection === undefined) {
+      return;
+    }
+    console.log("REFRESHING LOBBY LIST");
     lobbiesCollection.find().toArray((err, result) => {
       let lobbyCount = 0;
       let fullLobbies = 0;
@@ -655,7 +658,7 @@ io.on("connection", socket => {
         result[0].playerOne === data.currentUser &&
         result[0].playerTwo === ""
       ) {
-        lobbiesCollection.remove({ _id: data.lobbyId });
+        lobbiesCollection.deleteOne({ _id: data.lobbyId });
       }
 
       //If playerTwo is alone in lobby, remove it as well!
@@ -663,7 +666,7 @@ io.on("connection", socket => {
         result[0].playerTwo === data.currentUser &&
         result[0].playerOne === ""
       ) {
-        lobbiesCollection.remove({ _id: data.lobbyId });
+        lobbiesCollection.deleteOne({ _id: data.lobbyId });
       }
 
       //If playerOne leaves and is not alone, update lobby and emit!
