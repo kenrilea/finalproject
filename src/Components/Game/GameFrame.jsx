@@ -21,12 +21,14 @@ import {
 } from "./../../Helpers/GameStateHelpers.js";
 import socket from "./../SocketSettings.jsx";
 import LobbyChat from "./../LobbyChat.jsx";
-
 import CloudHud from "../CloudHud.jsx"
 
 class GameFrame extends Component {
    constructor(props) {
       super(props);
+
+      this.gameFrameRef = React.createRef();
+
       this.state = {
          loaded: false,
          currentTurnPlayer: "",
@@ -36,6 +38,10 @@ class GameFrame extends Component {
          playerTwo: ""
       };
    }
+
+   getGameframeElem = () => {
+      return this.gameFrameRef;
+   };
 
    isGameState = state => {
       return state === this.props.gameState.type;
@@ -177,23 +183,23 @@ class GameFrame extends Component {
 
       return (
          <div className="wrapper" onClick={this.handleOverworldClick}>
-            <div className="gameframe wrapper">
+            <div className="gameframe wrapper" ref={this.gameFrameRef}>
                <svg
                   className="svg-canvas"
                   id="chess-2-canvas"
                   /*preserveAspectRatio="xMaxYMax none"*/
-                  viewBox="0 0 100 55"
+                  viewBox="0 0 100 57"
                >
                   {this.getActorElements()}
                </svg>
-               <Menu options={this.props.actionMenuOptions} />
+               <Menu
+                  options={this.props.actionMenuOptions}
+                  getGameFrameElem={this.getGameframeElem}
+               />
                {gameOverContent}
             </div>
-            {/* <OuterBar
-          gameOver={this.state.gameOver}
-          currentTurnPlayer={this.state.currentTurnPlayer}
-        /> */}
             <CloudHud
+               gameOver={this.state.gameOver}
                currentTurnPlayer={this.state.currentTurnPlayer}
             />
             <LobbyChat
