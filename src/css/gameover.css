@@ -1,7 +1,7 @@
 .game-over {
   margin: 0;
   position: absolute;
-  z-index: 510;
+  z-index: inherit;
   color: white;
   background: rgba(0, 0, 0, 0.6);
 }
