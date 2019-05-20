@@ -348,6 +348,7 @@ let createTestGameInst = (teamA, teamB, armyA, armyB) => {
 };
 //________________________________________________________________________________________________
 let handlerUserInput = input => {
+  console.log(input.action);
   let changes = [];
   let success = true;
   if (input.action === undefined) {
