@@ -1,29 +1,70 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import "../css/whatsNew.css"
+import "../css/whatsNew.css";
 
 class WhatsNew extends Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      newsList: []
+    };
+  }
 
-   render = () => {
+  componentDidMount = () => {
+    fetch("/get-news")
+      .then(response => {
+        return response.text();
+      })
+      .then(responseBody => {
+        let body = JSON.parse(responseBody);
+
+        console.log("News: ", body);
+
+        if (!body.success) {
+          return;
+        }
+
+        this.setState({
+          newsList: body.newsList
+        });
+      });
+  };
+
+  getFormattedDate = date => {
+    date = new Date(date);
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+
+    return mm + "/" + dd + "/" + yyyy;
+  };
+
+  getNewsContent = () => {
+    if (this.state.newsList.length === 0) {
+      return <div>Cannot retrieve news from server.</div>;
+    }
+
+    let content = this.state.newsList.map(post => {
       return (
-         <div className="card-container-narrow animated-grow-bounce material-shadow vert-scroll">
-            <h3 className="card-top-label">What's new?</h3>
-            <ul>
-               <li className="news-element">05/16/19: Version 1.5 is here - We can't wait to release this game for y'all!</li>
-               <li className="news-element">05/11/19: Version 1.0 begins! Stay tuned for future updates</li>
-               <li className="news-element">05/11/19: Suspendisse quam orci, varius ac erat id, dapibus elementum metus. Donec mollis et est in aliquam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-               <li className="news-element">05/11/19: Cras quis gravida lorem, nec varius ex. Vivamus non pharetra purus, volutpat malesuada enim. Curabitur rutrum odio id feugiat placerat.</li>
-               <li className="news-element">05/11/19: Suspendisse quam orci, varius ac erat id, dapibus elementum metus. Donec mollis et est in aliquam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-               <li className="news-element">05/11/19: Cras quis gravida lorem, nec varius ex. Vivamus non pharetra purus, volutpat malesuada enim. Curabitur rutrum odio id feugiat placerat.</li>
-               <li className="news-element">05/11/19: Suspendisse quam orci, varius ac erat id, dapibus elementum metus. Donec mollis et est in aliquam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-               <li className="news-element">05/11/19: Cras quis gravida lorem, nec varius ex. Vivamus non pharetra purus, volutpat malesuada enim. Curabitur rutrum odio id feugiat placerat.</li>
-               <li className="news-element">05/11/19: Version 1.0 begins!</li>
-            </ul>
-         </div>
-      )
-   }
+        <li className="news-element">
+          {this.getFormattedDate(post.date) + ": " + post.text}
+        </li>
+      );
+    });
+
+    return <ul>{content}</ul>;
+  };
+
+  render = () => {
+    return (
+      <div className="card-container-narrow animated-grow-bounce material-shadow vert-scroll">
+        <h3 className="card-top-label">What's new?</h3>
+        {this.getNewsContent()}
+      </div>
+    );
+  };
 }
 
-export default WhatsNew
+export default WhatsNew;

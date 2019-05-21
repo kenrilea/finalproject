@@ -415,6 +415,17 @@ let handlerUserInput = input => {
 let getGameInst = gameId => {
   return gameInstances[gameId];
 };
+let checkGameOver = gameId => {
+  if (gameInstances[gameId].playerWon === undefined) {
+    return { gameOver: false };
+  }
+  return {
+    success: true,
+    winner: gameInstances[gameId].playerWon,
+    players: gameInstances[gameId].players,
+    points: gameInstances[gameId].points
+  };
+};
 //________________________________________________________________________________________________
 module.exports = {
   editGameData,
@@ -422,5 +433,6 @@ module.exports = {
   createGameInst,
   handlerUserInput,
   createTestGameInst,
-  getGameInst
+  getGameInst,
+  checkGameOver
 };
