@@ -143,3 +143,17 @@
    opacity: 0;
 }
 
+.round-button:disabled {
+   color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+   background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.12);
+   box-shadow: none;
+   cursor: initial;
+}
+
+.round-button:disabled::before {
+   opacity: 0;
+}
+
+.round-button:disabled::after {
+   opacity: 0;
+}

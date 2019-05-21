@@ -18,6 +18,7 @@ nav {
   font-family: 'Scope One', serif;
   font-size: 28px;
   font-weight: bold;
+  z-index: 1001;
 }
 
 .nav-links {
@@ -51,6 +52,8 @@ nav {
   font-size: 16px;
   z-index: 1001;
 }
+
+
 
 .burger {
   display: none;

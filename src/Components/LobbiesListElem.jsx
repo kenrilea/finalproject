@@ -71,7 +71,7 @@ class UnconnectedLobbiesListElem extends Component {
                {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
             </div>
 
-            <button className="material-button green square bottom-pad big-button-font" disabled={this.props.playerTwo ? true : false} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
+            <button className="material-button green square bottom-pad big-button-font" disabled={ this.props.loggedIn ? (this.props.playerTwo ? true : false) : (true) } onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
                {this.props.playerTwo ? "FULL" : "JOIN!"}
             </button>
 
@@ -83,7 +83,8 @@ class UnconnectedLobbiesListElem extends Component {
 
 let mapStateToProps = state => {
    return {
-      currentUser: state.currentUser
+      currentUser: state.currentUser,
+      loggedIn: state.loggedIn,
    }
 }
 
