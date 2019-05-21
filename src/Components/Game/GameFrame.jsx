@@ -2,6 +2,7 @@ import "./../../css/gameFrame.css";
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
@@ -42,6 +43,11 @@ class GameFrame extends Component {
     return this.gameFrameRef;
   };
 
+  getGameId = () => {
+    let temp = this.props.location.pathname;
+    return temp.substring(temp.lastIndexOf("/") + 1);
+  };
+
   isGameState = state => {
     return state === this.props.gameState.type;
   };
@@ -56,6 +62,7 @@ class GameFrame extends Component {
   };
 
   componentWillUnmount = () => {
+    this.hasMounted = false;
     if (this.state.loaded && this.state.gameOver) {
       this.props.dispatch({
         type: "LEAVE-GAME"
@@ -73,18 +80,21 @@ class GameFrame extends Component {
   };
 
   componentDidMount = () => {
+    this.hasMounted = true;
     this.props.dispatch({
       type: "JOIN-LOBBY",
-      lobbyId: this.props.match.params.gameId,
+      lobbyId: this.getGameId(),
       inLobby: false
     });
     console.log("wildcard");
-    console.log(this.props.match.params.gameId);
+    console.log(this.getGameId());
     if (!this.state.loaded) {
       socket.open();
     }
 
     socket.on("game-data", data => {
+      if (!this.hasMounted) return;
+
       console.log("________________GAME DATA______________");
       console.log(data);
 
@@ -137,6 +147,8 @@ class GameFrame extends Component {
     });
 
     socket.on("game-state-change", data => {
+      if (!this.hasMounted) return;
+
       console.log("Changes: ", data);
       if (!data.success) {
         // alert("error!");
@@ -147,13 +159,19 @@ class GameFrame extends Component {
 
       updateAnimationPhase(changes);
     });
+
     socket.on("game-created", msg => {
+      if (!this.hasMounted) return;
+
       console.log("game is created loading game");
-      socket.emit("get-game-data", { gameId: this.props.match.params.gameId });
+      socket.emit("get-game-data", { gameId: this.getGameId() });
     });
-    socket.emit("join-game", this.props.match.params.gameId);
+
+    socket.emit("join-game", this.getGameId());
 
     socket.on("lobby-data", lobby => {
+      if (!this.hasMounted) return;
+
       console.log("Recieved player data from lobby: ", lobby);
       this.setState({
         ...this.state,
@@ -163,11 +181,11 @@ class GameFrame extends Component {
     });
 
     console.log("Getting Lobby data for player data:");
-    socket.emit("refresh-lobby", this.props.match.params.gameId);
+    socket.emit("refresh-lobby", this.getGameId());
     console.log("Gamestate Props:");
     console.log(this.props);
     console.log("Getting chat data...");
-    socket.emit("refresh-lobby-chat", this.props.match.params.gameId);
+    socket.emit("refresh-lobby-chat", this.getGameId());
   };
 
   getActorElements = () => {
@@ -259,4 +277,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(GameFrame);
+export default withRouter(connect(mapStateToProps)(GameFrame));
