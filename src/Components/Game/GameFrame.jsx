@@ -12,8 +12,8 @@ import Knight from "./Actors/Knight.jsx";
 import Legionary from "./Actors/Legionary.jsx";
 import Pawn from "./Actors/Pawn.jsx";
 import Menu from "./Menu/Menu.jsx";
-import { setGameData } from "./../../Actions";
-import { STATES } from "./../../GameStates";
+import { setGameData, setGameState } from "./../../Actions";
+import { STATES, selectUnit } from "./../../GameStates";
 import {
   resetToSelectUnitState,
   updateAnimationPhase,
@@ -56,8 +56,21 @@ class GameFrame extends Component {
     }
   };
 
+  componentWillUnmount = () => {
+    if (this.state.loaded && this.state.gameOver) {
+      this.props.dispatch({
+        type: "LEAVE-GAME"
+      });
+      this.props.dispatch({
+        type: "LEAVE-LOBBY"
+      });
+      this.props.dispatch(setGameData({}));
+      this.props.dispatch(setGameState(selectUnit()));
+    }
+    console.log("GameFrame Unmounted");
+  };
+
   componentDidMount = () => {
-     
     this.props.dispatch({
       type: "JOIN-LOBBY",
       lobbyId: this.props.match.params.gameId,
