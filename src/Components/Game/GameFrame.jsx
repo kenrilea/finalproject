@@ -2,7 +2,6 @@ import "./../../css/gameFrame.css";
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import OuterBar from "./OuterBar.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
@@ -12,8 +11,8 @@ import Knight from "./Actors/Knight.jsx";
 import Legionary from "./Actors/Legionary.jsx";
 import Pawn from "./Actors/Pawn.jsx";
 import Menu from "./Menu/Menu.jsx";
-import { setGameData } from "./../../Actions";
-import { STATES } from "./../../GameStates";
+import { setGameData, setGameState } from "./../../Actions";
+import { STATES, selectUnit } from "./../../GameStates";
 import {
   resetToSelectUnitState,
   updateAnimationPhase,
@@ -56,8 +55,24 @@ class GameFrame extends Component {
     }
   };
 
+  componentWillUnmount = () => {
+    if (this.state.loaded && this.state.gameOver) {
+      this.props.dispatch({
+        type: "LEAVE-GAME"
+      });
+      this.props.dispatch({
+        type: "LEAVE-LOBBY"
+      });
+      this.props.dispatch(setGameData({}));
+      this.props.dispatch(setGameState(selectUnit()));
+    }
+    socket.off("game-data");
+    socket.off("create-game");
+    socket.off("game-state-change");
+    console.log("GameFrame Unmounted");
+  };
+
   componentDidMount = () => {
-     
     this.props.dispatch({
       type: "JOIN-LOBBY",
       lobbyId: this.props.match.params.gameId,

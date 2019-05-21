@@ -749,18 +749,33 @@ io.on("connection", socket => {
             .find({ username: result[0].user })
             .toArray((err, result) => {
               currentLobbyId = result[0].currentLobby;
-              usersCollection.updateOne(
-                //bookmark
-                { _id: result[0]._id },
-                { $set: { currentLobby: "" } },
-                (err, result) => {
+              lobbiesCollection
+                .find({ _id: currentLobbyId })
+                .toArray((err, result) => {
                   if (err) throw err;
-                  console.log(`DB: Removed users currentLobby...`);
-                  lobbiesCollection.deleteOne({ _id: currentLobbyId });
-                  refreshLobbyList();
-                  refreshLobby(currentLobbyId);
-                }
-              );
+                  if (result[0] === undefined) {
+                    return;
+                  }
+
+                  if (result[0].readyPlayerOne && result[0].readyPlayerTwo) {
+                    return;
+                  } else {
+                    usersCollection.updateOne(
+                      //bookmark
+                      { _id: result[0]._id },
+                      { $set: { currentLobby: "" } },
+                      (err, result) => {
+                        if (err) throw err;
+                        console.log(`DB: Removed users currentLobby...`);
+                        lobbiesCollection.deleteOne({ _id: currentLobbyId });
+                        refreshLobbyList();
+                        refreshLobby(currentLobbyId);
+                      }
+                    );
+                  }
+                  //Send back lobby object in socket
+                  io.in(currentLobbyId).emit("lobby-data", result[0]);
+                });
             });
         });
 
@@ -818,6 +833,10 @@ io.on("connection", socket => {
     }
 
     lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+      if (err) throw err;
+      if (result[0] == undefined) {
+        return;
+      }
       //If playerOne is alone in lobby, remove it from db!
       if (
         result[0].playerOne === data.currentUser &&
