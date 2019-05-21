@@ -85,6 +85,7 @@ app.post("/signup", upload.none(), function(req, res) {
         wins: 0,
         losses: 0,
         points: 0,
+        currentLobby: "",
         profilePic: "/assets/default-user.jpg",
         status: "playing Super Chess II",
         bio: "Super Chess II player",
@@ -232,7 +233,7 @@ app.post("/change-user-profile", upload.none(), function(req, res) {
         .find({ username: result[0].user })
         .toArray((err, result) => {
           console.log(result[0]);
-          usersCollection.update(
+          usersCollection.updateOne(
             { _id: result[0]._id },
             {
               $set: {
@@ -318,7 +319,7 @@ app.post("/set-army", upload.none(), (req, res) => {
         usersCollection
           .find({ username: result[0].user })
           .toArray((err, result) => {
-            usersCollection.update(
+            usersCollection.updateOne(
               { _id: result[0]._id },
               {
                 $set: {
@@ -376,35 +377,49 @@ app.post("/create-lobby", upload.none(), function(req, res) {
         newLobby.playerOne
       } into lobby collection`
     );
-    console.log(`New LobbyId: ${newLobby._id}`);
-  });
+    console.log(`New LobbyId: ${newLobbyId}`);
+    usersCollection
+      .find({ username: req.body.currentUser })
+      .toArray((err, result) => {
+        usersCollection.updateOne(
+          //bookmark
+          { _id: result[0]._id },
+          { $set: { currentLobby: newLobbyId } },
+          (err, result) => {
+            if (err) throw err;
+            console.log(`DB: Setting users currentLobby to: ${newLobbyId}`);
+            //res.send(JSON.stringify({ success: true }));
+          }
+        );
+      });
 
-  //We are now creating the lobby chat right after creating the lobby.
-  const newLobbyChat = {
-    _id: newLobbyId,
-    messageList: [],
-    creationTime: new Date().toLocaleString()
-  };
+    //We are now creating the lobby chat right after creating the lobby.
+    const newLobbyChat = {
+      _id: newLobbyId,
+      messageList: [],
+      creationTime: new Date().toLocaleString()
+    };
 
-  //Insert lobby chat into the database
-  chatsCollection.insertOne(newLobbyChat, (err, result) => {
-    if (err) {
-      res.send(JSON.stringify({ success: false }));
-      throw err;
-    }
-    console.log(
-      `DB: Successfully added lobby chat created by ${
-        req.body.currentUser
-      } into lobby chat collection`
-    );
-    console.log(
-      `The added chats ID, ${
-        newLobbyChat._id
-      }, is the same as the LobbyId, ${newLobbyId}.`
-    );
+    //Insert lobby chat into the database
+    chatsCollection.insertOne(newLobbyChat, (err, result) => {
+      if (err) {
+        res.send(JSON.stringify({ success: false }));
+        throw err;
+      }
+      console.log(
+        `DB: Successfully added lobby chat created by ${
+          req.body.currentUser
+        } into lobby chat collection`
+      );
+      console.log(
+        `The added chats ID, ${
+          newLobbyChat._id
+        }, is the same as the LobbyId, ${newLobbyId}.`
+      );
 
-    //The newLobby._id will also be used for the LobbyChat id
-    res.send(JSON.stringify({ success: true, lobbyId: newLobby._id }));
+      //The newLobby._id will also be used for the LobbyChat id
+      res.send(JSON.stringify({ success: true, lobbyId: newLobby._id }));
+    });
   });
 });
 
@@ -440,13 +455,28 @@ app.post("/join-lobby", upload.none(), function(req, res) {
       return;
     }
 
-    lobbiesCollection.update(
+    lobbiesCollection.updateOne(
       { _id: lobbyId },
       { $set: { playerTwo: currentUser } },
       (err, result) => {
         if (err) throw err;
         console.log(`DB: Adding user to lobbyId: ${lobbyId}`);
-        res.send(JSON.stringify({ success: true }));
+        //res.send(JSON.stringify({ success: true }));
+
+        usersCollection
+          .find({ username: req.body.currentUser })
+          .toArray((err, result) => {
+            usersCollection.updateOne(
+              //bookmark
+              { _id: result[0]._id },
+              { $set: { currentLobby: lobbyId } },
+              (err, result) => {
+                if (err) throw err;
+                console.log(`DB: Setting users currentLobby to: ${lobbyId}`);
+                res.send(JSON.stringify({ success: true }));
+              }
+            );
+          });
       }
     );
   });
@@ -477,7 +507,7 @@ app.post("/user-ready", upload.none(), function(req, res) {
       case result[0].playerOne:
         console.log(`User "${currentUser}" is registered as playerOne`);
         ready = !result[0].readyPlayerOne;
-        lobbiesCollection.update(
+        lobbiesCollection.updateOne(
           { _id: lobbyId },
           { $set: { readyPlayerOne: ready } },
           (err, result) => {
@@ -559,6 +589,9 @@ let army = [
 //____________FUNCTIONS FOR SOCKET STUFF____________
 //Refresh the lobby chat
 let refreshLobbyChat = lobbyId => {
+  if (chatsCollection == undefined) {
+    return;
+  }
   chatsCollection.find({ _id: lobbyId }).toArray((err, result) => {
     if (err) throw err;
     if (result[0] === undefined) {
@@ -584,7 +617,7 @@ let resetLobbyChat = lobbyId => {
   refreshLobbyChat(lobbyId);
 };
 
-refreshLobby = lobbyId => {
+let refreshLobby = lobbyId => {
   console.log("Socket: Refresh lobby listener called");
 
   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
@@ -597,7 +630,7 @@ refreshLobby = lobbyId => {
   });
 };
 
-refreshLobbyList = () => {
+let refreshLobbyList = () => {
   if (lobbiesCollection === undefined) {
     return;
   }
@@ -634,9 +667,39 @@ io.on("connection", socket => {
     console.log("Connecting client to socket room: ", currentLobbyId);
     socket.join(currentLobbyId);
 
-    socket.on("disconnecting", () => {
+    socket.on("disconnect", () => {
+      let usercookie = cookie.parse(socket.request.headers.cookie);
+      var currentLobbyId = "";
+      sessionsCollection
+        .find({ sessionId: usercookie.sid })
+        .toArray((err, result) => {
+          if (err) throw err;
+          //result is an array, we must check it elements with [ ]
+          if (result[0] === undefined || result.length === 0) {
+            //MUST send back success: false is username is not defined
+            return;
+          }
+          usersCollection
+            .find({ username: result[0].user })
+            .toArray((err, result) => {
+              currentLobbyId = result[0].currentLobby;
+              usersCollection.updateOne(
+                //bookmark
+                { _id: result[0]._id },
+                { $set: { currentLobby: "" } },
+                (err, result) => {
+                  if (err) throw err;
+                  console.log(`DB: Removed users currentLobby...`);
+                  lobbiesCollection.deleteOne({ _id: currentLobbyId });
+                  refreshLobbyList();
+                  refreshLobby(currentLobbyId);
+                }
+              );
+            });
+        });
+
       //bookmark
-      io.in(currentLobbyId).emit("lobby-disconnect");
+      io.emit("lobby-disconnect");
     });
   });
 
@@ -687,56 +750,56 @@ io.on("connection", socket => {
     ) {
       return;
     }
-    ////
+
     lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
       //If playerOne is alone in lobby, remove it from db!
-      // if (
-      //   result[0].playerOne === data.currentUser &&
-      //   result[0].playerTwo === ""
-      // ) {
-      //   lobbiesCollection.deleteOne({ _id: data.lobbyId });
-      // }
+      if (
+        result[0].playerOne === data.currentUser &&
+        result[0].playerTwo === ""
+      ) {
+        lobbiesCollection.deleteOne({ _id: data.lobbyId });
+      }
 
-      // //If playerTwo is alone in lobby, remove it as well!
-      // if (
-      //   result[0].playerTwo === data.currentUser &&
-      //   result[0].playerOne === ""
-      // ) {
-      //   lobbiesCollection.deleteOne({ _id: data.lobbyId });
-      // }
+      //If playerTwo is alone in lobby, remove it as well!
+      if (
+        result[0].playerTwo === data.currentUser &&
+        result[0].playerOne === ""
+      ) {
+        lobbiesCollection.deleteOne({ _id: data.lobbyId });
+      }
 
-      //   //If playerOne leaves and is not alone, update lobby and emit!
-      //   if (
-      //     result[0].playerOne === data.currentUser &&
-      //     result[0].playerTwo !== ""
-      //   ) {
-      //     lobbiesCollection.updateOne(
-      //       { _id: data.lobbyId },
-      //       //PlayerTwo will become playerOne
-      //       {
-      //         $set: {
-      //           playerOne: result[0].playerTwo,
-      //           playerTwo: "",
-      //           readyPlayerOne: result[0].readyPlayerTwo,
-      //           readyPlayerTwo: false
-      //         }
-      //       },
-      //       (err, result) => {
-      //         if (err) throw err;
-      //         console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
+      //If playerOne leaves and is not alone, update lobby and emit!
+      if (
+        result[0].playerOne === data.currentUser &&
+        result[0].playerTwo !== ""
+      ) {
+        lobbiesCollection.updateOne(
+          { _id: data.lobbyId },
+          //PlayerTwo will become playerOne
+          {
+            $set: {
+              playerOne: result[0].playerTwo,
+              playerTwo: "",
+              readyPlayerOne: result[0].readyPlayerTwo,
+              readyPlayerTwo: false
+            }
+          },
+          (err, result) => {
+            if (err) throw err;
+            console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
 
-      //         lobbiesCollection
-      //           .find({ _id: data.lobbyId })
-      //           .toArray((err, result) => {
-      //             io.in(data.lobbyId).emit("lobby-data", result[0]);
-      //             lobbiesCollection.find().toArray((err, result) => {
-      //               io.emit("lobby-list-data", result);
-      //             });
-      //           });
-      //       }
-      //     );
-      //   resetLobbyChat(data.lobbyId);
-      // }
+            lobbiesCollection
+              .find({ _id: data.lobbyId })
+              .toArray((err, result) => {
+                io.in(data.lobbyId).emit("lobby-data", result[0]);
+                lobbiesCollection.find().toArray((err, result) => {
+                  io.emit("lobby-list-data", result);
+                });
+              });
+          }
+        );
+        resetLobbyChat(data.lobbyId);
+      }
 
       //If playerTwo leaves and is not alone, also update lobby and emit!
       if (
@@ -762,11 +825,12 @@ io.on("connection", socket => {
         );
         refreshLobby(data.lobbyId);
         resetLobbyChat(data.lobbyId);
-      } else {
-        lobbiesCollection.deleteOne({ _id: data.lobbyId });
-        refreshLobbyList();
-        refreshLobby(data.lobbyId);
       }
+      // else {
+      //   lobbiesCollection.deleteOne({ _id: data.lobbyId });
+      //   refreshLobbyList();
+      //   refreshLobby(data.lobbyId);
+      // }
     });
 
     //messageList: [],

@@ -38,8 +38,8 @@ class UnconnectedLobby extends Component {
     socket.emit("refresh-lobby", this.props.currentLobbyId);
     socket.emit("refresh-lobby-chat", this.props.currentLobbyId);
     socket.on("lobby-disconnect", () => {
-      this.leaveLobby();
-      console.log(this.props.currentUser + " disconnected...");
+      this.leaveLobbyByDisconnect();
+      console.log(this.props.currentUser + " has disconnected...");
     });
   };
 
@@ -157,6 +157,12 @@ class UnconnectedLobby extends Component {
     if (!ready && !playerOne) {
       return "/assets/char-pawn-red-not-ready.png";
     }
+  };
+
+  leaveLobbyByDisconnect = () => {
+    this.props.dispatch({
+      type: "LEAVE-LOBBY"
+    });
   };
 
   leaveLobby = () => {
