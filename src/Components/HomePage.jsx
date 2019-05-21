@@ -17,10 +17,6 @@ class UnconnectedHomePage extends Component {
 
    render = () => {
 
-      if (this.props.loggedIn) {
-         return <Redirect to="/lobbies-list" />
-      }
-
       return (
          <div className="animated-fade-in">
             <WhatsNew />

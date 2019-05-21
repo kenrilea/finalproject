@@ -5,90 +5,87 @@ import { Link } from "react-router-dom";
 import "../css/ResponsiveNavBar.css";
 
 class ResponsiveNavBar extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         slide: false
-      };
-   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      slide: false
+    };
+  }
 
-   handleSlide = () => {
-      this.setState({
-         slide: !this.state.slide
-      });
-   };
+  handleSlide = () => {
+    this.setState({
+      slide: !this.state.slide
+    });
+  };
 
-   render = () => {
-      return (
-         <nav className="material-shadow2">
-            <div className="logo">
-               <h1>
-                  <Link
-                     to={"/"}
-                     onClick={this.handleSlide}
-                     style={{ "text-decoration": "none", "color": "inherit" }}
-                  >
-                     SUPER CHESS II
-                  </Link>
-               </h1>
-            </div>
-
-            <ul className={this.state.slide ? "nav-active" : "nav-links"}>
-
-               <li className="nav-li">
-                  <Link
-                     className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
-                     to={"/lobbies-list"}
-                     onClick={this.handleSlide}
-                  >
-                     Lobbies
+  render = () => {
+    return (
+      <nav className="material-shadow2">
+        <div className="logo">
+          <h1>
+            <Link
+              to={"/"}
+              style={{ "text-decoration": "none", color: "inherit" }}
+            >
+              SUPER CHESS II
             </Link>
-               </li>
+          </h1>
+        </div>
 
-               <li className="nav-li">
-                  <Link
-                     className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
-                     to={"/leaderboard"}
-                     onClick={this.handleSlide}
-                  >
-                     Leaderboard
+        <ul className={this.state.slide ? "nav-active" : "nav-links"}>
+          <li className="nav-li">
+            <Link
+              className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
+              to={"/lobbies-list"}
+              onClick={this.handleSlide}
+            >
+              Lobbies
             </Link>
-               </li>
+          </li>
 
-               <li className="nav-li">
-                  <Link
-                     className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
-                     to={"/how-to-play"}
-                     onClick={this.handleSlide}
-                  >
-                     How to Play
+          <li className="nav-li">
+            <Link
+              className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
+              to={"/leaderboard"}
+              onClick={this.handleSlide}
+            >
+              Leaderboard
             </Link>
-               </li>
+          </li>
 
-               <li className="nav-li">
-                  <Link
-                     className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
-                     to={"/about"}
-                     onClick={this.handleSlide}
-                  >
-                     About
+          <li className="nav-li">
+            <Link
+              className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
+              to={"/how-to-play/list"}
+              onClick={this.handleSlide}
+            >
+              How to Play
             </Link>
-               </li>
+          </li>
 
-            </ul>
+          <li className="nav-li">
+            <Link
+              className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
+              to={"/about"}
+              onClick={this.handleSlide}
+            >
+              About
+            </Link>
+          </li>
+        </ul>
 
-            <div className="burger" onClick={this.handleSlide}>
-               <div className={this.state.slide ? "line1" : "line1-close"} />
-               <div className={this.state.slide ? "line2" : "line2-close"} />
-               <div className={this.state.slide ? "line3" : "line3-close"} />
-            </div>
-         </nav>
-      );
-   };
+        <div className="burger" onClick={this.handleSlide}>
+          <div className={this.state.slide ? "line1" : "line1-close"} />
+          <div className={this.state.slide ? "line2" : "line2-close"} />
+          <div className={this.state.slide ? "line3" : "line3-close"} />
+        </div>
+      </nav>
+    );
+  };
 }
 
 let mapStateToProps = state => {
-   return { loggedIn: state.loggedIn }
-}
+  return { loggedIn: state.loggedIn };
+};
 
 export default connect(mapStateToProps)(ResponsiveNavBar);

@@ -5,6 +5,7 @@ const initialState = {
    loggedIn: false,
    currentUser: "",
    inLobby: false,
+   inGame: false,
    currentLobbyId: "",
    message: "Welcome!",
    actionMenu: {

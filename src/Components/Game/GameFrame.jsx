@@ -57,6 +57,7 @@ class GameFrame extends Component {
   };
 
   componentDidMount = () => {
+     
     this.props.dispatch({
       type: "JOIN-LOBBY",
       lobbyId: this.props.match.params.gameId,
