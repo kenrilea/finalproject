@@ -123,7 +123,7 @@ class UnconnectedLobbiesList extends Component {
                      Active: {this.state.fullLobbies} / {this.state.lobbyCount}{" "}
                   </label>
                   <button className="round-button" disabled={this.props.loggedIn ? false : true} onClick={this.createLobby}>
-                     +
+                     <div classname="plus-symbol" >+</div>
                   </button>
                </div>
                <div className="card-scrollable-cont">

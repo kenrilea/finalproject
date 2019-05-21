@@ -5,8 +5,9 @@
 
 .about-img-cont-row {
    display: flex;
-   justify-content: space-between;
+   justify-content: space-around;
    width: 45vw;
+   min-width: 500px;
    /* height: 15vh; */
    margin: 25px auto 0 auto;
    overflow: hidden;
@@ -14,6 +15,20 @@
 
 .about-img-cont img {
    height: 15vh;
+}
+
+@media screen and (max-width: 768px) {
+
+   .about-img-cont-row  {
+      height: 120px;
+      min-width: 300px;
+   }
+
+   .about-img-cont img {
+      width: 100px;
+   }
+
+   
 }
 
 

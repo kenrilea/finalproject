@@ -190,8 +190,6 @@ let editGameData = (gameId, mods) => {
                     actor.pos.x === arrowPos.x &&
                     actor.pos.y === arrowPos.y
                   ) {
-                    gameInstances[gameId]["points"][char.team] =
-                      gameInstances[gameId]["points"][char.team] + actor.points;
                     stopArrow = true;
                     changes = changes.concat({
                       ...mod,
@@ -204,6 +202,8 @@ let editGameData = (gameId, mods) => {
                       });
                       return true;
                     }
+                    gameInstances[gameId]["points"][char.team] =
+                      gameInstances[gameId]["points"][char.team] + actor.points;
                     changes.push({ type: "died", actorId: actor.actorId });
                     return false;
                   }

@@ -83,6 +83,11 @@ nav {
 /* ///////////////////////////////////////////////////// */
 
 @media screen and (max-width: 768px) {
+
+   .logo {
+      font-size: 32px;
+   }
+
   .nav-links {
     position: absolute;
     right: 0px;

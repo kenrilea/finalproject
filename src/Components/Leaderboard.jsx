@@ -95,7 +95,7 @@ class Leaderboard extends Component {
                   (
                      <div className="animated-fade-in animated-grow-bounce card-container material-shadow">
 
-                        <div className="card-top-cont">
+                        <div className="card-top-cont leader-top-cont">
                            <label className="card-top-label"> Leaderboard </label>
                         </div>
 
@@ -133,7 +133,7 @@ class Leaderboard extends Component {
                   )
                   :
                   (
-                     <div style={{"min-width":"725px"}} className="animated-fade-in animated-grow-bounce card-container material-shadow">
+                     <div style={{ "min-width": "725px" }} className="animated-fade-in animated-grow-bounce card-container material-shadow">
 
                         <div className="card-top-cont">
                            <label className="card-top-label"> Leaderboard </label>
@@ -141,7 +141,7 @@ class Leaderboard extends Component {
 
                         <div id="scrolltable">
                            <table className="leader-table">
-                              <thead className="leader-header">
+                              <thead  className="leader-header">
                                  <tr className="leader-row">
                                     <th className="leader-entry">Standing</th>
                                     <th className="leader-entry">Username</th>

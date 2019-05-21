@@ -158,7 +158,7 @@ div {
    min-width: 275px;
    height: 75vh;
    background-color: rgba(250, 250, 250, 1);
-   padding: 20px;
+   padding: 15px;
    border-radius: 3px;
    z-index: 1000;
    right: 5vw;
@@ -310,12 +310,15 @@ div {
       
       min-width: 300px;
       width: 85vw;
+      height: 550px;
       
    }
 
    .card-container-narrow { 
       width: 80vw;
       margin: 50px 25px auto 25px;
+      height: 550px;
+      padding: 25px;
    }
 
    .card-top-cont {
@@ -323,6 +326,10 @@ div {
       flex-direction: column;
       height: 100px;
       width: 90%;
+   }
+
+   .leader-top-cont {
+      height: 70px;
    }
 
 } 

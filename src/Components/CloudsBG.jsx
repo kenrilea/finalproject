@@ -6,8 +6,9 @@ let buttonStyle = {
    display: "block",
    position: "absolute",
    bottom: "-775px",
-   left: "25px",
-   "z-index": "999"
+   left: "30px",
+   "z-index": "999",
+   width: "145px"
 }
 
 class CloudsBG extends Component {
@@ -16,7 +17,8 @@ class CloudsBG extends Component {
       super(props)
       this.state = {
          style: {
-            display: "block"
+            display: "block",
+            text: "Hide Clouds"
          }
       }
    }
@@ -25,14 +27,16 @@ class CloudsBG extends Component {
       if (this.state.style.display === "block") {
          this.setState({
             style: {
-               display: "none"
+               display: "none",
+               text: "Show Clouds"
             }
          })
       }
       else {
          this.setState({
             style: {
-               display: "block"
+               display: "block",
+               text: "Hide Clouds"
             }
          })
       }
@@ -66,7 +70,7 @@ class CloudsBG extends Component {
                </div>
 
             </div>
-            <button style={buttonStyle} className="material-button" onClick={this.handleClouds}>Hide Clouds</button>
+            <button style={buttonStyle} className="material-button" onClick={this.handleClouds}>{this.state.style.text}</button>
          </div>
       )
 
