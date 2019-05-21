@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-
 import socket from "./SocketSettings.jsx"
+import Media from 'react-media';
+
 
 import "../css/lobbiesListElem.css"
 
@@ -52,30 +53,59 @@ class UnconnectedLobbiesListElem extends Component {
    render = () => {
 
       return (
-         <div className="lobbies-list-elem-container">
+
+         <Media query="(max-width: 768px)">
+            {matches =>
+               matches ? (
+                  <div className="lobbies-list-elem-container">
+
+                     <div className="player-label">
+                        {this.props.playerOne}
+                     </div>
+
+                     <div className="vs-label">
+                        VS
+                     </div>
+
+                     <div className="player-label">
+                        {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
+                     </div>
+
+                     <button style={{ width: "70px" }} className="material-button green square bottom-pad" disabled={this.props.loggedIn ? (this.props.playerTwo ? true : false) : (true)} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
+                        {this.props.playerTwo ? "FULL" : "JOIN!"}
+                     </button>
+
+                  </div>
+               ) :
+                  (
+                     <div className="lobbies-list-elem-container">
 
 
-            <div className="vs-label letter-spacing1">
-               {this.props.lobbyId.slice(-5)}
-            </div>
+                        <div className="vs-label letter-spacing1">
+                           {this.props.lobbyId.slice(-5)}
+                        </div>
 
-            <div className="player-label">
-               {this.props.playerOne}
-            </div>
+                        <div className="player-label">
+                           {this.props.playerOne}
+                        </div>
 
-            <div className="vs-label">
-               VS
-            </div>
+                        <div className="vs-label">
+                           VS
+               </div>
 
-            <div className="player-label">
-               {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
-            </div>
+                        <div className="player-label">
+                           {this.props.playerTwo ? this.props.playerTwo : "Waiting..."}
+                        </div>
 
-            <button className="material-button green square bottom-pad big-button-font" disabled={ this.props.loggedIn ? (this.props.playerTwo ? true : false) : (true) } onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
-               {this.props.playerTwo ? "FULL" : "JOIN!"}
-            </button>
+                        <button style={{ width: "70px" }} className="material-button green square bottom-pad" disabled={this.props.loggedIn ? (this.props.playerTwo ? true : false) : (true)} onClick={this.props.playerTwo ? undefined : () => this.joinLobby(this.props.lobbyId)} >
+                           {this.props.playerTwo ? "FULL" : "JOIN!"}
+                        </button>
 
-         </div>
+                     </div>
+                  )
+            }
+         </Media>
+
       )
 
    }

@@ -1,6 +1,6 @@
 .lobbies-list-elem-container {
    display: flex;
-   width: 55vw;
+   width: 100%;
    height: 50px;
    /* border: 2px solid black; */
    justify-content: space-between;
@@ -38,7 +38,23 @@
    width: 5vw;
 }
 
+@media screen and (max-width: 768px) {
 
+   .lobbies-list-elem-container { 
+      width: 100%
+   }
+
+   .player-label {
+      font-size: 1.2em;
+      
+   }
+
+   .vs-label {
+      font-size: 1em;
+   }
+
+
+}
 
 
 

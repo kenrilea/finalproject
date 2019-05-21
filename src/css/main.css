@@ -173,8 +173,8 @@ div {
 .card-top-cont {
    display: flex;
    justify-content: space-between;
-   width: 55vw;
-   height: 7vh;
+   width: 75%;
+   height: 60px;
    /* border: 1px solid black; */
    margin: 0;
    border: 2px solid transparent;
@@ -184,7 +184,6 @@ div {
 .card-top-label {
   font-size: 2.7em;
   font-weight: bold;
-
   display: flex;
   vertical-align: bottom;
 }
@@ -193,10 +192,11 @@ div {
   font-size: 1.5em;
   vertical-align: bottom;
   line-height: 8vh;
+
 }
 
 .card-top-sub-label2 {
-  font-size: 0.5em;
+  font-size: 1em;
   line-height: 8vh;
   margin-left: 20px;
 }
@@ -304,12 +304,7 @@ div {
 
 /* MEDIA QUERIES */
 
-@media screen and (max-width: 675px) {
-
-   .card-top-label {
-
-      font-size: 2em;
-   }
+@media screen and (max-width: 768px) {
 
    .card-container {
       
@@ -321,6 +316,13 @@ div {
    .card-container-narrow { 
       width: 80vw;
       margin: 50px 25px auto 25px;
+   }
+
+   .card-top-cont {
+      display: flex;
+      flex-direction: column;
+      height: 100px;
+      width: 90%;
    }
 
 } 
