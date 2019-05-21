@@ -22,19 +22,29 @@ class ResponsiveNavBar extends Component {
       return (
          <nav className="material-shadow2">
             <div className="logo">
-               <h1>SUPER CHESS II</h1>
+               <h1>
+                  <Link
+                     to={"/"}
+                     onClick={this.handleSlide}
+                     style={{ "text-decoration": "none", "color": "inherit" }}
+                  >
+                     SUPER CHESS II
+                  </Link>
+               </h1>
             </div>
 
             <ul className={this.state.slide ? "nav-active" : "nav-links"}>
+
                <li className="nav-li">
                   <Link
                      className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
-                     to={"/"}
+                     to={"/lobbies-list"}
                      onClick={this.handleSlide}
                   >
                      Lobbies
             </Link>
                </li>
+
                <li className="nav-li">
                   <Link
                      className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
@@ -44,6 +54,7 @@ class ResponsiveNavBar extends Component {
                      Leaderboard
             </Link>
                </li>
+
                <li className="nav-li">
                   <Link
                      className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
@@ -53,6 +64,7 @@ class ResponsiveNavBar extends Component {
                      How to Play
             </Link>
                </li>
+
                <li className="nav-li">
                   <Link
                      className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
@@ -62,6 +74,7 @@ class ResponsiveNavBar extends Component {
                      About
             </Link>
                </li>
+
             </ul>
 
             <div className="burger" onClick={this.handleSlide}>
@@ -74,4 +87,8 @@ class ResponsiveNavBar extends Component {
    };
 }
 
-export default ResponsiveNavBar;
+let mapStateToProps = state => {
+   return { loggedIn: state.loggedIn }
+}
+
+export default connect(mapStateToProps)(ResponsiveNavBar);
