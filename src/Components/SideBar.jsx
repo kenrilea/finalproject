@@ -39,7 +39,7 @@ class UnconnectedSideBar extends Component {
    loggedInSidebar = () => {
 
       return (
-         <div className="profile-bar animated-fade-in-slow material-shadow">
+         <div className="profile-bar animated-fade-in material-shadow">
             <Profile />
             <div className="flex-col">
                <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
@@ -55,7 +55,7 @@ class UnconnectedSideBar extends Component {
 
    login = () => {
       return (
-         <div className="animated-fade-in-slow login-bar material-shadow">
+         <div className="animated-fade-in login-bar material-shadow">
             <div className="sideBarForm animated-fade-in">
                <Login />
             </div>
@@ -65,7 +65,7 @@ class UnconnectedSideBar extends Component {
 
    signup = () => {
       return (
-         <div className="animated-fade-in-slow signup-bar material-shadow">
+         <div className="animated-fade-in signup-bar material-shadow">
             <div className="sideBarForm">
                <Signup />
             </div>

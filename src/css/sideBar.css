@@ -32,8 +32,8 @@
 
 .profile-bar {
    position: absolute;
-   top: 25px;
-   left: 0px;
+   top: 23px;
+   left: -5px;
    z-index: 1001;
    width: 225px;
    min-height: 300px;
@@ -79,10 +79,10 @@
 
 } 
 
-@media screen and (max-height: 510px) {
+@media screen and (max-height: 675px) {
 
    .sideBar {
-   
+      
    }
 
 } 
