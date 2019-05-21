@@ -43,9 +43,11 @@ export const updateAnimationPhase = actionList => {
   console.log("action: ", action);
 
   if (action.type === "game-over") {
-    socket.emit("get-game-data", {
-      gameId: store.getState().currentLobbyId
-    });
+    setTimeout(() => {
+      socket.emit("get-game-data", {
+        gameId: store.getState().currentLobbyId
+      });
+    }, 2);
     return;
   }
 
@@ -70,55 +72,61 @@ export const updateAnimationPhase = actionList => {
 };
 
 export const assignAnimationToActor = () => {
-  if (store.getState().gameState.actionList === undefined) return;
+  setTimeout(() => {
+    if (store.getState().gameState.actionList === undefined) return;
 
-  if (store.getState().gameState.actionList.length <= 0) {
+    if (store.getState().gameState.actionList.length <= 0) {
+      store.dispatch(
+        setGameData({
+          ...store.getState().gameData,
+          actors: store.getState().gameData.actors.map(actor => {
+            return {
+              ...actor,
+              action: undefined
+            };
+          })
+        })
+      );
+
+      setTimeout(() => {
+        socket.emit("get-game-data", {
+          gameId: store.getState().currentLobbyId
+        });
+      }, 2);
+      return;
+    }
+
+    let action = store.getState().gameState.actionList[0];
+
+    console.log("action: ", action);
+
+    if (action.type === "game-over") {
+      setTimeout(() => {
+        socket.emit("get-game-data", {
+          gameId: store.getState().currentLobbyId
+        });
+      }, 2);
+      return;
+    }
+
     store.dispatch(
       setGameData({
         ...store.getState().gameData,
         actors: store.getState().gameData.actors.map(actor => {
-          return {
-            ...actor,
-            action: undefined
-          };
+          if (action.actorId === actor.actorId) {
+            return {
+              ...actor,
+              action
+            };
+          }
+
+          return actor;
         })
       })
     );
 
-    socket.emit("get-game-data", {
-      gameId: store.getState().currentLobbyId
-    });
-    return;
-  }
-
-  let action = store.getState().gameState.actionList[0];
-
-  console.log("action: ", action);
-
-  if (action.type === "game-over") {
-    socket.emit("get-game-data", {
-      gameId: store.getState().currentLobbyId
-    });
-    return;
-  }
-
-  store.dispatch(
-    setGameData({
-      ...store.getState().gameData,
-      actors: store.getState().gameData.actors.map(actor => {
-        if (action.actorId === actor.actorId) {
-          return {
-            ...actor,
-            action
-          };
-        }
-
-        return actor;
-      })
-    })
-  );
-
-  let actionList = store.getState().gameState.actionList;
-  console.log("change state", actionList);
-  store.dispatch(setGameState(updateAnimations(actionList.slice(1))));
+    let actionList = store.getState().gameState.actionList;
+    console.log("change state", actionList);
+    store.dispatch(setGameState(updateAnimations(actionList.slice(1))));
+  }, 200);
 };
