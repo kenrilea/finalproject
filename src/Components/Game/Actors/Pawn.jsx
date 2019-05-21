@@ -24,10 +24,12 @@ class Pawn extends Component {
     super(props);
 
     this.state = {
+      isAnimating: false,
       frontendPos: getIsometricFrontendPos({
         x: this.props.actorData.pos.x,
         y: this.props.actorData.pos.y
-      })
+      }),
+      lastAnimTime: 0
     };
   }
 
@@ -36,31 +38,43 @@ class Pawn extends Component {
   };
 
   updateMove = () => {
+    const currentTime = new Date().getTime();
+
     let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
     //console.log("positions: ", this.state.frontendPos, dest);
 
     let newPos = updatePosition(this.state.frontendPos, dest, 0.5);
 
-    if (newPos.x === dest.x && newPos.y === dest.y) {
+    if (
+      (newPos.x === dest.x && newPos.y === dest.y) ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 1500)
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
-        }
+          x: dest.x,
+          y: dest.y
+        },
+        lastAnimTime: 0
       });
       return;
     }
 
     this.setState({
+      isAnimating: true,
       frontendPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     cancelAnimationFrame(this.animationMove);
@@ -70,31 +84,46 @@ class Pawn extends Component {
   };
 
   updateDied = () => {
+    const currentTime = new Date().getTime();
+
     let dest = { x: this.state.frontendPos.x, y: 110 };
 
     //console.log("positions: ", this.state.frontendPos, dest);
 
     let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
+    if (
+      newPos.x > 100 ||
+      newPos.x < 0 ||
+      newPos.y > 100 ||
+      newPos.y < 0 ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 1500)
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationDied);
       assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
-        }
+          x: dest.x,
+          y: dest.y
+        },
+        lastAnimTime: 0
       });
       return;
     }
 
     this.setState({
+      isAnimating: true,
       frontendPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     cancelAnimationFrame(this.animationDied);
@@ -107,7 +136,8 @@ class Pawn extends Component {
     // console.log("state: ", this.props.gameState.type);
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
-      this.props.actorData.action !== undefined
+      this.props.actorData.action !== undefined &&
+      !this.state.isAnimating
     ) {
       if (this.props.actorData.action.type === "move") {
         this.animationMove = requestAnimationFrame(() => {
