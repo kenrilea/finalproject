@@ -134,7 +134,7 @@ div {
   overflow: hidden;
   /* margin: 0 auto; */
   width: 60vw;
-  min-width: 350px;
+  min-width: 600px;
   height: 65vh;
   background-color: rgba(250, 250, 250, 1);
   padding: 15px;
@@ -144,7 +144,7 @@ div {
   right: 0;
   top: 0;
   bottom: 0;
-  margin: auto;
+  margin: 170px auto auto auto;
   max-width: 100%;
   max-height: 100%;
   position: fixed;
@@ -154,14 +154,15 @@ div {
 .card-container-narrow {
    overflow: hidden;
    /* margin: 0 auto; */
-   width: 20vw;
+   width: 25vw;
+   min-width: 275px;
    height: 75vh;
    background-color: rgba(250, 250, 250, 0.9);
    padding: 20px;
    border-radius: 3px;
    z-index: 1000;
    right: 5vw;
-   top: 10vh;;
+   top: 15vh;;
    bottom: 0;
    margin: auto;
    max-width: 100%;
@@ -218,8 +219,8 @@ div {
   animation: opac 0.8s;
 }
 
-.animated-fade-in-delay {
-  animation: opac 0.8s;
+.animated-fade-in-slow {
+  animation: opac 1.7s;
 }
 
 @keyframes opac {
@@ -245,6 +246,7 @@ div {
 }
 
 .animated-grow-bounce {
+   transition: all 0.7s ease-in-out;
   animation: expand-bounce 0.7s ease-in-out;
 }
 
@@ -305,8 +307,20 @@ div {
 @media screen and (max-width: 675px) {
 
    .card-top-label {
-   
+
       font-size: 2em;
+   }
+
+   .card-container {
+      
+      min-width: 300px;
+      width: 90vw;
+      
+   }
+
+   .card-container-narrow { 
+      width: 80vw;
+      margin: 50px 25px auto 25px;
    }
 
 } 

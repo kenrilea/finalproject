@@ -8,13 +8,15 @@ class About extends Component {
     return (
       <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
         <div className="card-top-cont">
-          <h3 className="card-top-label"> About </h3>
+          <h3 className="card-top-label left-marge"> About </h3>
         </div>
-        <p className="card-top-sub-label">
-          Super Chess II was built using the following technologies:
-        </p>
         <div className="card-scrollable-cont">
-          <div className="about-img-cont">
+          <p className="left-marge">
+            {" "}
+            Super Chess II was built using the following technologies:{" "}
+          </p>
+
+          <div className="about-img-cont animated-fade-in-slow">
             <div className="about-img-cont-row" style={{ height: "18vh" }}>
               <img
                 style={{ height: "18vh" }}
@@ -60,6 +62,25 @@ class About extends Component {
             Don't believe the facts? Just check out our{" "}
             <a href="https://github.com/kenrilea/finalproject">GitHub repo</a>{" "}
           </p>
+
+          <div className="about-img-cont-row">
+            <img
+              alt="Redux Logo"
+              src="https://raw.githubusercontent.com/reduxjs/redux/master/logo/logo.png"
+            />
+            <img
+              alt="Socket.io Logo"
+              src="https://cdn.worldvectorlogo.com/logos/socket-io.svg"
+            />
+            <img
+              alt="HTML5 Logo"
+              src="https://logos-download.com/wp-content/uploads/2017/07/HTML5_logo-700x700.png"
+            />
+            <img
+              alt="Babel Logo"
+              src="http://www.freelogovectors.net/svg03/babellogo.svg"
+            />
+          </div>
         </div>
       </div>
     );

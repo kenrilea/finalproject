@@ -1,9 +1,41 @@
-.sideBar {
-   position: fixed;
-   top: 200px;
-   left: 0px;
+.login-bar {
+   position: absolute;
+   top: 100px;
+   left: -100px;
    z-index: 1001;
-   width: 15vw;
+   width: 225px;
+   min-height: 300px;
+   height: 50vh;
+   /* background: linear-gradient(to right, #232526, #414345); */
+   background: rgba(250,250,250, 1);
+   text-align: center;
+   padding-top: 25px;
+   margin: 0px 0 0 30px;
+   border-radius: 3px;
+}
+
+.signup-bar {
+   position: absolute;
+   top: 100px;
+   left: -215px;
+   z-index: 1001;
+   width: 225px;
+   min-height: 300px;
+   height: 50vh;
+   /* background: linear-gradient(to right, #232526, #414345); */
+   background: rgba(250,250,250, 1);
+   text-align: center;
+   padding-top: 25px;
+   margin: 0px 0 0 30px;
+   border-radius: 3px;
+}
+
+.profile-bar {
+   position: absolute;
+   top: 23px;
+   left: -5px;
+   z-index: 1001;
+   width: 225px;
    min-height: 300px;
    height: 50vh;
    /* background: linear-gradient(to right, #232526, #414345); */
@@ -17,6 +49,12 @@
 
 .sideBarForm {
    height: 50%;
+}
+
+.signup-button {
+   position: fixed;
+   left: 0px;
+   top: 0px;
 }
 
 .show-button {
@@ -41,12 +79,11 @@
 
 } 
 
-@media screen and (max-height: 510px) {
+@media screen and (max-height: 675px) {
 
    .sideBar {
-   
       
-      height: 75vh;
    }
 
 } 
+

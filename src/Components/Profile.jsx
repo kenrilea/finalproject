@@ -1,10 +1,42 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import socket from "./SocketSettings.jsx"
 
 import "../css/profile.css"
 
 class UnconnectedProfile extends Component {
 
+   constructor(props) {
+      super(props)
+      this.state = {
+         wins: 0,
+         losses: 0,
+         isLoaded: false,
+      }
+   }
+
+   componentDidMount = () => {
+
+      // if (!this.state.isLoaded) {
+         console.log("ABOUT TO GET SCORE")
+         fetch("/get-user-score", {
+            method: "GET",
+            credentials: "include",
+         })
+            .then(head => {
+               return head.text()
+            })
+            .then(body => {
+               let data = JSON.parse(body)
+               console.log("USER SCORE DATA", data)
+               this.setState({
+                  wins: data.wins,
+                  losses: data.losses,
+                  isLoaded: true
+               })
+            })
+      // }
+   }
 
    render = () => {
 
@@ -21,8 +53,8 @@ class UnconnectedProfile extends Component {
                </thead>
                <tbody>
                   <tr>
-                     <td>0</td>
-                     <td>0</td>
+                     <td>{this.state.wins}</td>
+                     <td>{this.state.losses}</td>
                   </tr>
                </tbody>
             </table>

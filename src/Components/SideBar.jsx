@@ -7,17 +7,23 @@ import Signup from "./Signup.jsx";
 
 import "../css/sideBar.css";
 import Profile from "./Profile.jsx";
-
+import Spinner from "./Spinner.jsx"
 import { Animate } from "react-animate-mount"
 
 class UnconnectedSideBar extends Component {
+
    constructor(props) {
       super(props);
       this.state = {
          show: true,
-         show2: false
+         show2: false,
+
       };
    }
+
+
+
+
 
    signout = () => {
       this.props.dispatch({
@@ -31,8 +37,9 @@ class UnconnectedSideBar extends Component {
    };
 
    loggedInSidebar = () => {
+
       return (
-         <div className="sideBar animated-fade-in material-shadow">
+         <div className="profile-bar animated-fade-in material-shadow">
             <Profile />
             <div className="flex-col">
                <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
@@ -42,12 +49,14 @@ class UnconnectedSideBar extends Component {
             </div>
          </div>
       );
-   };
+   }
+
+
 
    login = () => {
       return (
-         <div className="animated-fade-in sideBar material-shadow">
-            <div className="sideBarForm">
+         <div className="animated-fade-in login-bar material-shadow">
+            <div className="sideBarForm animated-fade-in">
                <Login />
             </div>
          </div>
@@ -56,7 +65,7 @@ class UnconnectedSideBar extends Component {
 
    signup = () => {
       return (
-         <div className="animated-fade-in sideBar material-shadow">
+         <div className="animated-fade-in signup-bar material-shadow">
             <div className="sideBarForm">
                <Signup />
             </div>
@@ -96,7 +105,7 @@ class UnconnectedSideBar extends Component {
                <Animate show={this.state.show} >
                   {this.login()}
                </Animate>
-               <button onClick={this.handleShow2} className="material-button show-button "> SIGNUP </button>
+               <button onClick={this.handleShow2} className="material-button show-button signup-button"> SIGNUP </button>
                <Animate show={this.state.show2} >
                   {this.signup()}
                </Animate>
@@ -115,6 +124,8 @@ class UnconnectedSideBar extends Component {
       }
 
    };
+
+
 }
 
 const mapStateToProps = state => {
