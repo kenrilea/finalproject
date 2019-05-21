@@ -18,13 +18,18 @@
   border-style: solid;
 }
 .armyBuilderBoard {
-  text-align: center;
-  justify-self: center;
-  margin: 10%;
-  margin: 1%;
   width: 400px;
   height: 400px;
   background-color: rgb(45, 142, 34);
+}
+.armyBuilderBoard-outer {
+  text-align: center;
+  align-items: center;
+  align-content: center;
+  background: #bdbdbd;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
 }
 .armyBuilderBoardRow {
   display: flex;
@@ -36,18 +41,19 @@
   height: 55px;
 }
 .armyBuildCharDiv {
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: center;
   align-items: center;
   align-content: center;
   min-height: 350px;
-  height: 400px;
+  height: 420px;
   width: 75px;
-  background: #BDBDBD;
+  background: #bdbdbd;
   padding: 5px;
   border-radius: 5px;
+  margin: 5px;
 }
 .armyBuilderMainDiv {
   z-index: 500;
@@ -57,117 +63,124 @@
 }
 
 .army-map-and-selector {
-   display: flex;
-   width: 100%;
-   min-width: 370px;
-   justify-content: space-around;
+  display: flex;
+  width: 100%;
+  min-width: 370px;
 }
 
 .card-container-army-builder {
-   overflow: hidden;
-   /* margin: 0 auto; */
-   min-width: 375px;
-   max-width: 50vw;
-   height: 75vh;
-   background-color: rgba(250, 250, 250, 0.9);
-   padding: 20px;
-   border-radius: 3px;
-   z-index: 1000;
-   right: 0;
-   left: 0;
-   top: 60px;
-   bottom: 0;
-   margin: auto;
-   position: fixed;
+  overflow: hidden;
+  /* margin: 0 auto; */
+  min-width: 375px;
+  max-width: 50vw;
+  height: 75vh;
+  background-color: rgba(250, 250, 250, 0.9);
+  padding: 20px;
+  border-radius: 3px;
+  z-index: 1000;
+  right: 0;
+  left: 0;
+  top: 60px;
+  bottom: 0;
+  margin: auto;
+  position: fixed;
+  overflow: scroll;
 }
 
 .army-builder-top-cont {
-   display: flex;
-   justify-content: space-between;
-   min-width: 375px;
-   height: 7vh;
-   /* border: 1px solid black; */
-   margin: 10px auto 10px auto;
-   border: 2px solid transparent;
-   /* border-bottom-color: black; */
- }
+  display: flex;
+  justify-content: space-between;
+  min-width: 375px;
+  height: 7vh;
+  /* border: 1px solid black; */
+  margin: 10px auto 10px auto;
+  border: 2px solid transparent;
+  /* border-bottom-color: black; */
+}
 
- .center-button {
-    margin: 15px auto 0 auto;
+.center-button {
+  margin: 15px auto 0 auto;
+  display: block;
+}
+
+.army-sub-label {
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+@media screen and (max-width: 1024px) {
+  .card-container-army-builder {
+    width: 55vw;
+  }
+
+  .army-builder-top-cont {
+    height: 4vh;
+  }
+
+  .ArmyBuilderTileImg {
+    width: 40px;
+    height: auto;
+    background-color: rgb(45, 142, 34);
     display: block;
- }
+  }
 
- .army-sub-label {
-    padding-left: 10px;
-    padding-bottom: 10px;
- }
+  .ArmyBuilderTileDiv {
+    width: 35px;
+    border: black;
+    border-width: 5px;
+    border-style: solid;
+  }
+  .ArmyBuilderTileDivSelected {
+    width: 35px;
+    border: grey;
+    border-width: 2px;
+    border-style: solid;
+  }
 
- @media screen and (max-width: 1024px) {
+  .armyBuilderBoard {
+    text-align: center;
+    justify-self: center;
+    margin: 10%;
+    margin: 1%;
+    width: 200px;
+    height: 200px;
+    background-color: rgb(45, 142, 34);
+  }
 
-   .card-container-army-builder { 
-      width: 55vw;
-   }
+  .armyBuildCharDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    min-height: 55px;
+    height: 50px;
+    width: 100%;
+  }
 
-   .army-builder-top-cont { 
-      height: 4vh;
-   }
+  .army-map-and-selector {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    min-width: 330px;
+    height: 52vh;
+    justify-content: space-between;
+    margin: 0 auto;
+    margin-bottom: 30px;
+  }
 
-   .ArmyBuilderTileImg {
-      width: 40px;
-      height: auto;
-      background-color: rgb(45, 142, 34);
-      display: block;
-    }
-    
-
-    .ArmyBuilderTileDiv {
-      width: 25px;
-      border: black;
-      border-width: 5px;
-      border-style: solid;
-    }
-    .ArmyBuilderTileDivSelected {
-      width: 25px;
-      border: grey;
-      border-width: 2px;
-      border-style: solid;
-    }
-
-    .armyBuilderBoard {
-      text-align: center;
-      justify-self: center;
-      margin: 10%;
-      margin: 1%;
-      width: 200px;
-      height: 200px;
-      background-color: rgb(45, 142, 34);
-    }
-
-    .armyBuildCharDiv {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-     text-align: center;
-     align-items: center;
-     align-content: center;
-     min-height: 55px;
-     height: 50px;
-     width: 100%;
-   }
-
-   .army-map-and-selector {
-      display: flex;
-      flex-direction: column;
-      width: 80%;
-      min-width: 330px;
-      height: 52vh;
-      justify-content: space-between;
-      margin: 0 auto;
-      margin-bottom: 30px;
-   }
-   
-   .center-button {
-      margin: 0 auto;
-      display: block;
-   }
-} 
+  .center-button {
+    margin: 0 auto;
+    display: block;
+  }
+}
+.army-builder-button {
+  margin-left: 5px;
+}
+.army-builder-header {
+  margin-left: 0px;
+}
+.army-builder-text {
+  margin-left: 0px;
+}
