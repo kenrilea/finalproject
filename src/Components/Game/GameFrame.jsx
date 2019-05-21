@@ -2,7 +2,6 @@ import "./../../css/gameFrame.css";
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import OuterBar from "./OuterBar.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
@@ -67,6 +66,9 @@ class GameFrame extends Component {
       this.props.dispatch(setGameData({}));
       this.props.dispatch(setGameState(selectUnit()));
     }
+    socket.off("game-data");
+    socket.off("create-game");
+    socket.off("game-state-change");
     console.log("GameFrame Unmounted");
   };
 
