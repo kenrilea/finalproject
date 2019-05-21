@@ -50,10 +50,7 @@ let newsCollection;
     sessionsCollection = finalProjectDB.collection("Sessions");
     lobbiesCollection = finalProjectDB.collection("Lobbies");
     chatsCollection = finalProjectDB.collection("Chats");
-<<<<<<< HEAD
     newsCollection = finalProjectDB.collection("News");
-=======
->>>>>>> 56a6be0800f76e1352112030011553cfaca480ea
   });
 })();
 
@@ -274,7 +271,6 @@ app.get("/get-user-score", function(req, res) {
         });
     });
 });
-<<<<<<< HEAD
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ NEWS AND NEWS POSTING ************//
@@ -338,8 +334,6 @@ app.post("add-news", upload.none(), (req, res) => {
     });
 });
 
-=======
->>>>>>> 56a6be0800f76e1352112030011553cfaca480ea
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ ARMY AND MAP EDITOR ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,15 +463,9 @@ app.post("/create-lobby", upload.none(), function(req, res) {
       } into lobby chat collection`
     );
     console.log(
-<<<<<<< HEAD
-      `The added chats ID, ${newLobbyChat._id}, is the same as the LobbyId, ${
-        req.body.lobbyId
-      }.`
-=======
       `The added chats ID, ${
         newLobbyChat._id
       }, is the same as the LobbyId, ${newLobbyId}.`
->>>>>>> 56a6be0800f76e1352112030011553cfaca480ea
     );
 
     //The newLobby._id will also be used for the LobbyChat id
@@ -674,23 +662,6 @@ refreshLobby = lobbyId => {
   });
 };
 
-<<<<<<< HEAD
-//____________END|FUNCTIONS FOR SOCKET STUFF____________
-
-io.on("connection", socket => {
-  console.log("Connected to socket");
-
-  socket.on("join", currentLobbyId => {
-    //After receiving join event with lobbyId, set the room for the client
-    console.log("Connecting client to socket room: ", currentLobbyId);
-    socket.join(currentLobbyId);
-  });
-
-  socket.on("refresh-lobby", currentLobbyId => {
-    refreshLobby(currentLobbyId);
-  });
-
-=======
 refreshLobbyList = () => {
   if (lobbiesCollection === undefined) {
     return;
@@ -738,7 +709,6 @@ io.on("connection", socket => {
     refreshLobby(currentLobbyId);
   });
 
->>>>>>> 56a6be0800f76e1352112030011553cfaca480ea
   socket.on("refresh-leaderboard-data", () => {
     console.log("REFRESHING LEADERBOARD");
     usersCollection
@@ -748,210 +718,6 @@ io.on("connection", socket => {
         if (err) throw err;
         console.log("Leaderboard:", result);
         io.emit("leaderboard-data", result);
-<<<<<<< HEAD
-      });
-  });
-  socket.on("refresh-lobby-list", () => {
-    if (lobbiesCollection === undefined) {
-      return;
-    }
-    console.log("REFRESHING LOBBY LIST");
-    lobbiesCollection.find().toArray((err, result) => {
-      let lobbyCount = 0;
-      let fullLobbies = 0;
-
-      result.forEach(lobby => {
-        lobbyCount++;
-        if (lobby.playerOne !== "" && lobby.playerTwo !== "") {
-          fullLobbies++;
-        }
-      });
-
-      let data = {
-        lobbies: result,
-        lobbyCount,
-        fullLobbies
-      };
-
-      // console.log("Lobbies from socket: ", result)
-      io.emit("lobby-list-data", data);
-    });
-  });
-
-  socket.on("refresh-lobby-chat", lobbyId => {
-    refreshLobbyChat(lobbyId);
-  });
-
-  socket.on("sent-message", data => {
-    console.log("Sent message data", data);
-    console.log(Object.values(data));
-    let messageToBeAdded = data.message;
-
-    chatsCollection.updateOne(
-      { _id: data.lobbyId },
-      { $push: { messageList: { ...messageToBeAdded } } },
-      (err, result) => {
-        if (err) throw err;
-        console.log(`DB: Updating message list for chat id: ${data.lobbyId}`);
-        refreshLobbyChat(data.lobbyId);
-      }
-    );
-  });
-
-  socket.on("leave-lobby", data => {
-    lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
-      //If playerOne is alone in lobby, remove it from db!
-      if (
-        result[0].playerOne === data.currentUser &&
-        result[0].playerTwo === ""
-      ) {
-        lobbiesCollection.deleteOne({ _id: data.lobbyId });
-      }
-
-      //If playerTwo is alone in lobby, remove it as well!
-      if (
-        result[0].playerTwo === data.currentUser &&
-        result[0].playerOne === ""
-      ) {
-        lobbiesCollection.deleteOne({ _id: data.lobbyId });
-      }
-
-      //If playerOne leaves and is not alone, update lobby and emit!
-      if (
-        result[0].playerOne === data.currentUser &&
-        result[0].playerTwo !== ""
-      ) {
-        lobbiesCollection.updateOne(
-          { _id: data.lobbyId },
-          //PlayerTwo will become playerOne
-          {
-            $set: {
-              playerOne: result[0].playerTwo,
-              playerTwo: "",
-              readyPlayerOne: result[0].readyPlayerTwo,
-              readyPlayerTwo: false
-            }
-          },
-          (err, result) => {
-            if (err) throw err;
-            console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
-
-            lobbiesCollection
-              .find({ _id: data.lobbyId })
-              .toArray((err, result) => {
-                io.in(data.lobbyId).emit("lobby-data", result[0]);
-                lobbiesCollection.find().toArray((err, result) => {
-                  io.emit("lobby-list-data", result);
-                });
-              });
-          }
-        );
-        resetLobbyChat(data.lobbyId);
-      }
-
-      //If playerTwo leaves and is not alone, also update lobby and emit!
-      if (
-        result[0].playerTwo === data.currentUser &&
-        result[0].playerOne !== ""
-      ) {
-        lobbiesCollection.update(
-          { _id: data.lobbyId },
-          { $set: { playerTwo: "" } },
-          (err, result) => {
-            if (err) throw err;
-            console.log(`DB: Removing player2 from lobbyId: ${data.lobbyId}`);
-
-            lobbiesCollection
-              .find({ _id: data.lobbyId })
-              .toArray((err, result) => {
-                io.in(data.lobbyId).emit("lobby-data", result[0]);
-                lobbiesCollection.find().toArray((err, result) => {
-                  io.emit("lobby-list-data", result);
-                });
-              });
-          }
-        );
-        refreshLobby(data.lobbyId);
-        resetLobbyChat(data.lobbyId);
-      }
-    });
-    // messageList: [],
-    //io.emit("refresh-lobby-chat", data.lobbyId);
-  });
-
-  //_______________________GAME________________________________________________
-
-  socket.on("join-game", lobbyId => {
-    console.log(
-      "_________________________________________________________________________________"
-    );
-    console.log("join game recieved: ", lobbyId);
-    socket.join(lobbyId);
-    if (gameEngine.getGameInst(lobbyId) === undefined) {
-      console.log("creating game instance: ", lobbyId);
-      if (lobbyId === undefined) {
-        console.log("no lobby id");
-        return;
-      }
-
-      //_________________________
-      if (lobbiesCollection === undefined) {
-        console.log("collection undefined");
-        return;
-      }
-      lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
-        let originLobby = result[0];
-        usersCollection
-          .find({ username: originLobby.playerOne })
-          .toArray((err, result) => {
-            let userOne = result[0];
-            usersCollection
-              .find({ username: originLobby.playerTwo })
-              .toArray((err, result) => {
-                let userTwo = result[0];
-                let newGameId = gameEngine.createGameInst(
-                  userOne.username,
-                  userTwo.username,
-                  userOne.army,
-                  userTwo.army,
-                  lobbyId
-                );
-                UserGameAssoc[userOne.username] = newGameId;
-                UserGameAssoc[userTwo.username] = newGameId;
-                console.log("new Game Id: ", newGameId);
-                io.in(lobbyId).emit("game-created", "game started");
-              });
-          });
-      });
-    } else {
-      io.in(lobbyId).emit("game-created", "game started");
-    }
-  });
-
-  socket.on("get-game-data", message => {
-    console.log("get data request");
-    console.log(message.gameId + "");
-    let gameData = gameEngine.getGameInst(message.gameId + "");
-    if (gameData !== undefined) {
-      console.log(gameData.map[0].actorId);
-    } else {
-      console.log("game is undefined in get-game-data");
-    }
-    io.in(message.gameId).emit("game-data", gameData);
-  });
-
-  socket.on("game-input", input => {
-    console.log("user assoc");
-    console.log(UserGameAssoc);
-    console.log("userCookie: ", socket.request.headers.cookie);
-    if (socket.request.headers.cookie === undefined) {
-      socket.emit({ success: false });
-      return;
-    }
-    let usercookie = cookie.parse(socket.request.headers.cookie);
-    console.log("userCookie: ", usercookie.sid);
-
-=======
       });
   });
   socket.on("refresh-lobby-list", () => {
@@ -1144,7 +910,6 @@ io.on("connection", socket => {
     let usercookie = cookie.parse(socket.request.headers.cookie);
     console.log("userCookie: ", usercookie.sid);
 
->>>>>>> 56a6be0800f76e1352112030011553cfaca480ea
     sessionsCollection
       .find({ sessionId: usercookie.sid })
       .toArray((err, result) => {
