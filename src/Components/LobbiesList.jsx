@@ -7,6 +7,7 @@ import socket from "./SocketSettings.jsx";
 import { AnimateGroup } from "react-animate-mount";
 import Spinner from "./Spinner.jsx";
 
+
 class UnconnectedLobbiesList extends Component {
    constructor(props) {
       super(props);
@@ -123,7 +124,7 @@ class UnconnectedLobbiesList extends Component {
                   </label>
                   <button className="round-button" disabled={this.props.loggedIn ? false : true} onClick={this.createLobby}>
                      +
-            </button>
+                  </button>
                </div>
                <div className="card-scrollable-cont">
                   <AnimateGroup>{this.renderElems()}</AnimateGroup>
