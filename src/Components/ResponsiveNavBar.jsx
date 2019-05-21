@@ -25,7 +25,6 @@ class ResponsiveNavBar extends Component {
                <h1>
                   <Link
                      to={"/"}
-                     onClick={this.handleSlide}
                      style={{ "text-decoration": "none", "color": "inherit" }}
                   >
                      SUPER CHESS II
