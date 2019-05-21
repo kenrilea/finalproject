@@ -39,7 +39,7 @@ class UnconnectedLobbyChat extends Component {
 
   componentDidMount() {
     //remove alert when done. was only for testing
-    window.alert("Hey! Listen! \n - Navi");
+    //window.alert("Hey! Listen! \n - Navi");
     console.log("Initial LobbyChat state from constructor: ", this.state);
 
     socket.open();

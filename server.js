@@ -1023,7 +1023,8 @@ io.on("connection", socket => {
                 {
                   $set: {
                     wins: newUserData.wins + win[0],
-                    losses: newUserData.losses + loss[0]
+                    losses: newUserData.losses + loss[0],
+                    currentLobby: ""
                   }
                 },
                 (err, result) => {
@@ -1042,7 +1043,8 @@ io.on("connection", socket => {
                 {
                   $set: {
                     wins: newUserData.wins + win[1],
-                    losses: newUserData.losses + loss[1]
+                    losses: newUserData.losses + loss[1],
+                    currentLobby: ""
                   }
                 },
                 (err, result) => {
@@ -1051,6 +1053,10 @@ io.on("connection", socket => {
                 }
               );
             });
+          //bookmark
+          lobbiesCollection.deleteOne({ _id: gameId });
+          refreshLobbyList();
+          refreshLobby(gameId);
         }
         io.in(gameId).emit("game-state-change", changes);
       });
