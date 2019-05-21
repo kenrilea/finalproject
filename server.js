@@ -379,9 +379,9 @@ app.post("/create-lobby", upload.none(), function(req, res) {
       } into lobby chat collection`
     );
     console.log(
-      `The added chats ID, ${newLobbyChat._id}, is the same as the LobbyId, ${
-        req.body.lobbyId
-      }.`
+      `The added chats ID, ${
+        newLobbyChat._id
+      }, is the same as the LobbyId, ${newLobbyId}.`
     );
 
     //The newLobby._id will also be used for the LobbyChat id
@@ -587,6 +587,11 @@ io.on("connection", socket => {
     //After receiving join event with lobbyId, set the room for the client
     console.log("Connecting client to socket room: ", currentLobbyId);
     socket.join(currentLobbyId);
+
+    socket.on("disconnecting", () => {
+      //bookmark
+      io.in(currentLobbyId).emit("lobby-disconnect");
+    });
   });
 
   socket.on("refresh-lobby", currentLobbyId => {
@@ -652,6 +657,13 @@ io.on("connection", socket => {
   });
 
   socket.on("leave-lobby", data => {
+    if (
+      data.lobbyId === undefined ||
+      data.lobbyId === null ||
+      data.lobbyId == ""
+    ) {
+      return;
+    }
     lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
       //If playerOne is alone in lobby, remove it from db!
       if (
