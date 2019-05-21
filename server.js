@@ -597,6 +597,33 @@ refreshLobby = lobbyId => {
   });
 };
 
+refreshLobbyList = () => {
+  if (lobbiesCollection === undefined) {
+    return;
+  }
+  console.log("REFRESHING LOBBY LIST");
+  lobbiesCollection.find().toArray((err, result) => {
+    let lobbyCount = 0;
+    let fullLobbies = 0;
+
+    result.forEach(lobby => {
+      lobbyCount++;
+      if (lobby.playerOne !== "" && lobby.playerTwo !== "") {
+        fullLobbies++;
+      }
+    });
+
+    let data = {
+      lobbies: result,
+      lobbyCount,
+      fullLobbies
+    };
+
+    // console.log("Lobbies from socket: ", result)
+    io.emit("lobby-list-data", data);
+  });
+};
+
 //____________END|FUNCTIONS FOR SOCKET STUFF____________
 
 io.on("connection", socket => {
@@ -629,30 +656,7 @@ io.on("connection", socket => {
       });
   });
   socket.on("refresh-lobby-list", () => {
-    if (lobbiesCollection === undefined) {
-      return;
-    }
-    console.log("REFRESHING LOBBY LIST");
-    lobbiesCollection.find().toArray((err, result) => {
-      let lobbyCount = 0;
-      let fullLobbies = 0;
-
-      result.forEach(lobby => {
-        lobbyCount++;
-        if (lobby.playerOne !== "" && lobby.playerTwo !== "") {
-          fullLobbies++;
-        }
-      });
-
-      let data = {
-        lobbies: result,
-        lobbyCount,
-        fullLobbies
-      };
-
-      // console.log("Lobbies from socket: ", result)
-      io.emit("lobby-list-data", data);
-    });
+    refreshLobbyList();
   });
 
   socket.on("refresh-lobby-chat", lobbyId => {
@@ -683,55 +687,56 @@ io.on("connection", socket => {
     ) {
       return;
     }
+    ////
     lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
       //If playerOne is alone in lobby, remove it from db!
-      if (
-        result[0].playerOne === data.currentUser &&
-        result[0].playerTwo === ""
-      ) {
-        lobbiesCollection.deleteOne({ _id: data.lobbyId });
-      }
+      // if (
+      //   result[0].playerOne === data.currentUser &&
+      //   result[0].playerTwo === ""
+      // ) {
+      //   lobbiesCollection.deleteOne({ _id: data.lobbyId });
+      // }
 
-      //If playerTwo is alone in lobby, remove it as well!
-      if (
-        result[0].playerTwo === data.currentUser &&
-        result[0].playerOne === ""
-      ) {
-        lobbiesCollection.deleteOne({ _id: data.lobbyId });
-      }
+      // //If playerTwo is alone in lobby, remove it as well!
+      // if (
+      //   result[0].playerTwo === data.currentUser &&
+      //   result[0].playerOne === ""
+      // ) {
+      //   lobbiesCollection.deleteOne({ _id: data.lobbyId });
+      // }
 
-      //If playerOne leaves and is not alone, update lobby and emit!
-      if (
-        result[0].playerOne === data.currentUser &&
-        result[0].playerTwo !== ""
-      ) {
-        lobbiesCollection.updateOne(
-          { _id: data.lobbyId },
-          //PlayerTwo will become playerOne
-          {
-            $set: {
-              playerOne: result[0].playerTwo,
-              playerTwo: "",
-              readyPlayerOne: result[0].readyPlayerTwo,
-              readyPlayerTwo: false
-            }
-          },
-          (err, result) => {
-            if (err) throw err;
-            console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
+      //   //If playerOne leaves and is not alone, update lobby and emit!
+      //   if (
+      //     result[0].playerOne === data.currentUser &&
+      //     result[0].playerTwo !== ""
+      //   ) {
+      //     lobbiesCollection.updateOne(
+      //       { _id: data.lobbyId },
+      //       //PlayerTwo will become playerOne
+      //       {
+      //         $set: {
+      //           playerOne: result[0].playerTwo,
+      //           playerTwo: "",
+      //           readyPlayerOne: result[0].readyPlayerTwo,
+      //           readyPlayerTwo: false
+      //         }
+      //       },
+      //       (err, result) => {
+      //         if (err) throw err;
+      //         console.log(`DB: Removing player1 from lobbyId: ${data.lobbyId}`);
 
-            lobbiesCollection
-              .find({ _id: data.lobbyId })
-              .toArray((err, result) => {
-                io.in(data.lobbyId).emit("lobby-data", result[0]);
-                lobbiesCollection.find().toArray((err, result) => {
-                  io.emit("lobby-list-data", result);
-                });
-              });
-          }
-        );
-        resetLobbyChat(data.lobbyId);
-      }
+      //         lobbiesCollection
+      //           .find({ _id: data.lobbyId })
+      //           .toArray((err, result) => {
+      //             io.in(data.lobbyId).emit("lobby-data", result[0]);
+      //             lobbiesCollection.find().toArray((err, result) => {
+      //               io.emit("lobby-list-data", result);
+      //             });
+      //           });
+      //       }
+      //     );
+      //   resetLobbyChat(data.lobbyId);
+      // }
 
       //If playerTwo leaves and is not alone, also update lobby and emit!
       if (
@@ -757,10 +762,15 @@ io.on("connection", socket => {
         );
         refreshLobby(data.lobbyId);
         resetLobbyChat(data.lobbyId);
+      } else {
+        lobbiesCollection.deleteOne({ _id: data.lobbyId });
+        refreshLobbyList();
+        refreshLobby(data.lobbyId);
       }
     });
-    // messageList: [],
-    //io.emit("refresh-lobby-chat", data.lobbyId);
+
+    //messageList: [],
+    io.emit("refresh-lobby-chat", data.lobbyId);
   });
 
   //_______________________GAME________________________________________________
