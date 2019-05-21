@@ -818,6 +818,10 @@ io.on("connection", socket => {
     }
 
     lobbiesCollection.find({ _id: data.lobbyId }).toArray((err, result) => {
+      if (err) throw err;
+      if (result[0] == undefined) {
+        return;
+      }
       //If playerOne is alone in lobby, remove it from db!
       if (
         result[0].playerOne === data.currentUser &&
