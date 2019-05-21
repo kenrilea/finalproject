@@ -63,6 +63,18 @@ const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000000);
 };
 
+const lobbyPurge = username => {
+  try {
+    console.log("OLD LOBBY PURGE FOR: " + username);
+    lobbiesCollection.deleteMany({
+      $or: [{ playerOne: username }, { playerTwo: username }]
+    });
+  } catch (e) {
+    console.log("ERROR IN LOBBY PURGE FOR: " + username);
+    console.log(e);
+  }
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SIGNUP, LOGIN, LOGOUT & AUTOLOGIN  ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -431,7 +443,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
     readyPlayerTwo: false,
     creationTime: new Date().toLocaleString()
   };
-
+  lobbyPurge(req.body.currentUser);
   //Insert lobby into the database
   lobbiesCollection.insertOne(newLobby, (err, result) => {
     if (err) {
@@ -507,6 +519,7 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
 //************ JOIN LOBBY ************//
 app.post("/join-lobby", upload.none(), function(req, res) {
   const { lobbyId, currentUser } = req.body;
+  lobbyPurge(currentUser);
   console.log("Trying to join lobby with id ", lobbyId);
   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
     if (result[0] === undefined) {
