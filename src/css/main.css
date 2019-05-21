@@ -218,8 +218,8 @@ div {
   animation: opac 0.8s;
 }
 
-.animated-fade-in-delay {
-  animation: opac 0.8s;
+.animated-fade-in-slow {
+  animation: opac 1.4s;
 }
 
 @keyframes opac {

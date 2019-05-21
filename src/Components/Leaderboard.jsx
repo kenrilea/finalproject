@@ -67,10 +67,10 @@ class Leaderboard extends Component {
             rank = "Super Master"
             break;
          case wins < 50:
-            rank = "Hardcore"
+            rank = "Chess God"
             break;
          case wins > 50:
-            rank = "Chess God"
+            rank = "Super Chess God"
             break;
          default:
             rank = "default"
@@ -112,7 +112,6 @@ class Leaderboard extends Component {
                   </thead>
                   <tbody className="leader-body">
                      {this.state.leaderboard.map((user, standing) => {
-                        console.log(`Get rank for ${user.username}`, this.getRank(user.wins))
                         return (
                            <tr key={user.username + user.rank} className="leader-row">
                               <td className="leader-entry">{standing + 1}</td>

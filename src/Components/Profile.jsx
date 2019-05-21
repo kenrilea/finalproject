@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import socket from "./SocketSettings.jsx"
 
 import "../css/profile.css"
 
 class UnconnectedProfile extends Component {
 
+   constructor(props) {
+      super(props)
+
+   }
 
    render = () => {
 
@@ -21,8 +26,8 @@ class UnconnectedProfile extends Component {
                </thead>
                <tbody>
                   <tr>
-                     <td>0</td>
-                     <td>0</td>
+                     <td>{this.props.wins}</td>
+                     <td>{this.props.losses}</td>
                   </tr>
                </tbody>
             </table>
