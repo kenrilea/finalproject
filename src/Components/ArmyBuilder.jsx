@@ -291,9 +291,7 @@ class UnconnectedArmyBuilder extends Component {
         <div className="army-builder-top-cont">
           <h3 className="card-top-label">Build your army</h3>
         </div>
-        <label className="army-sub-label">
-          Select a grass tile to add a character
-        </label>
+        <p className="army-sub-label">Select a grass tile to add a character</p>
         <div className="army-map-and-selector">
           {this.renderMap()}
           {this.renderSelectChar()}
