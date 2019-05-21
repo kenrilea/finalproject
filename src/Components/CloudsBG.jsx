@@ -7,7 +7,7 @@ let buttonStyle = {
    position: "absolute",
    bottom: "-775px",
    left: "30px",
-   "z-index": "999",
+   "zIndex": "999",
    width: "145px"
 }
 
