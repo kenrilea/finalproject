@@ -45,11 +45,15 @@
 
    .player-label {
       font-size: 1.2em;
-      
+      width: 200px;
+      height: 50px;
+      line-height: 50px;
    }
 
    .vs-label {
       font-size: 1em;
+      height: 50px;
+      line-height: 50px;
    }
 
 
