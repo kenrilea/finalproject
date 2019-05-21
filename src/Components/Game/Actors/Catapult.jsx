@@ -33,6 +33,7 @@ class Catapult extends Component {
     super(props);
 
     this.state = {
+      isAnimating: false,
       frontendPos: getIsometricFrontendPos({
         x: this.props.actorData.pos.x,
         y: this.props.actorData.pos.y
@@ -51,7 +52,8 @@ class Catapult extends Component {
         width: this.props.gameData.width,
         height: this.props.gameData.height / 2
       },
-      centerPointOfTravel: {}
+      centerPointOfTravel: {},
+      lastAnimTime: 0
     };
   }
 
@@ -60,31 +62,43 @@ class Catapult extends Component {
   };
 
   updateMove = (speed = 0.05) => {
+    const currentTime = new Date().getTime();
+
     let dest = getIsometricFrontendPos({ ...this.props.actorData.action.dest });
 
     //console.log("positions: ", this.state.frontendPos, dest);
 
     let newPos = updatePosition(this.state.frontendPos, dest, speed);
 
-    if (newPos.x === dest.x && newPos.y === dest.y) {
+    if (
+      (newPos.x === dest.x && newPos.y === dest.y) ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 1500)
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
-        }
+          x: dest.x,
+          y: dest.y
+        },
+        lastAnimTime: 0
       });
       return;
     }
 
     this.setState({
+      isAnimating: true,
       frontendPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     cancelAnimationFrame(this.animationMove);
@@ -94,31 +108,46 @@ class Catapult extends Component {
   };
 
   updateDied = () => {
+    const currentTime = new Date().getTime();
+
     let dest = { x: this.state.frontendPos.x, y: 110 };
 
     //console.log("positions: ", this.state.frontendPos, dest);
 
     let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.x > 100 || newPos.x < 0 || newPos.y > 100 || newPos.y < 0) {
+    if (
+      newPos.x > 100 ||
+      newPos.x < 0 ||
+      newPos.y > 100 ||
+      newPos.y < 0 ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 1500)
+    ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationDied);
       assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
-        }
+          x: dest.x,
+          y: dest.y
+        },
+        lastAnimTime: 0
       });
       return;
     }
 
     this.setState({
+      isAnimating: true,
       frontendPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     cancelAnimationFrame(this.animationDied);
@@ -128,6 +157,8 @@ class Catapult extends Component {
   };
 
   updateBombard = () => {
+    const currentTime = new Date().getTime();
+
     const startPos = this.state.frontendPos;
 
     if (this.state.cannonballPos.x === 900) {
@@ -154,6 +185,7 @@ class Catapult extends Component {
       }
 
       this.setState({
+        isAnimating: true,
         cannonballPos: { ...startPos },
         cannonballDest: {
           x: dest.x,
@@ -164,7 +196,10 @@ class Catapult extends Component {
         centerPointOfTravel: getCenterPoint(startPos, {
           x: dest.x,
           y: dest.y
-        })
+        }),
+        lastAnimTime: this.state.isAnimating
+          ? this.state.lastAnimTime
+          : currentTime
       });
 
       cancelAnimationFrame(this.animationBombard);
@@ -192,14 +227,17 @@ class Catapult extends Component {
     //console.log("positions: ", newPos, this.state.cannonballDest);
 
     if (
-      newPos.x === this.state.cannonballDest.x &&
-      newPos.y === this.state.cannonballDest.y
+      (newPos.x === this.state.cannonballDest.x &&
+        newPos.y === this.state.cannonballDest.y) ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 1500)
     ) {
       console.log("cancelled anim");
       this.props.actorData.action = undefined;
       cancelAnimationFrame(this.animationBombard);
       assignAnimationToActor();
       this.setState({
+        isAnimating: false,
         cannonballPos: {
           x: 900,
           y: 900
@@ -207,16 +245,21 @@ class Catapult extends Component {
         cannonballDest: {
           x: 100,
           y: 100
-        }
+        },
+        lastAnimTime: 0
       });
       return;
     }
 
     this.setState({
+      isAnimating: true,
       cannonballPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     cancelAnimationFrame(this.animationBombard);
@@ -234,7 +277,8 @@ class Catapult extends Component {
     // );
     if (
       this.isGameState(STATES.SHOW_ANIMATIONS) &&
-      this.props.actorData.action !== undefined
+      this.props.actorData.action !== undefined &&
+      !this.state.isAnimating
     ) {
       if (this.props.actorData.action.type === "move-passive") {
         this.animationMove = requestAnimationFrame(() => {
@@ -270,7 +314,7 @@ class Catapult extends Component {
                 if (
                   actor.actorType !== "char" &&
                   isInRange(catapultRange, catapultPos, actor.pos) &&
-                  !isTileOccupied(actor, this.props.gameData.actors)
+                  !isTileOccupied(actor, this.props.gameData.actors).success
                 ) {
                   return {
                     ...actor,

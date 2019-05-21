@@ -184,8 +184,24 @@ class GameFrame extends Component {
   render = () => {
     if (!this.state.loaded) return null;
 
-    let gameOverContent = this.state.gameOver ? (
+    const gameOverContent = this.state.gameOver ? (
       <GameOver winner={this.state.winner} />
+    ) : null;
+
+    const cloudHud = !this.state.gameOver ? (
+      <CloudHud
+        gameOver={this.state.gameOver}
+        currentTurnPlayer={this.state.currentTurnPlayer}
+      />
+    ) : null;
+
+    const surrenderButton = !this.state.gameOver ? (
+      <button
+        className="material-button red surrender-button"
+        onClick={this.handleSurrender}
+      >
+        Surrender
+      </button>
     ) : null;
 
     return (
@@ -195,7 +211,7 @@ class GameFrame extends Component {
             className="svg-canvas"
             id="chess-2-canvas"
             /*preserveAspectRatio="xMaxYMax none"*/
-            viewBox="0 0 100 57"
+            viewBox="0 0 100 60"
           >
             {this.getActorElements()}
           </svg>
@@ -205,21 +221,13 @@ class GameFrame extends Component {
           />
           {gameOverContent}
         </div>
-        <CloudHud
-          gameOver={this.state.gameOver}
-          currentTurnPlayer={this.state.currentTurnPlayer}
-        />
+        {cloudHud}
         <LobbyChat
           className="chatComponent"
           playerOne={this.state.playerOne}
           playerTwo={this.state.playerTwo}
         />
-        <button
-          className="material-button red surrender-button"
-          onClick={this.handleSurrender}
-        >
-          Surrender
-        </button>
+        {surrenderButton}
       </div>
     );
   };

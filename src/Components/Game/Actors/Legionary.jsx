@@ -42,6 +42,8 @@ class Legionary extends Component {
   updateMove = () => {
     if (!this.hasMounted) return;
 
+    const currentTime = new Date().getTime();
+
     if (this.props.actorData.action === undefined) {
       cancelAnimationFrame(this.animationMove);
       this.setState({
@@ -49,7 +51,8 @@ class Legionary extends Component {
         frontendPos: {
           x: newPos.x,
           y: newPos.y
-        }
+        },
+        lastAnimTime: 0
       });
       return;
     }
@@ -60,14 +63,19 @@ class Legionary extends Component {
 
     let newPos = updatePosition(this.state.frontendPos, dest, 0.05);
 
-    if (newPos.x === dest.x && newPos.y === dest.y) {
+    if (
+      (newPos.x === dest.x && newPos.y === dest.y) ||
+      (this.state.lastAnimTime !== 0 &&
+        currentTime - this.state.lastAnimTime > 1500)
+    ) {
       console.log("cancelled anim");
       this.setState({
         isAnimating: false,
         frontendPos: {
-          x: newPos.x,
-          y: newPos.y
-        }
+          x: dest.x,
+          y: dest.y
+        },
+        lastAnimTime: 0
       });
       cancelAnimationFrame(this.animationMove);
       assignAnimationToActor();
@@ -79,7 +87,10 @@ class Legionary extends Component {
       frontendPos: {
         x: newPos.x,
         y: newPos.y
-      }
+      },
+      lastAnimTime: this.state.isAnimating
+        ? this.state.lastAnimTime
+        : currentTime
     });
 
     cancelAnimationFrame(this.animationMove);
@@ -106,7 +117,8 @@ class Legionary extends Component {
         frontendPos: {
           x: dest.x,
           y: dest.y
-        }
+        },
+        lastAnimTime: 0
       });
       return;
     }
@@ -129,7 +141,7 @@ class Legionary extends Component {
       newPos.y >= 100 ||
       newPos.y <= 0 ||
       (this.state.lastAnimTime !== 0 &&
-        currentTime - this.state.lastAnimTime > 500)
+        currentTime - this.state.lastAnimTime > 1500)
     ) {
       console.log("cancelled anim");
       this.setState({
@@ -137,7 +149,8 @@ class Legionary extends Component {
         frontendPos: {
           x: dest.x,
           y: dest.y
-        }
+        },
+        lastAnimTime: 0
       });
       cancelAnimationFrame(this.animationDied);
       assignAnimationToActor();
@@ -179,7 +192,7 @@ class Legionary extends Component {
 
     if (
       this.state.lastAnimTime !== 0 &&
-      currentTime - this.state.lastAnimTime > 500
+      currentTime - this.state.lastAnimTime > 1500
     ) {
       console.log("cancelled blocking arrow");
       this.setState({
