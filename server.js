@@ -998,6 +998,7 @@ io.on("connection", socket => {
         if (isGameOver.success === true) {
           let win = [0, 0];
           let loss = [0, 0];
+          lobbiesCollection.deleteOne({ _id: gameId });
           isGameOver.players.forEach((player, index) => {
             if (isGameOver.winner === player) {
               win[index] = 1;
