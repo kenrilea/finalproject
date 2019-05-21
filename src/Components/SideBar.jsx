@@ -21,10 +21,6 @@ class UnconnectedSideBar extends Component {
       };
    }
 
-
-
-
-
    signout = () => {
       this.props.dispatch({
          type: "SIGN-OUT",

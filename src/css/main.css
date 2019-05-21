@@ -164,7 +164,7 @@ div {
    right: 5vw;
    top: 15vh;;
    bottom: 0;
-   margin: auto;
+   margin: 25px auto auto auto;
    max-width: 100%;
    max-height: 100%;
    position: fixed;
