@@ -16,7 +16,7 @@ class About extends Component {
 
                <p className="left-marge"> Super Chess II was built using the following technologies:  </p>
 
-               <div className="about-img-cont">
+               <div className="about-img-cont animated-fade-in-slow">
                   <div className="about-img-cont-row" style={{ height: "18vh" }}>
                      <img style={{ height: "18vh" }} alt="React Logo" src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-512.png" />
                      <img style={{ height: "18vh" }} alt="NodeJS Logo" src="../../assets/custom-node-express-logo.png" />

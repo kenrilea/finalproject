@@ -17,31 +17,13 @@ class UnconnectedSideBar extends Component {
       this.state = {
          show: true,
          show2: false,
-         wins: 0,
-         losses: 0,
-         isLoaded: false
+
       };
    }
 
-   componentWillMount = () => {
 
-      fetch("/get-user-score", {
-         method: "GET",
-         credentials: "include",
-      })
-         .then(head => {
-            return head.text()
-         })
-         .then(body => {
-            let data = JSON.parse(body)
-            console.log(data)
-            this.setState({
-               wins: data.wins,
-               losses: data.losses,
-               isLoaded: true
-            })
-         })
-   }
+
+
 
    signout = () => {
       this.props.dispatch({
@@ -56,26 +38,20 @@ class UnconnectedSideBar extends Component {
 
    loggedInSidebar = () => {
 
-      if (this.state.isLoaded) {
-         return (
-            <div className="profile-bar animated-fade-in-slow material-shadow">
-               <Profile wins={this.state.wins} losses={this.state.losses} />
-               <div className="flex-col">
-                  <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
-                  <button className="material-button signout-button top-marge" onClick={this.signout} >
-                     Sign Out
-                  </button>
-               </div>
+      return (
+         <div className="profile-bar animated-fade-in-slow material-shadow">
+            <Profile />
+            <div className="flex-col">
+               <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
+               <button className="material-button signout-button top-marge" onClick={this.signout} >
+                  Sign Out
+               </button>
             </div>
-         );
-      }
-      else {
-         return (
-            <Spinner />
-         )
-      }
+         </div>
+      );
+   }
 
-   };
+
 
    login = () => {
       return (
@@ -148,6 +124,8 @@ class UnconnectedSideBar extends Component {
       }
 
    };
+
+
 }
 
 const mapStateToProps = state => {

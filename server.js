@@ -255,10 +255,10 @@ app.get("/get-user-score", function(req, res) {
   sessionsCollection
     .find({ sessionId: req.cookies.sid })
     .toArray((err, result) => {
-      if (result[0] === undefined) {
-        res.send(JSON.stringify({ success: false }));
-        return;
-      }
+      // if (result[0].wins === undefined) {
+      //    res.send(JSON.stringify({ success: false, wins: 0, losses: 0 }))
+      //    return
+      // }
       usersCollection
         .find({ username: result[0].user })
         .toArray((err, result) => {
