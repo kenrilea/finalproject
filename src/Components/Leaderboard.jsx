@@ -34,10 +34,53 @@ class Leaderboard extends Component {
 
    };
 
-   render = () => {
-      {
-         console.log("State : ", this.state);
+   getRank = wins => {
+
+      let rank
+      switch (true) {
+
+         case wins < 5:
+            rank = "Noob Scrubber"
+            break;
+         case wins < 10:
+            rank = "Super Scrub"
+            break;
+         case wins < 15:
+            rank = "Master Noob"
+            break;
+         case wins < 20:
+            rank = "Explorer"
+            break;
+         case wins < 25:
+            rank = "Chief"
+            break;
+         case wins < 30:
+            rank = "Conqueror"
+            break;
+         case wins < 35:
+            rank = "Emperor"
+            break;
+         case wins < 40:
+            rank = "Master"
+            break;
+         case wins < 45:
+            rank = "Super Master"
+            break;
+         case wins < 50:
+            rank = "Chess God"
+            break;
+         case wins > 50:
+            rank = "Super Chess God"
+            break;
+         default:
+            rank = "default"
+            break;
       }
+
+      return rank
+   }
+
+   render = () => {
 
       {
          if (this.state.leaderboard.length === 0) {
@@ -73,7 +116,7 @@ class Leaderboard extends Component {
                            <tr key={user.username + user.rank} className="leader-row">
                               <td className="leader-entry">{standing + 1}</td>
                               <td className="leader-entry">{user.username}</td>
-                              <td className="leader-entry">{user.rank}</td>
+                              <td className="leader-entry">{this.getRank(user.wins)}</td>
                               <td className="leader-entry">{user.wins}</td>
                               <td className="leader-entry">{user.losses}</td>
                               <td className="leader-entry">{user.country}</td>
@@ -98,3 +141,4 @@ class Leaderboard extends Component {
 }
 
 export default Leaderboard;
+

@@ -250,6 +250,25 @@ app.post("/change-user-profile", upload.none(), function(req, res) {
         });
     });
 });
+
+app.get("/get-user-score", function(req, res) {
+  sessionsCollection
+    .find({ sessionId: req.cookies.sid })
+    .toArray((err, result) => {
+      if (result[0] === undefined) {
+        res.send(JSON.stringify({ success: false }));
+        return;
+      }
+      usersCollection
+        .find({ username: result[0].user })
+        .toArray((err, result) => {
+          console.log("Wins ", result[0].wins);
+          res.send(
+            JSON.stringify({ wins: result[0].wins, losses: result[0].losses })
+          );
+        });
+    });
+});
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ ARMY AND MAP EDITOR ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -719,7 +738,7 @@ io.on("connection", socket => {
         result[0].playerTwo === data.currentUser &&
         result[0].playerOne !== ""
       ) {
-        lobbiesCollection.update(
+        lobbiesCollection.updateOne(
           { _id: data.lobbyId },
           { $set: { playerTwo: "" } },
           (err, result) => {

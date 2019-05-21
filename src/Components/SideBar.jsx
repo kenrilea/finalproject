@@ -7,16 +7,40 @@ import Signup from "./Signup.jsx";
 
 import "../css/sideBar.css";
 import Profile from "./Profile.jsx";
-
+import Spinner from "./Spinner.jsx"
 import { Animate } from "react-animate-mount"
 
 class UnconnectedSideBar extends Component {
+
    constructor(props) {
       super(props);
       this.state = {
          show: true,
-         show2: false
+         show2: false,
+         wins: 0,
+         losses: 0,
+         isLoaded: false
       };
+   }
+
+   componentWillMount = () => {
+
+      fetch("/get-user-score", {
+         method: "GET",
+         credentials: "include",
+      })
+         .then(head => {
+            return head.text()
+         })
+         .then(body => {
+            let data = JSON.parse(body)
+            console.log(data)
+            this.setState({
+               wins: data.wins,
+               losses: data.losses,
+               isLoaded: true
+            })
+         })
    }
 
    signout = () => {
@@ -31,23 +55,32 @@ class UnconnectedSideBar extends Component {
    };
 
    loggedInSidebar = () => {
-      return (
-         <div className="sideBar animated-fade-in material-shadow">
-            <Profile />
-            <div className="flex-col">
-               <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
-               <button className="material-button signout-button top-marge" onClick={this.signout} >
-                  Sign Out
-               </button>
+
+      if (this.state.isLoaded) {
+         return (
+            <div className="profile-bar animated-fade-in-slow material-shadow">
+               <Profile wins={this.state.wins} losses={this.state.losses} />
+               <div className="flex-col">
+                  <Link className="material-button top-marge" to="/army-builder">Army Builder </Link>
+                  <button className="material-button signout-button top-marge" onClick={this.signout} >
+                     Sign Out
+                  </button>
+               </div>
             </div>
-         </div>
-      );
+         );
+      }
+      else {
+         return (
+            <Spinner />
+         )
+      }
+
    };
 
    login = () => {
       return (
-         <div className="animated-fade-in sideBar material-shadow">
-            <div className="sideBarForm">
+         <div className="animated-fade-in-slow login-bar material-shadow">
+            <div className="sideBarForm animated-fade-in">
                <Login />
             </div>
          </div>
@@ -56,7 +89,7 @@ class UnconnectedSideBar extends Component {
 
    signup = () => {
       return (
-         <div className="animated-fade-in sideBar material-shadow">
+         <div className="animated-fade-in-slow signup-bar material-shadow">
             <div className="sideBarForm">
                <Signup />
             </div>
@@ -96,7 +129,7 @@ class UnconnectedSideBar extends Component {
                <Animate show={this.state.show} >
                   {this.login()}
                </Animate>
-               <button onClick={this.handleShow2} className="material-button show-button "> SIGNUP </button>
+               <button onClick={this.handleShow2} className="material-button show-button signup-button"> SIGNUP </button>
                <Animate show={this.state.show2} >
                   {this.signup()}
                </Animate>
