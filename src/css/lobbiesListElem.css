@@ -15,15 +15,14 @@
 .player-label {
    font-size: 1.3em;
    /* border: 2px solid black; */
-   width: 10vw;
-   max-width: 13vw;
+   width: 100px;
    text-align: center;
 }
 
 .vs-label {
    font-size: 1.3em;
    /* border: 2px solid black; */
-   width: 5vw;
+   width: 25px;
    text-align: center;
    font-weight: bold;
    letter-spacing: 4px;
