@@ -95,7 +95,7 @@ class Leaderboard extends Component {
                   (
                      <div className="animated-fade-in animated-grow-bounce card-container material-shadow">
 
-                        <div className="card-top-cont">
+                        <div className="card-top-cont leader-top-cont">
                            <label className="card-top-label"> Leaderboard </label>
                         </div>
 
