@@ -1,0 +1,28 @@
+.add-news-date-display {
+  margin: 1vh auto;
+}
+
+.add-news-form {
+  position: relative;
+  width: 100%;
+  height: 46vh;
+}
+
+.add-news-textarea-container {
+  position: relative;
+  height: 40vh;
+}
+
+.add-news-textarea {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 3px;
+  line-height: 1.5;
+}
+
+.add-news-submit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
