@@ -37,6 +37,10 @@ class UnconnectedLobby extends Component {
 
     socket.emit("refresh-lobby", this.props.currentLobbyId);
     socket.emit("refresh-lobby-chat", this.props.currentLobbyId);
+    socket.on("lobby-disconnect", () => {
+      this.leaveLobby();
+      console.log(this.props.currentUser + " disconnected...");
+    });
   };
 
   // componentWillUnmount = () => {
