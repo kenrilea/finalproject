@@ -35,6 +35,7 @@ let lobbiesCollection;
 let gamesCollection;
 let chatsCollection;
 let gameIdAssociation; // in database as collection "GameIdAssociation"
+let newsCollection;
 
 //Connection to DB, do not close!
 (async function initDB() {
@@ -49,6 +50,7 @@ let gameIdAssociation; // in database as collection "GameIdAssociation"
     sessionsCollection = finalProjectDB.collection("Sessions");
     lobbiesCollection = finalProjectDB.collection("Lobbies");
     chatsCollection = finalProjectDB.collection("Chats");
+    newsCollection = finalProjectDB.collection("News");
   });
 })();
 
@@ -270,6 +272,69 @@ app.get("/get-user-score", function(req, res) {
         });
     });
 });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//************ NEWS AND NEWS POSTING ************//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.get("/get-news", upload.none(), (req, res) => {
+  newsCollection.find({}).toArray((err, result) => {
+    if (err) {
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+
+    console.log("Getting news -> results: ", result);
+
+    // Frontend expects an array with the following object format:
+    // {
+    //    date,
+    //    text
+    // }
+
+    res.send(JSON.stringify(result));
+  });
+});
+
+app.post("add-news", upload.none(), (req, res) => {
+  let text = req.body.newsText;
+
+  if (
+    req.cookies.sid === undefined ||
+    text === undefined ||
+    text.trim() === ""
+  ) {
+    res.send({ success: false, err: "not logged in" });
+  }
+
+  sessionsCollection
+    .find({ sessionId: req.cookies.sid })
+    .toArray((err, result) => {
+      if (err) {
+        res.send(JSON.stringify({ success: false }));
+        return;
+      }
+
+      usersCollection
+        .find({ username: result[0].user })
+        .toArray((err, result) => {
+          if (err) {
+            res.send(JSON.stringify({ success: false }));
+            return;
+          }
+
+          // TODO: if user is an admin, insert to newsCollection:
+          let iso = new Date().toISOString();
+          // {
+          //    date: iso,
+          //    text
+          // }
+          // else, return { success: false }
+          res.send(JSON.stringify({ success: true }));
+        });
+    });
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ ARMY AND MAP EDITOR ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

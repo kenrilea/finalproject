@@ -224,8 +224,10 @@ class UnconnectedArmyBuilder extends Component {
       );
     }
     return (
-      <div key={"armyBoard"} className={"armyBuilderBoard"}>
-        {allActors}
+      <div className={"armyBuilderBoard-outer"}>
+        <div key={"armyBoard"} className={"armyBuilderBoard"}>
+          {allActors}
+        </div>
       </div>
     );
   };
@@ -254,7 +256,7 @@ class UnconnectedArmyBuilder extends Component {
     if (!this.isArmyToBig()) {
       return (
         <button
-          className="material-button center-button"
+          className="material-button"
           onClick={this.handlerClickSetArmy}
           disabled={true}
         >
@@ -264,7 +266,7 @@ class UnconnectedArmyBuilder extends Component {
     }
     return (
       <button
-        className="material-button center-button"
+        className="material-button army-builder-button"
         onClick={this.handlerClickSetArmy}
       >
         save army
@@ -289,14 +291,18 @@ class UnconnectedArmyBuilder extends Component {
         }
       >
         <div className="army-builder-top-cont">
-          <h3 className="card-top-label">Build your army</h3>
+          <h3 className="card-top-label army-builder-header">
+            Build your army
+          </h3>
         </div>
-        <p className="army-sub-label">Select a grass tile to add a character</p>
+        <p className="army-sub-label army-builder-text">
+          Select a grass tile to add a character
+        </p>
         <div className="army-map-and-selector">
           {this.renderMap()}
           {this.renderSelectChar()}
         </div>
-        <p>
+        <p className="army-sub-label army-builder-text">
           points remaining: {this.state.pointsMax - this.state.currentPoints}
         </p>
         {this.renderSaveButton()}

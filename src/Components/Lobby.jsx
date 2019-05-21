@@ -190,6 +190,9 @@ class UnconnectedLobby extends Component {
 
     //If both players have pressed ready, redirect to the appropriate game page
     if (this.state.readyPlayerOne && this.state.readyPlayerTwo) {
+      this.props.dispatch({
+        type: "JOIN-GAME"
+      });
       return <Redirect to={"/game/" + this.props.currentLobbyId} />;
     }
 
