@@ -334,6 +334,12 @@ div {
     height: 75%;
   }
 
+  .card-container-about {
+   min-width: 300px;
+   width: 600px;
+   height: 75%;
+ }
+
   .card-container-narrow {
     width: 80vw;
     margin: 50px 25px auto 25px;

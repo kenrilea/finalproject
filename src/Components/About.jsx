@@ -12,7 +12,7 @@ class About extends Component {
             {matches =>
                matches ?
                   (
-                     <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
+                     <div className="card-container card-container-about material-shadow animated-fade-in animated-grow-bounce">
                         <div className="card-top-cont-about">
                            <h3 className="card-top-label left-marge"> About </h3>
                         </div>

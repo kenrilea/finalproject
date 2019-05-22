@@ -124,6 +124,8 @@ nav {
     opacity: 1;
     transform: translateX(0px);
     transition: all 1.8s ease-out 1.5s;
+    z-index: 1001;
+
   }
 
   .burger {
