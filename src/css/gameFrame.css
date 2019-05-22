@@ -38,6 +38,6 @@
 .surrender-button {
    position: fixed;
    left: 150px;
-   top: 115px;
-   z-index: 1002;
+   top: 90px;
+   z-index: 1001;
 }

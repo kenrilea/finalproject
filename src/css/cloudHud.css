@@ -1,6 +1,6 @@
 .cloud-hud-cont {
    position: fixed;
-   top: 110px;
+   top: 90px;
    right: 25px;
    z-index: 1001;
    transition: transform 0.3s ease-in-out;

@@ -50,7 +50,7 @@
    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
    font-weight: bold;
-   line-height: 30px;
+   line-height: 32px;
    overflow: hidden;
    outline: none;
    cursor: pointer;
@@ -174,6 +174,12 @@
    .plus-symbol {
       text-align: center;
       margin: 0 auto;
+      line-height: 20px;
+   }
+
+   .plus-symbol:hover {
+      transform: rotate(360deg);
+      transition: all 0.5s ease-in-out
    }
 
    .leave-lobby {
