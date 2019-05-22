@@ -406,9 +406,14 @@ let handlerUserInput = input => {
     gameInstances[input.gameId]["turn"] =
       parseInt(gameInstances[input.gameId]["turn"]) + 1;
   }
+  let isTeamElim = checkTeamElim(input.gameId);
+  if (isTeamElim.length > 0) {
+    changes = changes.concat(isTeamElim);
+  }
   if (changes.length < 1) {
     success = false;
   }
+
   return { changes, success };
 };
 
@@ -425,6 +430,27 @@ let checkGameOver = gameId => {
     players: gameInstances[gameId].players,
     points: gameInstances[gameId].points
   };
+};
+let checkTeamElim = gameId => {
+  let changes = [];
+  let teamsElim = gameInstances[gameId].players.map(player => {
+    return false;
+  });
+  gameInstances[gameId].map.forEach(actor => {
+    teamsElim.forEach((team, index) => {
+      if (team === actor.team) {
+        teamsElim[index] = true;
+      }
+    });
+  });
+  teamsElim.forEach((team, index) => {
+    if (team === false) {
+      let winner = endGame(gameId, gameInstances[gameId].players[index]);
+      changes = changes.concat({ type: "game-over", winner: winner });
+    }
+  });
+
+  return changes;
 };
 //________________________________________________________________________________________________
 module.exports = {
