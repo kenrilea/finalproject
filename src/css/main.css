@@ -289,6 +289,7 @@ div {
 }
 
 /***** Chat box *****/
+
 .main-container,
 .sidebar-and-game-container,
 .main-div,
@@ -346,6 +347,13 @@ div {
     height: 80px;
     width: 90vh;
   }
+
+  .card-top-cont-about {
+   display: flex;
+   flex-direction: column;
+   height: 30px;
+   width: 90vh;
+ }
 
   .card-scrollable-cont {
     margin-top: 30px;
