@@ -318,7 +318,8 @@ let createGameInst = (teamA, teamB, armyA, armyB, gameId) => {
     width,
     height,
     playerWon: undefined,
-    points: points
+    points: points,
+    leaderBoardUpdated: false
   };
   editGameData(gameId, createMap(width, height));
   editGameData(gameId, createArmy(armyA, teamA, 0));
@@ -432,6 +433,21 @@ let checkGameOver = gameId => {
     points: gameInstances[gameId].points
   };
 };
+let updateLeaderboards = gameId => {
+  if (
+    gameInstances[gameId].playerWon === undefined ||
+    gameInstances[gameId].leaderBoardUpdated === true
+  ) {
+    return { gameOver: false };
+  }
+  gameInstances[gameId].leaderBoardUpdated = true;
+  return {
+    success: true,
+    winner: gameInstances[gameId].playerWon,
+    players: gameInstances[gameId].players,
+    points: gameInstances[gameId].points
+  };
+};
 let checkTeamElim = gameId => {
   let changes = [];
   let teamsElim = gameInstances[gameId].players.map(player => {
@@ -463,5 +479,6 @@ module.exports = {
   handlerUserInput,
   createTestGameInst,
   getGameInst,
-  checkGameOver
+  checkGameOver,
+  updateLeaderboards
 };

@@ -1029,7 +1029,7 @@ io.on("connection", socket => {
                action: input,
                team: result[0].user
             });
-            let isGameOver = gameEngine.checkGameOver(gameId);
+            let isGameOver = gameEngine.updateLeaderboards(gameId);
             if (isGameOver.success === false) {
                console.log("game in session");
             }
@@ -1060,8 +1060,8 @@ io.on("connection", socket => {
                         { _id: result[0]._id },
                         {
                            $set: {
-                              wins: newUserData.wins + win[0],
-                              losses: newUserData.losses + loss[0],
+                              wins: newUserData.wins,
+                              losses: newUserData.losses,
                               currentLobby: ""
                            }
                         },
