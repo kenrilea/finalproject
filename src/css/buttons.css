@@ -56,6 +56,7 @@
    outline: none;
    cursor: pointer;
    transition: box-shadow 0.2s;
+   
 }
 
 .red {
@@ -165,9 +166,9 @@
 @media screen and (max-width: 768px) {
 
    .round-button {
-      position:absolute;
-      top: 10px;
-      right: -100px;
+      position:fixed;
+      top: 200px;
+      right: 100px;
       z-index: 1001;
    }
 
