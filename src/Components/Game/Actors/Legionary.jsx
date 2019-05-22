@@ -192,7 +192,7 @@ class Legionary extends Component {
 
     if (
       this.state.lastAnimTime !== 0 &&
-      currentTime - this.state.lastAnimTime > 1500
+      currentTime - this.state.lastAnimTime > 500
     ) {
       console.log("cancelled blocking arrow");
       this.setState({

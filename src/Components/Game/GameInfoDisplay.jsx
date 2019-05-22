@@ -35,8 +35,8 @@ class GameStart extends Component {
   render = () => {
     console.log("gamestart RENDER!");
 
-    const width = 90;
-    const height = 30;
+    const width = 60;
+    const height = 15;
     const x = 50 - width / 2;
     const y = height / 2;
 
@@ -56,6 +56,8 @@ class GameStart extends Component {
           className="game-start-rect"
           x={x}
           y={"-200"}
+          rx={10}
+          ry={10}
           width={width}
           height={height}
         />
@@ -70,7 +72,8 @@ class GameStart extends Component {
             className="game-start-text"
             x="50%"
             y="50%"
-            alignmentBaseline="middle"
+            font-size={height / 2}
+            alignmentBaseline="central"
             textAnchor="middle"
           >
             {this.getText()}
