@@ -758,55 +758,56 @@ io.on("connection", socket => {
       console.log("Connecting client to socket room: ", currentLobbyId);
       socket.join(currentLobbyId);
 
-      socket.on("disconnect", () => {
-         let usercookie = cookie.parse(socket.request.headers.cookie);
-         var currentLobbyId = "";
-         sessionsCollection
-            .find({ sessionId: usercookie.sid })
-            .toArray((err, result) => {
-               if (err) throw err;
-               //result is an array, we must check it elements with [ ]
-               if (result[0] === undefined || result.length === 0) {
-                  //MUST send back success: false is username is not defined
-                  return;
-               }
-               usersCollection
-                  .find({ username: result[0].user })
-                  .toArray((err, result) => {
-                     currentLobbyId = result[0].currentLobby;
-                     lobbiesCollection
-                        .find({ _id: currentLobbyId })
-                        .toArray((err, result) => {
-                           if (err) throw err;
-                           if (result[0] === undefined) {
-                              return;
-                           }
+   });
 
-                           if (result[0].readyPlayerOne && result[0].readyPlayerTwo) {
-                              return;
-                           } else {
-                              usersCollection.updateOne(
-                                 //bookmark
-                                 { _id: result[0]._id },
-                                 { $set: { currentLobby: "" } },
-                                 (err, result) => {
-                                    if (err) throw err;
-                                    console.log(`DB: Removed users currentLobby...`);
-                                    lobbiesCollection.deleteOne({ _id: currentLobbyId });
-                                    refreshLobbyList();
-                                    refreshLobby(currentLobbyId);
-                                 }
-                              );
-                           }
-                           //Send back lobby object in socket
-                           io.in(currentLobbyId).emit("lobby-data", result[0]);
-                        });
-                  });
-            });
+   socket.on("disconnect", () => {
+      let usercookie = cookie.parse(socket.request.headers.cookie);
+      let currentLobbyId = "";
+      sessionsCollection
+         .find({ sessionId: usercookie.sid })
+         .toArray((err, result) => {
+            if (err) throw err;
+            //result is an array, we must check it elements with [ ]
+            if (result[0] === undefined || result.length === 0) {
+               //MUST send back success: false is username is not defined
+               return;
+            }
+            usersCollection
+               .find({ username: result[0].user })
+               .toArray((err, result) => {
+                  currentLobbyId = result[0].currentLobby;
+                  lobbiesCollection
+                     .find({ _id: currentLobbyId })
+                     .toArray((err, result) => {
+                        if (err) throw err;
+                        if (result[0] === undefined) {
+                           return;
+                        }
 
-         //bookmark
-         io.emit("lobby-disconnect");
-      });
+                        if (result[0].readyPlayerOne && result[0].readyPlayerTwo) {
+                           return;
+                        } else {
+                           usersCollection.updateOne(
+                              //bookmark
+                              { _id: result[0]._id },
+                              { $set: { currentLobby: "" } },
+                              (err, result) => {
+                                 if (err) throw err;
+                                 console.log(`DB: Removed users currentLobby...`);
+                                 lobbiesCollection.deleteOne({ _id: currentLobbyId });
+                                 refreshLobbyList();
+                                 refreshLobby(currentLobbyId);
+                              }
+                           );
+                        }
+                        //Send back lobby object in socket
+                        io.in(currentLobbyId).emit("lobby-data", result[0]);
+                     });
+               });
+         });
+
+      //bookmark
+      io.emit("lobby-disconnect");
    });
 
    socket.on("refresh-lobby", currentLobbyId => {
