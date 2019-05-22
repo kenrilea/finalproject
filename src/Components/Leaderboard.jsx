@@ -39,7 +39,7 @@ class Leaderboard extends Component {
         rank = "Casual";
         break;
       case wins < 20:
-        rank = "Explorer";
+        rank = "Scout";
         break;
       case wins < 40:
         rank = "Raider";
@@ -54,13 +54,10 @@ class Leaderboard extends Component {
         rank = "Conqueror";
         break;
       case wins < 640:
-        rank = "Master";
+        rank = "Emperor";
         break;
       case wins < 1280:
         rank = "Grand Master";
-        break;
-      case wins > 2560:
-        rank = "Mythic";
         break;
       default:
         rank = "default";
