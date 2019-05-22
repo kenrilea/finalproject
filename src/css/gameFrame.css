@@ -36,8 +36,52 @@
 }
 
 .surrender-button {
-   position: fixed;
+   position: absolute;
    left: 150px;
-   top: 90px;
+   top: 15px;
    z-index: 1001;
+}
+
+/* Burger nav menu size */
+@media screen and (max-width: 768px) {
+   .surrender-button {
+      position: fixed;
+      left: 150px;
+      top: 115px;
+      z-index: 1001;
+   }
+}
+
+
+
+/*/////////////////////////////////////////////////////////////////////////////*/
+/* iPhone 8 rendered pixel width */
+@media screen and (device-width: 375px) { 
+   
+   .surrender-button {
+      position: fixed;
+      left: 150px;
+      top: 290px;
+   }
+}
+
+/* iPhone X Landscape */
+@media screen and (device-width: 812px) { 
+   .surrender-button {
+      position: fixed;
+      left: 150px;
+      top: 70px;
+   }
+
+
+}
+
+/* iPhone 8 landscape pixel width */
+@media screen and (device-width: 667px) { 
+
+   .surrender-button {
+      position: fixed;
+      left: 150px;
+      top: 75px;
+   }
 }
