@@ -27,7 +27,7 @@ class WhatsNew extends Component {
         }
 
         this.setState({
-          newsList: body.newsList
+          newsList: body.newsList.reverse()
         });
       });
   };

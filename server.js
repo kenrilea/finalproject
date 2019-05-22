@@ -63,6 +63,19 @@ const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000000);
 };
 
+const lobbyPurge = (username, newLobbyId) => {
+  try {
+    console.log("OLD LOBBY PURGE FOR: " + username);
+    lobbiesCollection.deleteMany({
+      $or: [{ playerOne: username }, { playerTwo: username }],
+      $not: { _id: newLobbyId }
+    });
+  } catch (e) {
+    console.log("ERROR IN LOBBY PURGE FOR: " + username);
+    console.log(e);
+  }
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //************ SIGNUP, LOGIN, LOGOUT & AUTOLOGIN  ************//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,17 +300,11 @@ app.get("/get-news", upload.none(), (req, res) => {
 
     console.log("Getting news -> results: ", result);
 
-    // Frontend expects an array with the following object format:
-    // {
-    //    date,
-    //    text
-    // }
-
-    res.send(JSON.stringify(result));
+    res.send(JSON.stringify({ newsList: result, success: true }));
   });
 });
 
-app.post("add-news", upload.none(), (req, res) => {
+app.post("/add-news", upload.none(), (req, res) => {
   let text = req.body.newsText;
 
   if (
@@ -324,14 +331,26 @@ app.post("add-news", upload.none(), (req, res) => {
             return;
           }
 
-          // TODO: if user is an admin, insert to newsCollection:
+          if (!result[0].isAdmin) {
+            res.send(JSON.stringify({ success: false }));
+            return;
+          }
+
           let iso = new Date().toISOString();
-          // {
-          //    date: iso,
-          //    text
-          // }
-          // else, return { success: false }
-          res.send(JSON.stringify({ success: true }));
+          let newPost = {
+            date: iso,
+            text
+          };
+
+          newsCollection.insertOne(newPost, (err, result) => {
+            if (err) {
+              res.send(JSON.stringify({ success: false }));
+              return;
+            }
+
+            console.log("Created new News post.");
+            res.send(JSON.stringify({ success: true }));
+          });
         });
     });
 });
@@ -431,7 +450,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
     readyPlayerTwo: false,
     creationTime: new Date().toLocaleString()
   };
-
+  lobbyPurge(req.body.currentUser, newLobbyId);
   //Insert lobby into the database
   lobbiesCollection.insertOne(newLobby, (err, result) => {
     if (err) {
@@ -507,6 +526,7 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
 //************ JOIN LOBBY ************//
 app.post("/join-lobby", upload.none(), function(req, res) {
   const { lobbyId, currentUser } = req.body;
+  lobbyPurge(currentUser, lobbyId);
   console.log("Trying to join lobby with id ", lobbyId);
   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
     if (result[0] === undefined) {
@@ -940,6 +960,10 @@ io.on("connection", socket => {
       //_________________________
       if (lobbiesCollection === undefined) {
         console.log("collection undefined");
+        return;
+      }
+      if (lobbiesCollection === undefined) {
+        console.log("db not created");
         return;
       }
       lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
