@@ -3,7 +3,7 @@ nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  min-height: 10vh;
+  height: 60px;
   background-color: rgba(250, 250, 250, 1);
 }
 
@@ -165,6 +165,7 @@ nav {
 /*/////////////////////////////////////////////////////////////////////////////*/
 /* iPhone 8 rendered pixel width */
 @media screen and (device-width: 375px) {
+
   .nav {
     position: static;
   }
@@ -249,11 +250,99 @@ nav {
 }
 
 /*/////////////////////////////////////////////////////////////////////////////*/
+/* SAMSUNG S5 AND UP */
+
+@media screen and (device-width: 360px) {
+
+   .nav {
+     position: static;
+   }
+ 
+   .burger div {
+     width: 50px;
+     height: 8px;
+     margin: 12px;
+   }
+ 
+   .logo {
+     font-size: 50px;
+   }
+ 
+   .nav-links {
+     position: absolute;
+     right: 0px;
+     height: 90vh;
+     top: 10vh;
+     background-color: rgba(250, 250, 250, 1);
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     width: 50%;
+     transform: translateX(100%);
+     opacity: 0.4;
+     transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+     z-index: 1001;
+   }
+ 
+   .nav-link-hide {
+     /* opacity: 0; */
+     transform: translateX(1000px);
+     transition: all 1.5s ease-out 1.5;
+     font-size: 40px;
+     z-index: 1001;
+   }
+ 
+   .nav-link-show {
+     opacity: 1;
+     transform: translateX(0px);
+     transition: all 1.8s ease-out 1.5s;
+     font-size: 30px;
+   }
+ 
+   .burger {
+     display: block;
+   }
+ 
+   .nav-active {
+     position: absolute;
+     right: 0px;
+     height: 90vh;
+     top: 10vh;
+     background-color: rgba(250, 250, 250, 1);
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     width: 50%;
+     transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+     transform: translateX(0%);
+     opacity: 1;
+   }
+ 
+   .burger div:last-of-type {
+   }
+ 
+   .burger {
+     padding-top: 80px;
+     padding-bottom: 100px;
+   }
+ 
+   .buger div {
+     margin: 5px;
+     margin-left: 20px;
+   }
+ 
+   .burger div img {
+     width: 80px;
+     height: 30px;
+   }
+ }
+
+/*/////////////////////////////////////////////////////////////////////////////*/
 /* BURGER ANIMATION */
 
 .line1 {
   transform: rotate(-405deg) translate(-5px, 7px);
-  transition: all 0.4s ease-in-out;
+  transition: all 0.6s ease-in-out;
 }
 
 .line2 {
@@ -263,7 +352,7 @@ nav {
 
 .line3 {
   transform: rotate(405deg) translate(-3px, -5px);
-  transition: all 0.4s ease-in-out;
+  transition: all 0.6s ease-in-out;
 }
 
 .line1-close {

@@ -380,3 +380,22 @@ div {
    }
 
 } 
+
+@media screen and (device-width: 375px) {
+
+   .card-container-narrow { 
+      width: 80vw;
+      margin: 100px 25px auto -200px;
+      height: 70%;
+      padding: 25px;
+   }
+}
+
+@media screen and (device-width: 360px) {
+   .card-container-narrow { 
+      width: 80vw;
+      margin: 100px 25px auto -200px;
+      height: 70%;
+      padding: 25px;
+   }
+}

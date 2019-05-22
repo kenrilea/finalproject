@@ -149,7 +149,7 @@ class UnconnectedLobby extends Component {
          return "/assets/char-pawn-blue-ready.png";
       }
       if (!ready && playerOne) {
-         return "/assets/char-pawn-blue.png";
+         return "/assets/char-pawn-blue-lobby.png";
       }
       if (ready && !playerOne) {
          return "/assets/char-pawn-red-ready.png";
