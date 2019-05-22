@@ -87,14 +87,14 @@ class About extends Component {
                         <div className="card-top-cont">
                            <h3 className="card-top-label left-marge"> About </h3>
                         </div>
-                        <div className="card-scrollable-cont">
-                           <p className="left-marge">
+                        <div >
+                           <p className="left-marge about-text">
                               {" "}
                               Super Chess II was built using the following technologies:{" "}
                            </p>
 
                            <div className="about-img-cont animated-fade-in-slow">
-                              <div className="about-img-cont-row" style={{ height: "18vh" }}>
+                              <div className="about-img-cont-row" >
                                  <img
                                     alt="React Logo"
                                     src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-512.png"
@@ -134,7 +134,7 @@ class About extends Component {
                               </div>
                            </div>
 
-                           <p className="left-marge">
+                           <p className="left-marge about-text">
                               Don't believe the facts? Just check out our{" "}
                               <a href="https://github.com/kenrilea/finalproject">GitHub repo</a>{" "}
                            </p>

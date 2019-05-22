@@ -4,7 +4,7 @@ import "../css/cloudsBG.css"
 
 let buttonStyle = {
    display: "block",
-   position: "absolute",
+   position: "fixed",
    bottom: "-775px",
    left: "30px",
    "zIndex": "999",
