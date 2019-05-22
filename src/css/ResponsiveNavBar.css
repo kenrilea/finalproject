@@ -129,6 +129,8 @@ nav {
     display: block;
   }
 
+  
+
   .nav-active {
     position: absolute;
     right: 0px;
@@ -249,8 +251,8 @@ nav {
 /* BURGER ANIMATION */
 
 .line1 {
-  transform: rotate(-45deg) translate(-5px, 7px);
-  transition: all 0.3s ease-in-out;
+  transform: rotate(-405deg) translate(-5px, 7px);
+  transition: all 0.4s ease-in-out;
 }
 
 .line2 {
@@ -259,13 +261,13 @@ nav {
 }
 
 .line3 {
-  transform: rotate(45deg) translate(-3px, -5px);
-  transition: all 0.3s ease-in-out;
+  transform: rotate(405deg) translate(-3px, -5px);
+  transition: all 0.4s ease-in-out;
 }
 
 .line1-close {
   transform: rotate(0deg) translate(0px, 0px);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }
 
 .line2-close {
@@ -274,5 +276,5 @@ nav {
 }
 .line3-close {
   transform: rotate(0deg) translate(0px, 0px);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }

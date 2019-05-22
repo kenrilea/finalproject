@@ -135,7 +135,7 @@ div {
   /* margin: 0 auto; */
   width: 65vw;
   min-width: 600px;
-  height: 70%;
+  height: 65vh;
   background-color: rgba(250, 250, 250, 1);
   padding: 15px;
   border-radius: 3px;
@@ -192,10 +192,11 @@ div {
   vertical-align: bottom;
 }
 
-.card-top-sub-label2 {
-  font-size: 1em;
+.card-top-sub-label-lobby {
+  font-size: 22px;
   line-height: 8vh;
   margin-left: 20px;
+  min-width: 95px;
 }
 
 .card-scrollable-cont {
@@ -343,12 +344,39 @@ div {
     width: 90vh;
   }
 
-  .leader-top-cont {
-    height: 70px;
-  }
+   .card-scrollable-cont { 
+      margin-top: 30px;
+   }
 
-  .card-top-sub-label {
-    font-size: 1.3em;
-    margin-bottom: 50px;
-  }
-}
+   .card-container {
+      
+      min-width: 300px;
+      width: 85vw;
+      height:75%;
+      
+   }
+
+   .card-container-narrow { 
+      width: 80vw;
+      margin: 50px 25px auto 25px;
+      height: 550px;
+      padding: 25px;
+   }
+
+   .card-top-cont {
+      display: flex;
+      flex-direction: column;
+      
+      
+   }
+
+   .leader-top-cont {
+      height: 70px;
+   }
+
+   .card-top-sub-label {
+      font-size: 1.3em;
+      margin-bottom: 50px;
+   }
+
+} 
