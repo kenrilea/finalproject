@@ -68,7 +68,7 @@ const lobbyPurge = (username, newLobbyId) => {
       console.log("OLD LOBBY PURGE FOR: " + username);
       lobbiesCollection.deleteMany({
          $or: [{ playerOne: username }, { playerTwo: username }],
-         _id: { $not: { $eq: newLobbyId } } 
+         _id: { $not: { $eq: newLobbyId } }
       });
    } catch (e) {
       console.log("ERROR IN LOBBY PURGE FOR: " + username);
@@ -909,7 +909,7 @@ io.on("connection", socket => {
                      });
                }
             );
-            
+
          }
 
          //If playerTwo leaves and is not alone, also update lobby and emit!
@@ -1011,7 +1011,8 @@ io.on("connection", socket => {
          return;
       }
       let usercookie = cookie.parse(socket.request.headers.cookie);
-      console.log("userCookie: ", usercookie.sid);
+      console.log("userCookie: ", usercookie);
+      console.log("UserCookieSID ", usercookie.sid)
 
       sessionsCollection
          .find({ sessionId: usercookie.sid })
