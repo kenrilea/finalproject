@@ -110,8 +110,13 @@ class About extends Component {
                                  />
                                  <img
                                     alt="Webpack Logo"
-                                    src="https://raw.githubusercontent.com/webpack/media/master/logo/icon-square-big.png"
+                                    src="../../assets/webpack-logo-custom.png"
                                  />
+                                 <img
+                                    alt="GitHub Logo"
+                                    src="https://image.flaticon.com/icons/svg/25/25231.svg"
+                                 />
+
                               </div>
 
                               <div className="about-img-cont-row">
@@ -126,6 +131,10 @@ class About extends Component {
                                  <img
                                     alt="HTML5 Logo"
                                     src="https://logos-download.com/wp-content/uploads/2017/07/HTML5_logo-700x700.png"
+                                 />
+                                 <img
+                                    alt="Trello Logo"
+                                    src="https://www.vectorlogo.zone/logos/trello/trello-tile.svg"
                                  />
                                  <img
                                     alt="Babel Logo"

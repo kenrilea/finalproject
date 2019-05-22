@@ -15,10 +15,15 @@
 
 .about-img-cont img {
    max-height: 15vh;
+   margin: auto 5px auto 5px;
 }
 
 .about-text {
+   width: 45vw;
+   min-width: 500px;
    margin: 10px auto 10px auto;
+   /* text-align: center; */
+   padding-left: 20px;
 }
 
 @media screen and (max-width: 768px) {
