@@ -963,10 +963,6 @@ io.on("connection", socket => {
 
          //_________________________
          if (lobbiesCollection === undefined) {
-            console.log("collection undefined");
-            return;
-         }
-         if (lobbiesCollection === undefined) {
             console.log("db not created");
             return;
          }
