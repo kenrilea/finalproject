@@ -48,7 +48,7 @@ class WhatsNew extends Component {
 
     let content = this.state.newsList.map(post => {
       return (
-        <li className="news-element">
+        <li className="news-element" key={post._id}>
           {this.getFormattedDate(post.date) + ": " + post.text}
         </li>
       );
