@@ -53,7 +53,7 @@ class ResponsiveNavBar extends Component {
           <li className="nav-li">
             <Link
               className={this.state.slide ? "nav-link-show" : "nav-link-hide"}
-              to={"/how-to-play/list"}
+              to={"/how-to-play/links"}
               onClick={this.handleSlide}
             >
               How to Play
