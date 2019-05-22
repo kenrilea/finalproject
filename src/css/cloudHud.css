@@ -40,3 +40,31 @@
    font-weight: bolder;
    color: rgb(10,10,10)
 }
+
+/*/////////////////////////////////////////////////////////////////////////////*/
+/* iPhone 8 rendered pixel width */
+@media screen and (device-width: 375px) {
+
+   .cloud-hud-cont {
+      position: fixed;
+      top: 390px;
+      right: 25px;
+   }
+
+}
+
+/* iPhone X Landscape */
+@media screen and (device-width: 812px) { 
+
+   .cloud-hud-cont {
+      position: fixed;
+      top: 50px;
+      right: 25px;
+   }
+
+}
+
+/* iPhone 8 landscape pixel width */
+@media screen and (device-width: 375px) { 
+   
+}

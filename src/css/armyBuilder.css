@@ -27,8 +27,7 @@
   align-items: center;
   align-content: center;
   /* background: #bdbdbd; */
-  padding: 10px;
-  margin: 10px;
+  
   border-radius: 5px;
   min-width: 400px;
   min-height: 400px;
@@ -74,10 +73,11 @@
   
   /* margin: 0 auto; */
   min-width: 375px;
-  max-width: 50vw;
-  height: 650px;
+  max-width: 550px;
+  height: 550px;
   background-color: rgba(250, 250, 250, 1);
   padding: 20px;
+  padding-top: 0px;
   border-radius: 3px;
   z-index: 1000;
   right: 0;
@@ -86,7 +86,8 @@
   bottom: 0;
   margin: auto;
   position: fixed;
-  overflow-y: scroll;
+  overflow-x: hidden;
+
 }
 
 .army-builder-top-cont {
@@ -171,7 +172,7 @@
     min-width: 330px;
     height: 52vh;
     margin: 0 auto;
-    margin-bottom: 30px;
+    
   }
 
   .center-button {
