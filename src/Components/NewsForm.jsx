@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import "./../css/newsForm.css";
 
 // This page is to create news to show in WhatsNew.
@@ -8,7 +9,8 @@ class NewsForm extends Component {
     super(props);
 
     this.state = {
-      textarea: ""
+      textarea: "",
+      postSuccess: false
     };
   }
 
@@ -36,6 +38,9 @@ class NewsForm extends Component {
           return;
         }
 
+        this.setState({
+          postSuccess: true
+        });
         alert("News posted successfully!");
       });
   };
@@ -56,6 +61,9 @@ class NewsForm extends Component {
   };
 
   render = () => {
+    if (this.state.postSuccess) {
+      return <Redirect to="/" />;
+    }
     return (
       <div className="card-container material-shadow animated-grow-bounce animated-fade-in">
         <div className="card-top-cont">

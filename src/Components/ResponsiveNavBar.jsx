@@ -72,9 +72,33 @@ class ResponsiveNavBar extends Component {
         </ul>
 
         <div className="burger" onClick={this.handleSlide}>
-          <div className={this.state.slide ? "line1" : "line1-close"} />
-          <div className={this.state.slide ? "line2" : "line2-close"} />
-          <div className={this.state.slide ? "line3" : "line3-close"} />
+          <div>
+            <img
+              className={this.state.slide ? "line1" : "line1-close"}
+              src="../../assets/sword-black.png"
+              alt="Nav Sword"
+              height="4px"
+              width="25px"
+            />
+          </div>
+          <div>
+            <img
+              className={this.state.slide ? "line2" : "line2-close"}
+              src="../../assets/sword-black.png"
+              alt="Nav Sword"
+              height="4px"
+              width="25px"
+            />{" "}
+          </div>
+          <div>
+            <img
+              className={this.state.slide ? "line3" : "line3-close"}
+              src="../../assets/sword-black.png"
+              alt="Nav Sword"
+              height="4px"
+              width="25px"
+            />{" "}
+          </div>
         </div>
       </nav>
     );

@@ -8,7 +8,9 @@ let buttonStyle = {
   bottom: "-775px",
   left: "30px",
   zIndex: "999",
-  width: "145px"
+  width: "145px",
+  minWidth: "145px",
+  maxWidth: "225px"
 };
 
 class CloudsBG extends Component {

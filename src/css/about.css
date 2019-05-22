@@ -9,12 +9,21 @@
    width: 45vw;
    min-width: 500px;
    /* height: 15vh; */
-   margin: 25px auto 0 auto;
-   overflow: hidden;
+   margin: 10px auto 0 auto;
+   
 }
 
 .about-img-cont img {
-   height: 15vh;
+   max-height: 15vh;
+   margin: auto 5px auto 5px;
+}
+
+.about-text {
+   width: 45vw;
+   min-width: 500px;
+   margin: 10px auto 10px auto;
+   /* text-align: center; */
+   padding-left: 20px;
 }
 
 @media screen and (max-width: 768px) {
@@ -25,10 +34,12 @@
    }
 
    .about-img-cont img {
-      width: 100px;
+      max-width: 200px;
+      
    }
 
    
 }
+
 
 

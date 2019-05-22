@@ -274,11 +274,11 @@ class UnconnectedArmyBuilder extends Component {
       );
    };
    render = () => {
-      // if (this.props.loggedIn !== true) {
-      //    return (
-      //       <Redirect to="/" />
-      //    );
-      // }
+      if (this.props.loggedIn !== true) {
+         return (
+            <Redirect to="/" />
+         );
+      }
       if (this.state.set) {
          return <Redirect to="/lobbies-list" />;
       }
