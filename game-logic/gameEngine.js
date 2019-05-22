@@ -5,10 +5,11 @@ let data = require(__dirname + "/DATA.js");
 let utils = require(__dirname + "/engine-utils.js");
 //________________________________________________________________________________________________
 let gameInstances = {};
-let endGame = (gameId, team) => {
-  gameInstances[gameId]["points"][team] =
-    gameInstances[gameId]["points"][team] - 300;
-
+let endGame = (gameId, team, type) => {
+  if (type.surrender === true) {
+    gameInstances[gameId]["points"][team] =
+      gameInstances[gameId]["points"][team] - 300;
+  }
   let winner = undefined;
   let winnerPoints = undefined;
   gameInstances[gameId]["players"].forEach(player => {
@@ -398,7 +399,7 @@ let handlerUserInput = input => {
   }
   if (input.action.type === "leave") {
     if (gameTurn === input.team) {
-      let winner = endGame(input.gameId, input.team);
+      let winner = endGame(input.gameId, input.team, { surrender: true });
       changes = changes.concat({ type: "game-over", winner: winner });
     }
   }
@@ -445,7 +446,9 @@ let checkTeamElim = gameId => {
   });
   teamsElim.forEach((team, index) => {
     if (team === false) {
-      let winner = endGame(gameId, gameInstances[gameId].players[index]);
+      let winner = endGame(gameId, gameInstances[gameId].players[index], {
+        surrender: false
+      });
       changes = changes.concat({ type: "game-over", winner: winner });
     }
   });
