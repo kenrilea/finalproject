@@ -68,7 +68,7 @@ const lobbyPurge = (username, newLobbyId) => {
       console.log("OLD LOBBY PURGE FOR: " + username);
       lobbiesCollection.deleteMany({
          $or: [{ playerOne: username }, { playerTwo: username }],
-         $not: { _id: newLobbyId }
+         _id: { $not: { $eq: newLobbyId } } 
       });
    } catch (e) {
       console.log("ERROR IN LOBBY PURGE FOR: " + username);
@@ -272,10 +272,6 @@ app.get("/get-user-score", function (req, res) {
    sessionsCollection
       .find({ sessionId: req.cookies.sid })
       .toArray((err, result) => {
-         // if (result[0].wins === undefined) {
-         //    res.send(JSON.stringify({ success: false, wins: 0, losses: 0 }))
-         //    return
-         // }
          usersCollection
             .find({ username: result[0].user })
             .toArray((err, result) => {
@@ -569,6 +565,7 @@ app.post("/join-lobby", upload.none(), function (req, res) {
                });
          }
       );
+      refreshLobbyChat(lobbyId);
    });
 });
 
@@ -903,11 +900,12 @@ io.on("connection", socket => {
                         io.in(data.lobbyId).emit("lobby-data", result[0]);
                         lobbiesCollection.find().toArray((err, result) => {
                            io.emit("lobby-list-data", result);
+                           resetLobbyChat(data.lobbyId);
                         });
                      });
                }
             );
-            resetLobbyChat(data.lobbyId);
+            
          }
 
          //If playerTwo leaves and is not alone, also update lobby and emit!
@@ -928,21 +926,14 @@ io.on("connection", socket => {
                         io.in(data.lobbyId).emit("lobby-data", result[0]);
                         lobbiesCollection.find().toArray((err, result) => {
                            io.emit("lobby-list-data", result);
+                           resetLobbyChat(data.lobbyId);
                         });
                      });
                }
             );
             refreshLobby(data.lobbyId);
-            resetLobbyChat(data.lobbyId);
          }
-         // else {
-         //   lobbiesCollection.deleteOne({ _id: data.lobbyId });
-         //   refreshLobbyList();
-         //   refreshLobby(data.lobbyId);
-         // }
       });
-
-      //messageList: [],
       io.emit("refresh-lobby-chat", data.lobbyId);
    });
 
