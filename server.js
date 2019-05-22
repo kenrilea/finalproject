@@ -272,6 +272,10 @@ app.get("/get-user-score", function (req, res) {
    sessionsCollection
       .find({ sessionId: req.cookies.sid })
       .toArray((err, result) => {
+         if (err || result.length === 0) {
+            res.send(JSON.stringify({ wins: 0, losses: 0 }));
+         }
+
          usersCollection
             .find({ username: result[0].user })
             .toArray((err, result) => {

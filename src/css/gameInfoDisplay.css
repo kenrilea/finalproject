@@ -1,0 +1,14 @@
+.game-start-group {
+}
+
+.game-start-rect {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: #000;
+}
+
+.game-start-rect {
+  stroke: transparent;
+}
+
+.game-start-text {
+}
