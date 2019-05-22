@@ -4,6 +4,16 @@
   margin-bottom: 1%;
 }
 .howToPlay-mainDiv {
+  overflow: scroll;
+  padding-left: 5%;
+  padding-top: 5%;
+}
+.sectionHeading {
+  margin-bottom: 15px;
+}
+.sectionText {
+  margin-left: 5px;
+  display: block;
 }
 .material-fake-button {
   position: relative;

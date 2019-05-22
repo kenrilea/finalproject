@@ -16,28 +16,22 @@ class UnconnectedHowToPlay extends Component {
   };
 
   renderStep = () => {
-    let step = parseInt(this.props.match.params.step);
-    if (step === 1) {
-      console.log("here");
-      return (
-        <div>
-          <h2>{"step: " + this.props.match.params.step}</h2>
-          <h3>welcome to Joa Online.</h3>
-          <p>
-            joa online is a turn based strategy game. Here you will be given a
-            tutorial on how to play!
-          </p>
-        </div>
-      );
+    let step = this.props.match.params.step;
+    console.log(step);
+    if (step === "links") {
+      return this.renderLinks();
     }
-    if (step === 2) {
-      return (
-        <div>
-          <h2>{"step: " + this.props.match.params.step}</h2>
-          <h3>Creating a new game</h3>
-          <p>click on the create a new game</p>
-        </div>
-      );
+    if (step === "before-playing") {
+      return this.renderBeforePlaying();
+    }
+    if (step === "lobbies") {
+      return this.renderLobbies();
+    }
+    if (step === "joining-a-game") {
+      return this.renderJoiningAGame();
+    }
+    if (step === "unit-types") {
+      return this.renderUnitTypes();
     }
   };
   handlerPrev = event => {
@@ -69,7 +63,7 @@ class UnconnectedHowToPlay extends Component {
 
         <Link
           className={"howToPlayLink material-button"}
-          to={"/how-to-play/before-you-play"}
+          to={"/how-to-play/before-playing"}
         >
           Before you play
         </Link>
@@ -82,7 +76,7 @@ class UnconnectedHowToPlay extends Component {
         </Link>
         <Link
           className={"howToPlayLink material-button"}
-          to={"/how-to-play/before-you-play"}
+          to={"/how-to-play/before-playing"}
         >
           ArmyBuilder
         </Link>
@@ -101,19 +95,28 @@ class UnconnectedHowToPlay extends Component {
       </div>
     );
   };
-  renderBeforeYouPlay = () => {
+  renderBeforePlaying = () => {
     return (
       <div>
-        <p>First you will need an account</p>
-        <p>
-          click on the <span className={"material-fake-button"}>Signup</span>{" "}
-          button to create an account
+        <h2 className={"card-top-label sectionHeading"}>Before Playing</h2>
+        <p className={"sectionText"}>First you will need an account</p>
+        <p> </p>
+        <p className={"sectionText"}>
+          Click on <span className={"material-fake-button"}>Signup</span> to
+          create an account
         </p>
-        <p>enter a username, password and then select your region</p>
-        <img src={"/assets/default-user.png"} />
-        <p>once you are ready, press the "I'm Ready" button</p>
-        <p>
-          at this point you are ready to start playing!
+        <p className={"sectionText"}>
+          Enter a username, password and then select your region
+        </p>
+
+        <p className={"sectionText"}>
+          Once you are ready, press{" "}
+          <span className={"material-fake-button"}>I'm Ready</span>
+        </p>
+        <img className={"sectionText"} src={"/assets/how-to-play/signup.png"} />
+
+        <p className={"sectionText"}>
+          Now you are ready to start playing!
           <Link
             className={"howToPlayLink material-button"}
             to={"/how-to-play/joining-a-game"}
@@ -160,10 +163,17 @@ class UnconnectedHowToPlay extends Component {
       </div>
     );
   };
+  renderUnitTypes = () => {
+    return (
+      <div>
+        <img className={"sectionText"} src={"/assets/how-to-play/signup.png"} />
+      </div>
+    );
+  };
   render = () => {
     return (
       <div className={"card-container material-shadow howToPlay-mainDiv"}>
-        {this.renderLobbies()}
+        {this.renderStep()}
       </div>
     );
   };
