@@ -16,28 +16,22 @@ class UnconnectedHowToPlay extends Component {
   };
 
   renderStep = () => {
-    let step = parseInt(this.props.match.params.step);
-    if (step === 1) {
-      console.log("here");
-      return (
-        <div>
-          <h2>{"step: " + this.props.match.params.step}</h2>
-          <h3>welcome to Joa Online.</h3>
-          <p>
-            joa online is a turn based strategy game. Here you will be given a
-            tutorial on how to play!
-          </p>
-        </div>
-      );
+    let step = this.props.match.params.step;
+    console.log(step);
+    if (step === "links") {
+      return this.renderLinks();
     }
-    if (step === 2) {
-      return (
-        <div>
-          <h2>{"step: " + this.props.match.params.step}</h2>
-          <h3>Creating a new game</h3>
-          <p>click on the create a new game</p>
-        </div>
-      );
+    if (step === "before-playing") {
+      return this.renderBeforePlaying();
+    }
+    if (step === "lobbies") {
+      return this.renderLobbies();
+    }
+    if (step === "joining-a-game") {
+      return this.renderJoiningAGame();
+    }
+    if (step === "unit-types") {
+      return this.renderUnitTypes();
     }
   };
   handlerPrev = event => {
@@ -69,7 +63,7 @@ class UnconnectedHowToPlay extends Component {
 
         <Link
           className={"howToPlayLink material-button"}
-          to={"/how-to-play/before-you-play"}
+          to={"/how-to-play/before-playing"}
         >
           Before you play
         </Link>
@@ -82,7 +76,7 @@ class UnconnectedHowToPlay extends Component {
         </Link>
         <Link
           className={"howToPlayLink material-button"}
-          to={"/how-to-play/before-you-play"}
+          to={"/how-to-play/before-playing"}
         >
           ArmyBuilder
         </Link>
@@ -101,19 +95,28 @@ class UnconnectedHowToPlay extends Component {
       </div>
     );
   };
-  renderBeforeYouPlay = () => {
+  renderBeforePlaying = () => {
     return (
       <div>
-        <p>First you will need an account</p>
-        <p>
-          click on the <span className={"material-fake-button"}>Signup</span>{" "}
-          button to create an account
+        <h2 className={"card-top-label sectionHeading"}>Before Playing</h2>
+        <p className={"sectionText"}>First you will need an account</p>
+        <p> </p>
+        <p className={"sectionText"}>
+          Click on <span className={"material-fake-button"}>Signup</span> to
+          create an account
         </p>
-        <p>enter a username, password and then select your region</p>
-        <img src={"/assets/default-user.png"} />
-        <p>once you are ready, press the "I'm Ready" button</p>
-        <p>
-          at this point you are ready to start playing!
+        <p className={"sectionText"}>
+          Enter a username, password and then select your region
+        </p>
+
+        <p className={"sectionText"}>
+          Once you are ready, press{" "}
+          <span className={"material-fake-button"}>I'm Ready</span>
+        </p>
+        <img className={"sectionText"} src={"/assets/how-to-play/signup.png"} />
+
+        <p className={"sectionText"}>
+          Now you are ready to start playing!
           <Link
             className={"howToPlayLink material-button"}
             to={"/how-to-play/joining-a-game"}
@@ -160,10 +163,105 @@ class UnconnectedHowToPlay extends Component {
       </div>
     );
   };
+  renderUnitTypes = () => {
+    return (
+      <div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Pawn</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move: </span>pawns can move one tile
+            in any direction per turn. If a pawn moves onto a tile occupied by a
+            non-friendly unit, that non-friendly unit will be destroyed. Pawns
+            cannot move onto tiles occupied by friendly units
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/pawnA.png" />
+          </div>
+        </div>
+        <div>
+          <h2 className={"unitHeading"}>Tank</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move: </span>Tanks move one tile per
+            turn. If a tank moves onto a tile occupied by a non-friendly unit,
+            both the tank and the non-friendly unit will be destroyed. Tanks
+            cannot move onto tiles occupied by friendly units
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Well Armored (passive): </span>{" "}
+            Tanks are well armoured and therefore will not be destroyed by
+            arrows. Place tanks between enemy archers and friendly units to
+            shield your units.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/tankA.png" />
+            <img src="/assets/how-to-play/tankB.png" />
+          </div>
+        </div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Archer</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move-Passive: </span>Archers can
+            move one tile per turn. Archers can not move onto tiles with enemy
+            units, they instead destroy enemy units by preforming a ranged-shot
+            action.
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Ranged-Shot: </span>Ranged-shot will
+            destroy the first enemy unit within 3 tiles in a straight line
+            unless the unit is a tank as tanks cannot be destroyed by the
+            ranged-shot ability.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/archerA.png" />
+            <img src="/assets/how-to-play/archerB.png" />
+          </div>
+        </div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Knight</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move: </span>Knights can move one
+            tile in any direction per turn. If a Knight moves onto a tile
+            occupied by a non-friendly unit, that non-friendly unit will be
+            destroyed. Pawns cannot move onto tiles occupied by friendly units
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Charge: </span>Charge will move the
+            Knight by 3 tiles in a straight line. If there is an enemy unit on a
+            tile the knight passes through it will be destroyed. At most charge
+            can destroy 3 enemy units.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/knightA.png" />
+            <img src="/assets/how-to-play/knightb.png" />
+          </div>
+        </div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Grenadier</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move-Passive: </span>Grenadiers can
+            move one tile per turn. Grenadiers can not move onto tiles with
+            enemy units, they instead destroy enemy units by preforming a
+            ranged-shot action.
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Bombard: </span>Bombard is a ranged
+            ability that targets a tile, it cannot be blocked and will destroy
+            any enemy unit on that tile. Bombard cannot strike adjacent tiles
+            and it has a max range of between 2 and 3 tiles. This ability is
+            currently overpowered.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/catapultA.png" />
+            <img src="/assets/how-to-play/catapultB.png" />
+          </div>
+        </div>
+      </div>
+    );
+  };
   render = () => {
     return (
       <div className={"card-container material-shadow howToPlay-mainDiv"}>
-        {this.renderLobbies()}
+        {this.renderStep()}
       </div>
     );
   };

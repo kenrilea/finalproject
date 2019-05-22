@@ -4,6 +4,17 @@
   margin-bottom: 1%;
 }
 .howToPlay-mainDiv {
+  overflow: scroll;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 5%;
+}
+.sectionHeading {
+  margin-bottom: 15px;
+}
+.sectionText {
+  margin-left: 5px;
+  display: block;
 }
 .material-fake-button {
   position: relative;
@@ -76,4 +87,17 @@
   cursor: pointer;
   transition: box-shadow 0.2s;
   padding: 5px;
+}
+.unitActionImageCont {
+}
+.unitActionText {
+}
+.abilityName {
+  font-weight: bold;
+}
+.unitHeading {
+  font-weight: bold;
+  font-size: 28px;
+}
+.unitDetailsCont {
 }

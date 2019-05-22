@@ -15,10 +15,11 @@ nav {
 .logo {
   color: rgba(50, 50, 50, 1);
   letter-spacing: 5px;
-  font-family: 'Scope One', serif;
+  font-family: "Scope One", serif;
   font-size: 28px;
   font-weight: bold;
   z-index: 1001;
+  /* padding-left: 5px; */
 }
 
 .nav-links {
@@ -32,7 +33,7 @@ nav {
   display: flex;
   width: 45%;
   justify-content: space-around;
-  z-index: 1001;
+  z-index: 1002;
 }
 
 .nav-link-show {
@@ -53,8 +54,6 @@ nav {
   z-index: 1001;
 }
 
-
-
 .burger {
   display: none;
   z-index: 1001;
@@ -69,11 +68,8 @@ nav {
   margin-left: 20px;
 }
 
-
-
 .burger div:last-of-type {
-   margin-bottom: 20px;
-   
+  margin-bottom: 20px;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////*/
@@ -87,20 +83,19 @@ nav {
     z-index: 1001;
   }
   .nav-active {
-   display: flex;
-   width: 65%;
-   justify-content: space-around;
-   z-index: 1001;
- }
+    display: flex;
+    width: 65%;
+    justify-content: space-around;
+    z-index: 1002;
+  }
 }
 
 /* ///////////////////////////////////////////////////// */
 
 @media screen and (max-width: 768px) {
-
-   .logo {
-      font-size: 32px;
-   }
+  .logo {
+    font-size: 32px;
+  }
 
   .nav-links {
     position: absolute;
@@ -135,6 +130,8 @@ nav {
     display: block;
   }
 
+  
+
   .nav-active {
     position: absolute;
     right: 0px;
@@ -149,8 +146,6 @@ nav {
     animation: slide-bounce 0.5s ease-in-out;
     opacity: 1;
   }
-
-  
 }
 
 @keyframes slide-bounce {
@@ -170,10 +165,9 @@ nav {
 /*/////////////////////////////////////////////////////////////////////////////*/
 /* iPhone 8 rendered pixel width */
 @media screen and (device-width: 375px) {
-
-   .nav {
-      position: static;
-   }
+  .nav {
+    position: static;
+  }
 
   .burger div {
     width: 50px;
@@ -236,35 +230,30 @@ nav {
   }
 
   .burger div:last-of-type {
-   
-   
-}
+  }
 
-.burger {
-   padding-top: 80px;  
-   padding-bottom: 100px;
-}
+  .burger {
+    padding-top: 80px;
+    padding-bottom: 100px;
+  }
 
-.buger div {
-   margin: 5px;
-   margin-left: 20px;
-}
+  .buger div {
+    margin: 5px;
+    margin-left: 20px;
+  }
 
-
-.burger div img{
-   width: 80px;
-   height: 30px;
-   
- }
-
+  .burger div img {
+    width: 80px;
+    height: 30px;
+  }
 }
 
 /*/////////////////////////////////////////////////////////////////////////////*/
 /* BURGER ANIMATION */
 
 .line1 {
-  transform: rotate(-45deg) translate(-5px, 7px);
-  transition: all 0.3s ease-in-out;
+  transform: rotate(-405deg) translate(-5px, 7px);
+  transition: all 0.4s ease-in-out;
 }
 
 .line2 {
@@ -273,13 +262,13 @@ nav {
 }
 
 .line3 {
-  transform: rotate(45deg) translate(-3px, -5px);
-  transition: all 0.3s ease-in-out;
+  transform: rotate(405deg) translate(-3px, -5px);
+  transition: all 0.4s ease-in-out;
 }
 
 .line1-close {
   transform: rotate(0deg) translate(0px, 0px);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }
 
 .line2-close {
@@ -288,5 +277,5 @@ nav {
 }
 .line3-close {
   transform: rotate(0deg) translate(0px, 0px);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease-in-out;
 }
