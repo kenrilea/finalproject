@@ -439,7 +439,7 @@ let checkTeamElim = gameId => {
   });
   gameInstances[gameId].map.forEach(actor => {
     teamsElim.forEach((team, index) => {
-      if (team === actor.team) {
+      if (gameInstances[gameId]["players"][index] === actor.team) {
         teamsElim[index] = true;
       }
     });
