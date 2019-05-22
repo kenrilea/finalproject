@@ -166,7 +166,95 @@ class UnconnectedHowToPlay extends Component {
   renderUnitTypes = () => {
     return (
       <div>
-        <img className={"sectionText"} src={"/assets/how-to-play/signup.png"} />
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Pawn</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move: </span>pawns can move one tile
+            in any direction per turn. If a pawn moves onto a tile occupied by a
+            non-friendly unit, that non-friendly unit will be destroyed. Pawns
+            cannot move onto tiles occupied by friendly units
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/pawnA.png" />
+          </div>
+        </div>
+        <div>
+          <h2 className={"unitHeading"}>Tank</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move: </span>Tanks move one tile per
+            turn. If a tank moves onto a tile occupied by a non-friendly unit,
+            both the tank and the non-friendly unit will be destroyed. Tanks
+            cannot move onto tiles occupied by friendly units
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Well Armored (passive): </span>{" "}
+            Tanks are well armoured and therefore will not be destroyed by
+            arrows. Place tanks between enemy archers and friendly units to
+            shield your units.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/tankA.png" />
+            <img src="/assets/how-to-play/tankB.png" />
+          </div>
+        </div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Archer</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move-Passive: </span>Archers can
+            move one tile per turn. Archers can not move onto tiles with enemy
+            units, they instead destroy enemy units by preforming a ranged-shot
+            action.
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Ranged-Shot: </span>Ranged-shot will
+            destroy the first enemy unit within 3 tiles in a straight line
+            unless the unit is a tank as tanks cannot be destroyed by the
+            ranged-shot ability.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/archerA.png" />
+            <img src="/assets/how-to-play/archerB.png" />
+          </div>
+        </div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Knight</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move: </span>Knights can move one
+            tile in any direction per turn. If a Knight moves onto a tile
+            occupied by a non-friendly unit, that non-friendly unit will be
+            destroyed. Pawns cannot move onto tiles occupied by friendly units
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Charge: </span>Charge will move the
+            Knight by 3 tiles in a straight line. If there is an enemy unit on a
+            tile the knight passes through it will be destroyed. At most charge
+            can destroy 3 enemy units.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/knightA.png" />
+            <img src="/assets/how-to-play/knightb.png" />
+          </div>
+        </div>
+        <div className={"unitDetailsCont"}>
+          <h2 className={"unitHeading"}>Grenadier</h2>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Move-Passive: </span>Grenadiers can
+            move one tile per turn. Grenadiers can not move onto tiles with
+            enemy units, they instead destroy enemy units by preforming a
+            ranged-shot action.
+          </p>
+          <p className={"unitActionText"}>
+            <span className={"abilityName"}>Bombard: </span>Bombard is a ranged
+            ability that targets a tile, it cannot be blocked and will destroy
+            any enemy unit on that tile. Bombard cannot strike adjacent tiles
+            and it has a max range of between 2 and 3 tiles. This ability is
+            currently overpowered.
+          </p>
+          <div className={"unitActionImageCont"}>
+            <img src="/assets/how-to-play/catapultA.png" />
+            <img src="/assets/how-to-play/catapultB.png" />
+          </div>
+        </div>
       </div>
     );
   };
