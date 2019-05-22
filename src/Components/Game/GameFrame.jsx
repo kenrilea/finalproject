@@ -245,6 +245,7 @@ class GameFrame extends Component {
       <button
         className="material-button red surrender-button"
         onClick={this.handleSurrender}
+        disabled={this.state.currentTurnPlayer !== this.props.currentUser}
       >
         Surrender
       </button>
