@@ -28,7 +28,6 @@ class Leaderboard extends Component {
       socket.emit("refresh-leaderboard-data");
     }, 700);
   };
-
   getRank = wins => {
     let rank;
     switch (true) {
@@ -59,11 +58,13 @@ class Leaderboard extends Component {
       case wins < 1280:
         rank = "Grand Master";
         break;
+      case wins >= 1280:
+        rank = "Mythic";
+        break;
       default:
         rank = "default";
         break;
     }
-
     return rank;
   };
 
