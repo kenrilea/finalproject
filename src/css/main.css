@@ -348,6 +348,13 @@ div {
     width: 90vh;
   }
 
+  .card-top-cont-about {
+   display: flex;
+   flex-direction: column;
+   height: 30px;
+   width: 90vh;
+ }
+
   .card-scrollable-cont {
     margin-top: 30px;
   }
