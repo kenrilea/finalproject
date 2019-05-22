@@ -955,9 +955,9 @@ io.on("connection", socket => {
         console.log("collection undefined");
         return;
       }
-      if(lobbiesCollection=== undefined){
-        console.log("db not created")
-        return
+      if (lobbiesCollection === undefined) {
+        console.log("db not created");
+        return;
       }
       lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
         let originLobby = result[0];

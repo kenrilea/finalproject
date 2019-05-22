@@ -23,10 +23,7 @@ class ResponsiveNavBar extends Component {
       <nav className="material-shadow2">
         <div className="logo">
           <h1>
-            <Link
-              to={"/"}
-              style={{ "text-decoration": "none", color: "inherit" }}
-            >
+            <Link to={"/"} style={{ textDecoration: "none", color: "inherit" }}>
               SUPER CHESS II
             </Link>
           </h1>
