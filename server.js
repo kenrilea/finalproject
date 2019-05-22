@@ -63,11 +63,12 @@ const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000000);
 };
 
-const lobbyPurge = username => {
+const lobbyPurge = (username, newLobbyId) => {
   try {
     console.log("OLD LOBBY PURGE FOR: " + username);
     lobbiesCollection.deleteMany({
-      $or: [{ playerOne: username }, { playerTwo: username }]
+      $or: [{ playerOne: username }, { playerTwo: username }],
+      $not: { _id: newLobbyId }
     });
   } catch (e) {
     console.log("ERROR IN LOBBY PURGE FOR: " + username);
@@ -443,7 +444,7 @@ app.post("/create-lobby", upload.none(), function(req, res) {
     readyPlayerTwo: false,
     creationTime: new Date().toLocaleString()
   };
-  lobbyPurge(req.body.currentUser);
+  lobbyPurge(req.body.currentUser, newLobbyId);
   //Insert lobby into the database
   lobbiesCollection.insertOne(newLobby, (err, result) => {
     if (err) {
@@ -519,7 +520,7 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
 //************ JOIN LOBBY ************//
 app.post("/join-lobby", upload.none(), function(req, res) {
   const { lobbyId, currentUser } = req.body;
-  lobbyPurge(currentUser);
+  //lobbyPurge(currentUser);
   console.log("Trying to join lobby with id ", lobbyId);
   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
     if (result[0] === undefined) {
@@ -955,9 +956,9 @@ io.on("connection", socket => {
         console.log("collection undefined");
         return;
       }
-      if(lobbiesCollection=== undefined){
-        console.log("db not created")
-        return
+      if (lobbiesCollection === undefined) {
+        console.log("db not created");
+        return;
       }
       lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
         let originLobby = result[0];
