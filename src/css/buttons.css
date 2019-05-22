@@ -1,5 +1,6 @@
 
 .material-button {
+
    position: relative;
    display: inline-block;
    box-sizing: border-box;
@@ -25,6 +26,7 @@
    outline: none;
    cursor: pointer;
    transition: box-shadow 0.2s;
+
 }
 
 .round-button {
@@ -54,6 +56,7 @@
    outline: none;
    cursor: pointer;
    transition: box-shadow 0.2s;
+   
 }
 
 .red {
@@ -163,14 +166,21 @@
 @media screen and (max-width: 768px) {
 
    .round-button {
-      position: absolute;
-      top: 5px;
-      right: -35px;
+      position:fixed;
+      top: 200px;
+      right: 100px;
+      z-index: 1001;
    }
 
    .plus-symbol {
       text-align: center;
       margin: 0 auto;
+   }
+
+   .leave-lobby {
+      position: absolute;
+      right: -125px;
+      top: 25px;
    }
 
 }
