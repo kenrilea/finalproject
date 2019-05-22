@@ -304,6 +304,9 @@ div {
 .sc-header > div {
   z-index: 1001 !important;
 }
+.sc-chat-window {
+  max-height: 60% !important;
+}
 
 .sc-user-input--button
   .sc-user-input--file-icon-wrapper
@@ -345,58 +348,52 @@ div {
     width: 90vh;
   }
 
-   .card-scrollable-cont { 
-      margin-top: 30px;
-   }
+  .card-scrollable-cont {
+    margin-top: 30px;
+  }
 
-   .card-container {
-      
-      min-width: 300px;
-      width: 85vw;
-      height:75%;
-      
-   }
+  .card-container {
+    min-width: 300px;
+    width: 85vw;
+    height: 75%;
+  }
 
-   .card-container-narrow { 
-      width: 80vw;
-      margin: 50px 25px auto 25px;
-      height: 550px;
-      padding: 25px;
-   }
+  .card-container-narrow {
+    width: 80vw;
+    margin: 50px 25px auto 25px;
+    height: 550px;
+    padding: 25px;
+  }
 
-   .card-top-cont {
-      display: flex;
-      flex-direction: column;
-      
-      
-   }
+  .card-top-cont {
+    display: flex;
+    flex-direction: column;
+  }
 
-   .leader-top-cont {
-      height: 70px;
-   }
+  .leader-top-cont {
+    height: 70px;
+  }
 
-   .card-top-sub-label {
-      font-size: 1.3em;
-      margin-bottom: 50px;
-   }
-
-} 
+  .card-top-sub-label {
+    font-size: 1.3em;
+    margin-bottom: 50px;
+  }
+}
 
 @media screen and (device-width: 375px) {
-
-   .card-container-narrow { 
-      width: 80vw;
-      margin: 100px 25px auto -200px;
-      height: 70%;
-      padding: 25px;
-   }
+  .card-container-narrow {
+    width: 80vw;
+    margin: 100px 25px auto -200px;
+    height: 70%;
+    padding: 25px;
+  }
 }
 
 @media screen and (device-width: 360px) {
-   .card-container-narrow { 
-      width: 80vw;
-      margin: 100px 25px auto -200px;
-      height: 70%;
-      padding: 25px;
-   }
+  .card-container-narrow {
+    width: 80vw;
+    margin: 100px 25px auto -200px;
+    height: 70%;
+    padding: 25px;
+  }
 }
