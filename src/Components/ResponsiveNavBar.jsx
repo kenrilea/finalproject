@@ -24,7 +24,7 @@ class ResponsiveNavBar extends Component {
         <div className="logo">
           <h1>
             <Link to={"/"} style={{ textDecoration: "none", color: "inherit" }}>
-              SUPER CHESS II
+              Kumo-Senso
             </Link>
           </h1>
         </div>
