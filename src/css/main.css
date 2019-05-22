@@ -133,7 +133,7 @@ div {
 .card-container {
   overflow: hidden;
   /* margin: 0 auto; */
-  width: 60vw;
+  width: 65vw;
   min-width: 600px;
   height: 70%;
   background-color: rgba(250, 250, 250, 1);
@@ -190,7 +190,7 @@ div {
 .card-top-sub-label {
   font-size: 1.5em;
   vertical-align: bottom;
-
+   
 }
 
 .card-top-sub-label2 {
@@ -201,8 +201,9 @@ div {
 
 .card-scrollable-cont {
   overflow-y: auto;
-  height: 53vh;
-  padding-bottom: 10vh;
+  height: 51vh;
+  padding-bottom: h;
+  margin-top: 10px;
 }
 
 .material-shadow {
@@ -302,13 +303,20 @@ div {
 
 /* MEDIA QUERIES */
 
+@media screen and (max-width: 1024px) { 
+
+   .card-container {
+      width: 700px;
+   }
+}
+
 @media screen and (max-width: 768px) {
 
    .card-container {
       
       min-width: 300px;
       width: 85vw;
-      height: 75%;
+      height:75%;
       
    }
 
@@ -323,7 +331,7 @@ div {
       display: flex;
       flex-direction: column;
       height: 80px;
-      width: 90%;
+      width: 90vh;
    }
 
    .leader-top-cont {
@@ -332,6 +340,7 @@ div {
 
    .card-top-sub-label {
       font-size: 1.3em;
+      margin-bottom: 50px;
    }
 
 } 

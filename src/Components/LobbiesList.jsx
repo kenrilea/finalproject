@@ -118,7 +118,7 @@ class UnconnectedLobbiesList extends Component {
             <div className="card-container material-shadow animated-fade-in animated-grow-bounce">
                <div className="card-top-cont">
                   <h3 className="card-top-label">Lobbies</h3>
-                  <label className="card-top-sub-label" style={{ margin: "10px 0 10px 0" }}>
+                  <label className="card-top-sub-label" style={{ margin: "10px 0 40px 2px" }}>
                      {" "}
                      Active: {this.state.fullLobbies} / {this.state.lobbyCount}{" "}
                   </label>

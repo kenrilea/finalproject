@@ -26,9 +26,9 @@
   text-align: center;
   align-items: center;
   align-content: center;
-  background: #bdbdbd;
+  /* background: #bdbdbd; */
   padding: 10px;
-  margin: 5px;
+  margin: 10px;
   border-radius: 5px;
   min-width: 400px;
   min-height: 400px;
@@ -71,11 +71,11 @@
 }
 
 .card-container-army-builder {
-  overflow: hidden;
+  
   /* margin: 0 auto; */
   min-width: 375px;
   max-width: 50vw;
-  height: 75vh;
+  height: 650px;
   background-color: rgba(250, 250, 250, 0.9);
   padding: 20px;
   border-radius: 3px;
@@ -187,4 +187,9 @@
 }
 .army-builder-text {
   margin-left: 0px;
+}
+
+/* iPhone 8 rendered pixel width */
+@media screen and (device-width: 375px) {
+
 }

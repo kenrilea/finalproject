@@ -5,10 +5,11 @@ import "../css/cloudsBG.css"
 let buttonStyle = {
    display: "block",
    position: "fixed",
-   bottom: "-775px",
+   bottom: "30px",
    left: "30px",
    "zIndex": "999",
-   width: "145px"
+   "min-width": "145px",
+   "max-width": "225px"
 }
 
 class CloudsBG extends Component {
