@@ -203,7 +203,7 @@ class UnconnectedLobby extends Component {
     return (
       <div>
         <div
-          style={{ height: "420px", maxWidth: "500px" }}
+          style={{ height: "460px", maxWidth: "500px" }}
           className={
             "animated-fade-in animated-grow-bounce card-container material-shadow"
           }

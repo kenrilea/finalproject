@@ -3,6 +3,7 @@ import "./../../css/gameFrame.css";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import GameInfoDisplay from "./GameInfoDisplay.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
@@ -191,7 +192,7 @@ class GameFrame extends Component {
   getActorElements = () => {
     const actors = this.props.gameData.actors;
 
-    return actors.map(actor => {
+    let ret = actors.map(actor => {
       if (actor.actorType === "defaultTile") {
         return <Tile key={actor.actorId} actorData={actor} />;
       } else if (actor.charType === "pawn") {
@@ -206,6 +207,17 @@ class GameFrame extends Component {
         return <Archer key={actor.actorId} actorData={actor} />;
       }
     });
+
+    if (!this.state.gameOver) {
+      ret.push(
+        <GameInfoDisplay
+          key={"game-turn" + this.props.gameData.turn}
+          turn={this.props.gameData.turn}
+        />
+      );
+    }
+
+    return ret;
   };
 
   handleSurrender = () => {
@@ -233,6 +245,7 @@ class GameFrame extends Component {
       <button
         className="material-button red surrender-button"
         onClick={this.handleSurrender}
+        disabled={this.state.currentTurnPlayer !== this.props.currentUser}
       >
         Surrender
       </button>

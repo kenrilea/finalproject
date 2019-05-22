@@ -19,6 +19,7 @@ nav {
   font-size: 28px;
   font-weight: bold;
   z-index: 1001;
+  /* padding-left: 5px; */
 }
 
 .nav-links {
