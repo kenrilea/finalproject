@@ -116,8 +116,8 @@ class UnconnectedLobby extends Component {
          if (this.state.readyPlayerOne === true) {
             buttonClass = "material-button red";
          }
-         if (this.state.readyPlayerOne === false) {
-            buttonClass = "material-button green";
+         if (!ready && playerOne) {
+            return "/assets/char-pawn-blue-lobby.png";
          }
          return (
             <button className={buttonClass} onClick={this.handlerReadyButton}>
@@ -149,7 +149,7 @@ class UnconnectedLobby extends Component {
          return "/assets/char-pawn-blue-ready.png";
       }
       if (!ready && playerOne) {
-         return "/assets/char-pawn-blue-lobby.png";
+         return "/assets/char-pawn-blue.png";
       }
       if (ready && !playerOne) {
          return "/assets/char-pawn-red-ready.png";
@@ -183,7 +183,6 @@ class UnconnectedLobby extends Component {
    };
 
    render = () => {
-
       if (!this.props.loggedIn) {
          return <Redirect to={"/"} />;
       }
@@ -204,7 +203,7 @@ class UnconnectedLobby extends Component {
       return (
          <div>
             <div
-               style={{ height: "460px", "max-width": "500px" }}
+               style={{ height: "460px", maxWidth: "500px" }}
                className={
                   "animated-fade-in animated-grow-bounce card-container material-shadow"
                }
@@ -220,9 +219,12 @@ class UnconnectedLobby extends Component {
                   </div>
                </div>
 
-               <button className="material-button leave-button" onClick={this.leaveLobby}>
+               <button
+                  className="material-button leave-button"
+                  onClick={this.leaveLobby}
+               >
                   Leave
-            </button>
+          </button>
 
                <div className="players-div">
                   <div className={"player-div"}>

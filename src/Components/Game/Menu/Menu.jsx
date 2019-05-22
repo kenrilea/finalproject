@@ -50,6 +50,7 @@ class Menu extends Component {
         {this.props.options.map((option, index) => {
           return (
             <MenuItem
+              key={index}
               index={index}
               text={option.text}
               callbackFunc={option.callbackFunc}

@@ -3,6 +3,7 @@ import "./../../css/gameFrame.css";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import GameInfoDisplay from "./GameInfoDisplay.jsx";
 import GameOver from "./GameOver.jsx";
 import Tile from "./Actors/Tile.jsx";
 import VoidTile from "./Actors/VoidTile.jsx";
