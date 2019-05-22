@@ -520,7 +520,7 @@ app.get("/get-lobbies", upload.none(), function(req, res) {
 //************ JOIN LOBBY ************//
 app.post("/join-lobby", upload.none(), function(req, res) {
   const { lobbyId, currentUser } = req.body;
-  //lobbyPurge(currentUser);
+  lobbyPurge(currentUser, lobbyId);
   console.log("Trying to join lobby with id ", lobbyId);
   lobbiesCollection.find({ _id: lobbyId }).toArray((err, result) => {
     if (result[0] === undefined) {
