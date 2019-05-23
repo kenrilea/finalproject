@@ -26,7 +26,8 @@
 }
 
 .leader-header {
-  background-color: rgba(33,150,243,0.7)
+  background-color: rgba(33,150,243,1);
+  color: rgba(245,245,245,0.9);
 }
 
 .leader-body {
@@ -39,11 +40,14 @@
 }
 
 .leader-row:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(235, 235, 235, 1);
 }
 
 .leader-row:hover {
-  background-color: rgba(33,150,243,0.7)
+  background-color: rgba(33,150,243,1);
+  color: rgba(245,245,245,0.9);
+  font-weight: bold;
+  
 }
 
 .center-text {

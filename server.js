@@ -762,7 +762,7 @@ io.on("connection", socket => {
 
    socket.on("disconnect", () => {
       let usercookie = cookie.parse(socket.request.headers.cookie);
-      let currentLobbyId = "";
+      var currentLobbyId = "";
       sessionsCollection
          .find({ sessionId: usercookie.sid })
          .toArray((err, result) => {

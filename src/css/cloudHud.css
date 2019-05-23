@@ -41,6 +41,13 @@
    color: rgb(10,10,10)
 }
 
+@media screen and (max-width: 768px) { 
+
+   .cloud-hud-cont {
+      top: 110px;
+   }
+}
+
 /*/////////////////////////////////////////////////////////////////////////////*/
 /* iPhone 8 rendered pixel width */
 @media screen and (device-width: 375px) {
@@ -65,6 +72,7 @@
 }
 
 /* iPhone 8 landscape pixel width */
-@media screen and (device-width: 375px) { 
-   
+@media screen and (device-width: 667px) { 
+
+
 }

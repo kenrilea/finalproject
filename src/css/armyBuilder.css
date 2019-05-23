@@ -49,7 +49,7 @@
   align-items: center;
   align-content: center;
   min-height: 350px;
-  height: 420px;
+  height: 400px;
   width: 75px;
   background: #bdbdbd;
   padding: 5px;
@@ -74,7 +74,7 @@
   /* margin: 0 auto; */
   min-width: 375px;
   max-width: 550px;
-  height: 550px;
+  height: 625px;
   background-color: rgba(250, 250, 250, 1);
   padding: 20px;
   padding-top: 0px;
