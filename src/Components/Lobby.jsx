@@ -112,36 +112,68 @@ class UnconnectedLobby extends Component {
 
   renderReadyButtonOne = () => {
     let buttonClass = "lobbyButtonNotReady";
+    let disabled = true;
+
+    if (this.state.readyPlayerOne === true) {
+      buttonClass = "material-button red";
+    }
+    if (this.state.readyPlayerOne === false) {
+      buttonClass = "material-button green";
+    }
     if (this.props.currentUser === this.state.playerOne) {
-      if (this.state.readyPlayerOne === true) {
-        buttonClass = "material-button red";
-      }
-      if (this.state.readyPlayerOne === false) {
-        buttonClass = "material-button green";
-      }
+      disabled = false;
       return (
-        <button className={buttonClass} onClick={this.handlerReadyButton}>
+        <button
+          className={buttonClass}
+          disabled={disabled}
+          onClick={this.handlerReadyButton}
+        >
           {this.renderReadyButtonText(this.state.readyPlayerOne)}
         </button>
       );
     }
+    return (
+      <button
+        className={buttonClass}
+        disabled={disabled}
+        onClick={this.handlerReadyButton}
+      >
+        {this.renderReadyButtonText(!this.state.readyPlayerOne)}
+      </button>
+    );
   };
 
   renderReadyButtonTwo = () => {
     let buttonClass = "lobbyButtonNotReady";
+    let disabled = true;
+
+    if (this.state.readyPlayerTwo === true) {
+      buttonClass = "material-button red";
+    }
+    if (this.state.readyPlayerTwo === false) {
+      buttonClass = "material-button green";
+    }
     if (this.props.currentUser === this.state.playerTwo) {
-      if (this.state.readyPlayerTwo === true) {
-        buttonClass = "material-button red";
-      }
-      if (this.state.readyPlayerTwo === false) {
-        buttonClass = "material-button green";
-      }
+      disabled = false;
       return (
-        <button className={buttonClass} onClick={this.handlerReadyButton}>
+        <button
+          className={buttonClass}
+          disabled={disabled}
+          onClick={this.handlerReadyButton}
+        >
           {this.renderReadyButtonText(this.state.readyPlayerTwo)}
         </button>
       );
     }
+    return (
+      <button
+        className={buttonClass}
+        disabled={disabled}
+        onClick={this.handlerReadyButton}
+      >
+        {this.renderReadyButtonText(!this.state.readyPlayerTwo)}
+      </button>
+    );
   };
 
   renderAvatar = (ready, playerOne) => {
