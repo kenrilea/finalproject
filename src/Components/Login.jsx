@@ -27,10 +27,6 @@ class UnconnectedLogin extends Component {
   };
 
   handleSubmit = event => {
-    socket.open();
-
-    socket.emit("login");
-
     event.preventDefault();
     let data = new FormData();
     data.append("username", this.state.username);
@@ -64,6 +60,8 @@ class UnconnectedLogin extends Component {
           type: "show-message",
           message: "Login successful. Welcome " + this.state.username + "."
         });
+        socket.close();
+        socket.open();
       });
   };
 

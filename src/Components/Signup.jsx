@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Popup from "reactjs-popup";
+import socket from "./SocketSettings.jsx";
 
 import "../css/signup.css";
 
@@ -67,6 +68,8 @@ class UnconnectedSignup extends Component {
           type: "show-message",
           message: "Welcome " + this.state.username + "."
         });
+        socket.close();
+        socket.open();
       });
   };
 
