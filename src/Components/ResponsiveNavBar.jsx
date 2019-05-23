@@ -20,11 +20,11 @@ class ResponsiveNavBar extends Component {
 
    render = () => {
       return (
-         <nav className="material-shadow2">
+         <nav className="material-shadow2 navBarPadding">
             <div className="logo">
                <h1>
                   <Link to={"/"} style={{ textDecoration: "none", color: "inherit" }}>
-                     Kumo-Senso
+                     Grid Fall
             </Link>
                </h1>
             </div>
