@@ -8,7 +8,8 @@ const app = express();
 const cookie = require("cookie");
 
 const http = require("http").createServer(app);
-const io = require("socket.io").listen(4000, "134.209.119.133");
+
+const io = require("socket.io").listen(http);
 
 const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 const gameData = require(__dirname + "/game-logic/DATA.js");
