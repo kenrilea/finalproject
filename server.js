@@ -22,6 +22,8 @@ const imagePath = "/assets/";
 const url =
    "mongodb+srv://admin:admin@samurai-murit.mongodb.net/test?retryWrites=true"; // URI for remote database!
 
+app.use(cors())
+
 app.use("/assets", express.static(__dirname + "/assets"));
 app.use(cookieParser());
 
