@@ -2,7 +2,9 @@ import io from "socket.io-client";
 import { Manager } from "socket.io-client";
 
 //USE IP ADDRESS FOR TESTING ON MOBILE WITH NODEMON
-const socket = io("http://localhost:4000", {
+
+//Ryan's droplet IP address
+const socket = io("http://134.209.119.133:4000/:4000", {
    autoConnect: false,
 });
 
