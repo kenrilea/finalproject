@@ -208,14 +208,14 @@ class GameFrame extends Component {
       }
     });
 
-   //  if (!this.state.gameOver) {
-   //    ret.push(
-   //      <GameInfoDisplay
-   //        key={"game-turn" + this.props.gameData.turn}
-   //        turn={this.props.gameData.turn}
-   //      />
-   //    );
-   //  }
+    //  if (!this.state.gameOver) {
+    //    ret.push(
+    //      <GameInfoDisplay
+    //        key={"game-turn" + this.props.gameData.turn}
+    //        turn={this.props.gameData.turn}
+    //      />
+    //    );
+    //  }
 
     return ret;
   };
