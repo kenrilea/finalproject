@@ -6,4 +6,7 @@ const socket = io("http://134.209.119.133:4000", {
    autoConnect: false,
 });
 
+socket.connect("http://134.209.119.133:4000")
+
+
 export default socket;
