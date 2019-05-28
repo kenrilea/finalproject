@@ -9,7 +9,8 @@ const cookie = require("cookie");
 
 const http = require("http").createServer(app);
 
-const io = require("socket.io").listen(http);
+//Try moving socket initialization to bottom
+// const io = require("socket.io").listen(http);
 
 const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 const gameData = require(__dirname + "/game-logic/DATA.js");
@@ -1175,5 +1176,7 @@ let setup = async () => {
    http.listen(4000, "134.209.119.133", () => {
       console.log("Running on port 4000 , 0.0.0.0");
    });
+
+   const io = require("socket.io").listen(http);
 };
 setup();
