@@ -9,7 +9,7 @@ const cookie = require("cookie");
 
 const http = require("http").createServer(app);
 
-const io = require("socket.io").listen(http);
+const io = require("socket.io").listen(app);
 
 const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 const gameData = require(__dirname + "/game-logic/DATA.js");
