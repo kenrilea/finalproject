@@ -9,12 +9,12 @@ const cookie = require("cookie");
 
 const http = require("http").createServer(app);
 
-http.listen(4000, "134.209.119.133", () => {
+http.listen(4000, "localhost", () => {
    console.log("Running on port 4000 , 0.0.0.0");
 });
 
 const io = require("socket.io").listen(http);
-io.origins(['http://134.209.119.133:4000']);
+io.origins(['http://localhost:4000']);
 
 const gameEngine = require(__dirname + "/game-logic/gameEngine.js");
 const gameData = require(__dirname + "/game-logic/DATA.js");
